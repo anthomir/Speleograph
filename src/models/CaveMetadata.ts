@@ -13,4 +13,7 @@ export class CaveMetadata {
 
   @Required()
   caveName: string;
+
+  @Required()
+  fileId: string;
 }

@@ -14,7 +14,6 @@ export class User {
   @Required().Error("Email Should be unique")
   @Email()
   @Unique()
-  @ErrorMsg({type: "prop1 should be a string"})
   email: string;
 
   @Default(Role.User)

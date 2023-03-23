@@ -49,9 +49,7 @@ export class UserService {
       valid = await comparePassword(body.password, user.password);
     } catch (err) {
       valid = false;
-      return res
-        .status(400)
-        .json({ success: false, msg: "An unexpected error occured" });
+      return res.status(500).json({ success: false, msg: "An unexpected error occured" });
     }
 
     if (!valid) {
@@ -73,18 +71,26 @@ export class UserService {
   }
 
   async update(req: Req, res: Res, body: any){
+    try{
+      if(!req.user)
+        return res.status(404).json({success:false, err: "Unable to find user to update"})
 
-    if(!req.user)
-      return res.status(404).json({success:false, err: "Unable to find user to update"})
-
-    await this.User.updateOne(req.user, { name: body.name })
-    return true;
+      await this.User.updateOne(req.user, { name: body.name })
+      return true;
+    } catch(err){
+      return res.status(500).json({success: false, err: "An unexpected error occured"})
+    }
   }
 
   async delete(req: Req, res: Res): Promise<User | any> {
-    if (!req.user) {
-      return res.status(404).json({ success: false, msg: "Not Found" });
-    }
+    try{
+      if (!req.user) {
+        return res.status(404).json({ success: false, msg: "Not Found" });
+      }
     return await this.User.deleteOne(req.user);
+
+  } catch(err){
+    return res.status(500).json({success: false, err: "An unexpected error occured"})
+  }
   }
 }
