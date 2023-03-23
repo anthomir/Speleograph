@@ -4,13 +4,16 @@ import {
   HeaderParams,
   PathParams,
   QueryParams,
+  UsePipe,
+  UseValidation,
 } from "@tsed/platform-params";
 import { Get, Post, Put, Delete, Security, Header, Returns } from "@tsed/schema";
 import { User } from "src/models/User";
 import { UserService } from "../../services/user/user.service";
 import { Authenticate, Authorize } from "@tsed/passport";
 import { Req, Res } from "@tsed/common";
-
+import {UserSchema} from "../../schemas/UserSchema"
+import { UseJoiValidation } from "../../validation/validation.decorator";
 
 @Controller("/user")
 export class UserController {
@@ -18,7 +21,7 @@ export class UserController {
   private usersService: UserService;
 
   @Post("/register")
-  post(@Req() req: Req, @Res() res: Res,@BodyParams() body: User) {
+  post(@Req() req: Req, @Res() res: Res,  @BodyParams() @UseJoiValidation(UserSchema) body: User) {
       return this.usersService.create(body, res);
   }
 
@@ -35,7 +38,7 @@ export class UserController {
 
   @Get("/profile")
   @Authenticate("jwt")
-  getProfile( @Req() req: Req, @Res() res: Res, @QueryParams("filter") filter?: string) {
+  getProfile( @Req() req: Req, @Res() res: Res) {
     return res.status(200).json({success: true, data: req.user})
   }
 

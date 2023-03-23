@@ -23,7 +23,8 @@ const rootDir = __dirname;
   httpsPort: false, // CHANGE
   componentsScan: [
     `${rootDir}/services/**/**.ts`,
-    `${rootDir}/protocols/**.ts`
+    `${rootDir}/protocols/**.ts`,
+    `${rootDir}/validation/**.ts`
   ],
   mount: {
     "/api": [

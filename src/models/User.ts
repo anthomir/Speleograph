@@ -8,10 +8,10 @@ export class User {
   @ObjectID("_id")
   _id: string;
 
-  @Required()
+  @Required().Error("Name is Required")
   name: string;
 
-  @Required().Error("Email Should be unique")
+  @Required().Error("Email is Required")
   @Email()
   @Unique()
   email: string;
@@ -19,7 +19,7 @@ export class User {
   @Default(Role.User)
   role: string;
 
-  @Required()
+  @Required().Error("Password is Required")
   @Select(false)
   password: string;
 }

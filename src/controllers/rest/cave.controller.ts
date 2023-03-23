@@ -4,7 +4,7 @@ import {
   PathParams,
   QueryParams,
 } from "@tsed/platform-params";
-import {  Post } from "@tsed/schema";
+import {  Get, Post } from "@tsed/schema";
 import { Authenticate, Authorize } from "@tsed/passport";
 import { MulterOptions, MultipartFile, PlatformMulterFile, Req, Res } from "@tsed/common";
 import { CaveService } from "../../services/cave/cave.service";
@@ -13,7 +13,7 @@ import fs from "fs"
 import path from "path";
 
 @Controller("/cave")
-export class UserController {
+export class CaveController {
   @Inject(CaveService)
   private caveService: CaveService;
 
@@ -22,6 +22,15 @@ export class UserController {
       return this.caveService.create(req, res, body);
   }
 
+  @Get("/:id")
+  getById(@Req() req: Req, @Res() res: Res, @PathParams("id") id: string) {
+      return this.caveService.findById(req, res, id);
+  }
+
+  @Get("/search")
+  search(@Req() req: Req, @Res() res: Res, @BodyParams() body: any) {
+      return this.caveService.findById(req, res, body);
+  }
 
   @Post("/upload")
   @MulterOptions({dest: "./public/uploads", fileFilter(req: Req, file, cb ) {
