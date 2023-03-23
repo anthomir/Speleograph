@@ -15,21 +15,22 @@ export class UserService {
   }
 
   async findById(id: string): Promise<User | null> {
-    return await this.User.findById(id);
+    return await this.User.findById(id).lean();
   }
 
-  async create(user: User): Promise<User> {
+  async create(user: User, res: Res) {
     try{
-      let passwordEncrypted = await cryptPassword(user.password);
-      let userToCreate = { ...user, password: passwordEncrypted };
+      const passwordEncrypted = await cryptPassword(user.password);
+      const userToCreate = { ...user, password: passwordEncrypted };
 
-      const model = new this.User(userToCreate);
+      const userByEmail = await this.User.findOne({email: userToCreate.email})
 
-      await model.updateOne(userToCreate, { upsert: true });
-
-      return model;
+      if(userByEmail)
+        return res.status(409).json({success: false, err: "Account with this email already exists"})
+        
+      return await this.User.create(userToCreate);
     } catch(err){
-      return err.message
+      return res.status(500).json({success: false, err: "Internal Server Error"})
     }
   }
 
@@ -71,8 +72,12 @@ export class UserService {
     return res.status(200).json({ success: true, data: userToReturn });
   }
 
-  async update(req: Req, body: any, res: Res){
-    await this.User.updateOne({id: req.query.id},{ role: body.role})
+  async update(req: Req, res: Res, body: any){
+
+    if(!req.user)
+      return res.status(404).json({success:false, err: "Unable to find user to update"})
+
+    await this.User.updateOne(req.user, { name: body.name })
     return true;
   }
 

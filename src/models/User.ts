@@ -1,18 +1,20 @@
-import { Email, Required, Default } from "@tsed/schema";
+import { Email, Required, Default, ErrorMsg } from "@tsed/schema";
 import { Model, ObjectID, Select, Unique } from "@tsed/mongoose";
 import { Role } from "./Enum";
 
 @Model()
 export class User {
+  @Select(true)
   @ObjectID("_id")
   _id: string;
 
   @Required()
   name: string;
 
-  @Required()
+  @Required().Error("Email Should be unique")
   @Email()
   @Unique()
+  @ErrorMsg({type: "prop1 should be a string"})
   email: string;
 
   @Default(Role.User)

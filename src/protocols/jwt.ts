@@ -22,9 +22,7 @@ export class JwtProtocol implements OnVerify, OnInstall {
     if (!user) {
       throw new Unauthorized("Wrong token");
     }
-
     req.user = user;
-
     return user;
   }
 

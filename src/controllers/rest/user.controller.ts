@@ -5,7 +5,7 @@ import {
   PathParams,
   QueryParams,
 } from "@tsed/platform-params";
-import { Get, Post, Put, Delete, Security, Header } from "@tsed/schema";
+import { Get, Post, Put, Delete, Security, Header, Returns } from "@tsed/schema";
 import { User } from "src/models/User";
 import { UserService } from "../../services/user/user.service";
 import { Authenticate, Authorize } from "@tsed/passport";
@@ -17,25 +17,33 @@ export class UserController {
   @Inject(UserService)
   private usersService: UserService;
 
-  @Post("/")
-  post(@BodyParams() body: User) {
-    return this.usersService.create(body);
+  @Post("/register")
+  post(@Req() req: Req, @Res() res: Res,@BodyParams() body: User) {
+      return this.usersService.create(body, res);
   }
 
-  @Get("/")
-  @Authenticate("jwt")
-  get( @Req() req: Req, @Res() res: Res, @QueryParams("filter") filter?: string) {
-    return filter ? this.usersService.find(filter) : this.usersService.find();
-  }
-  
   @Post("/login")
   login(@Req() req: Req, @Res() res: Res, @BodyParams() body: any) {
     return this.usersService.login(body, res);
   }
 
+  @Get("/")
+  @Authenticate("jwt")
+  get( @Req() req: Req, @Res() res: Res, @QueryParams("filter") filter?: string) {
+    return res.status(200).json({success: true, data: filter ? this.usersService.find(filter) : this.usersService.find()})
+  }
+
+  @Get("/profile")
+  @Authenticate("jwt")
+  getProfile( @Req() req: Req, @Res() res: Res, @QueryParams("filter") filter?: string) {
+    return res.status(200).json({success: true, data: req.user})
+  }
+
   @Put("/")
-  put(@BodyParams() body: any,@Req() req: Req, @Res() res: Res) {
-    return this.usersService.update(req, body, res);
+  @Authenticate("jwt")
+  put(@Req() req: Req, @Res() res: Res, @BodyParams() body: any, @PathParams("id") id: string) {
+    this.usersService.update(req, res, body);
+    return res.status(200).json({success: true})
   }
 
   @Delete("/")
