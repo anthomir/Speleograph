@@ -49,7 +49,7 @@ const rootDir = __dirname;
       extended: true
     }),
     session({
-      secret: "keyboard cat",
+      secret: String(process.env.SECRET),
       resave: false,
       saveUninitialized: true,
       cookie: {secure: true}
