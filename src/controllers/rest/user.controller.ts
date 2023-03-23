@@ -21,37 +21,36 @@ export class UserController {
   private usersService: UserService;
 
   @Post("/register")
-  post(@Req() req: Req, @Res() res: Res,  @BodyParams() @UseJoiValidation(UserSchema) body: User) {
-      return this.usersService.create(body, res);
+  async post(@Req() req: Req, @Res() res: Res,  @BodyParams() @UseJoiValidation(UserSchema) body: User) {
+      return await this.usersService.create(body, res);
   }
 
   @Post("/login")
-  login(@Req() req: Req, @Res() res: Res, @BodyParams() body: any) {
-    return this.usersService.login(body, res);
+  async login(@Req() req: Req, @Res() res: Res, @BodyParams() body: any) {
+    return await this.usersService.login(body, res);
   }
 
   @Get("/")
   @Authenticate("jwt")
-  get( @Req() req: Req, @Res() res: Res, @QueryParams("filter") filter?: string) {
-    return res.status(200).json({success: true, data: filter ? this.usersService.find(filter) : this.usersService.find()})
+  async get( @Req() req: Req, @Res() res: Res, @QueryParams("filter") filter?: string) {
+    return res.status(200).json({success: true, data: filter ? await this.usersService.find(filter) : await this.usersService.find()})
   }
 
   @Get("/profile")
   @Authenticate("jwt")
-  getProfile( @Req() req: Req, @Res() res: Res) {
+  async getProfile( @Req() req: Req, @Res() res: Res) {
     return res.status(200).json({success: true, data: req.user})
   }
 
   @Put("/")
   @Authenticate("jwt")
-  put(@Req() req: Req, @Res() res: Res, @BodyParams() body: any, @PathParams("id") id: string) {
-    this.usersService.update(req, res, body);
-    return res.status(200).json({success: true})
+  async put(@Req() req: Req, @Res() res: Res, @BodyParams() body: any, @PathParams("id") id: string) {
+    return await this.usersService.update(req, res, body);
   }
 
   @Delete("/")
   @Authenticate("jwt")
-  delete(@Req() req: Req, @Res() res: Res) {
-    return this.usersService.delete(req, res);
+  async delete(@Req() req: Req, @Res() res: Res) {
+    return await this.usersService.delete(req, res);
   }
 }

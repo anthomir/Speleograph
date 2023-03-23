@@ -2,6 +2,7 @@ import { Inject, Req, Res, Service } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
 import axios from "axios";
 import { CaveMetadata } from "src/models/CaveMetadata";
+import fs from "fs"
 
 @Service()
 export class CaveService {
@@ -59,5 +60,19 @@ export class CaveService {
     } catch(err){
 
     }
+  }
+
+  async postFile(req: Req, res: Res, file: any){
+    if(!file)
+      res.status(400).json({success: false, err: "File should be of type .CSV"})
+    const filename = file.filename;
+    const mimetype = file.mimetype.substring(file.mimetype.indexOf("/")+1);
+
+    fs.rename(`./public/uploads/${filename}`, `./public/uploads/${filename}.${mimetype}`, function(err) {
+        if ( err ) 
+            return res.status(500).json({success: false, err: ""})
+    });
+
+    return res.status(200).json({success: false, data: {filename: `${filename}.${mimetype}`}})
   }
 }

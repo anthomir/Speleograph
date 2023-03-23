@@ -11,7 +11,8 @@ export class UserService {
   private User: MongooseModel<User>;
 
   async find(filter?: any): Promise<User[] | null> {
-    return filter ? await this.User.find(filter) : this.User.find();
+    let data = filter ? await this.User.find(filter) : await this.User.find();
+    return data;
   }
 
   async findById(id: string): Promise<User | null> {
@@ -36,12 +37,12 @@ export class UserService {
 
   async login(body: any, res: Res) {
     if (!body.email || !body.password) {
-      return res.status(400).json({ success: false, msg: "Bad Request" });
+      return res.status(400).json({ success: false, err: "Bad Request" });
     }
 
     let user = await this.User.findOne({ email: body.email }).select("+password").lean();
     if (!user) {
-      return res.status(404).json({ success: false, msg: "User not found" });
+      return res.status(404).json({ success: false, err: "User not found" });
     }
 
     let valid;
@@ -49,13 +50,13 @@ export class UserService {
       valid = await comparePassword(body.password, user.password);
     } catch (err) {
       valid = false;
-      return res.status(500).json({ success: false, msg: "An unexpected error occured" });
+      return res.status(500).json({ success: false, err: "An unexpected error occured" });
     }
 
     if (!valid) {
       return res
         .status(401)
-        .json({ success: false, msg: "Incorrect credentials" });
+        .json({ success: false, err: "Incorrect credentials" });
     }
 
     const token = jwt.sign(
@@ -75,8 +76,8 @@ export class UserService {
       if(!req.user)
         return res.status(404).json({success:false, err: "Unable to find user to update"})
 
-      await this.User.updateOne(req.user, { name: body.name })
-      return true;
+      const response = await this.User.updateOne(req.user, { name: body.name })
+      return res.status(200).json({success: true, data: response})
     } catch(err){
       return res.status(500).json({success: false, err: "An unexpected error occured"})
     }
@@ -85,10 +86,10 @@ export class UserService {
   async delete(req: Req, res: Res): Promise<User | any> {
     try{
       if (!req.user) {
-        return res.status(404).json({ success: false, msg: "Not Found" });
-      }
-    return await this.User.deleteOne(req.user);
-
+      return res.status(404).json({ success: false, err: "Not Found" });
+    }
+    const response = await this.User.deleteOne(req.user);
+    return res.status(200).json({ success: true, data: response })
   } catch(err){
     return res.status(500).json({success: false, err: "An unexpected error occured"})
   }

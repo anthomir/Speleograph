@@ -9,7 +9,6 @@ import { Authenticate, Authorize } from "@tsed/passport";
 import { MulterOptions, MultipartFile, PlatformMulterFile, Req, Res } from "@tsed/common";
 import { CaveService } from "../../services/cave/cave.service";
 import { CaveMetadata } from "../../models/CaveMetadata";
-import fs from "fs"
 import path from "path";
 
 @Controller("/cave")
@@ -43,17 +42,10 @@ export class CaveController {
     }
   }})
   uploadFile(@MultipartFile("file") file: PlatformMulterFile, @Req() req: Req, @Res() res : Res ) {
-    if(!file)
-        res.status(400).json({success: false, err: "File should be of type .CSV"})
-    const filename = file.filename;
-    const mimetype = file.mimetype.substring(file.mimetype.indexOf("/")+1);
 
-    fs.rename(`./public/uploads/${filename}`, `./public/uploads/${filename}.${mimetype}`, function(err) {
-        if ( err ) 
-            return res.status(500).json({success: false, err: ""})
-    });
+    return this.caveService.postFile(req,res, file);
 
-    return res.status(200).json({success: false, data: {filename: `${filename}.${mimetype}`}})
+
   }
 }
 
