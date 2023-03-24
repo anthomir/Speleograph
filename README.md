@@ -31,23 +31,10 @@ docker compose build
 docker compose up
 ```
 
-## Barrelsby
 
-This project uses [barrelsby](https://www.npmjs.com/package/barrelsby) to generate index files to import the controllers.
+## Documentation
 
-Edit `.barreslby.json` to customize it:
-
-```json
-{
-  "directory": [
-    "./src/controllers/rest",
-    "./src/controllers/pages"
-  ],
-  "exclude": [
-    "__mock__",
-    "__mocks__",
-    ".spec.ts"
-  ],
-  "delete": true
-}
 ```
+# https://documenter.getpostman.com/view/19206411/2s93RMWFkz#57558f97-ccef-4642-ac06-4f921358b8e2
+```
+

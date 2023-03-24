@@ -8,6 +8,9 @@ export class User {
   @ObjectID("_id")
   _id: string;
 
+  @Required().Error("license is Required")
+  license: string;
+
   @Required().Error("Name is Required")
   name: string;
 

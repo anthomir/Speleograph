@@ -4,8 +4,6 @@ import {
   HeaderParams,
   PathParams,
   QueryParams,
-  UsePipe,
-  UseValidation,
 } from "@tsed/platform-params";
 import { Get, Post, Put, Delete, Security, Header, Returns } from "@tsed/schema";
 import { User } from "src/models/User";
@@ -21,7 +19,7 @@ export class UserController {
   private usersService: UserService;
 
   @Post("/register")
-  async post(@Req() req: Req, @Res() res: Res,  @BodyParams() @UseJoiValidation(UserSchema) body: User) {
+  async post(@Req() req: Req, @Res() res: Res, @BodyParams() @UseJoiValidation(UserSchema) body: User) {
       return await this.usersService.create(body, res);
   }
 
