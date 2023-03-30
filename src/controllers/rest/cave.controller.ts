@@ -42,10 +42,7 @@ export class CaveController {
     }
   }})
   uploadFile(@MultipartFile("file") file: PlatformMulterFile, @Req() req: Req, @Res() res : Res ) {
-
     return this.caveService.postFile(req,res, file);
-
-
   }
 }
 
