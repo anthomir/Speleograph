@@ -29,7 +29,7 @@ export class SensorService {
   }
 
   // Only Admin
-  async delete(req : Req, res: Res,filter: any){
+  async delete(req : Req, res: Res, filter: any){
     try{
         return res.status(200).json({success: true, data: await this.Sensor.deleteMany(filter)  })
     } catch (err){

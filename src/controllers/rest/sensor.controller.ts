@@ -1,14 +1,11 @@
 import { Controller, Inject } from "@tsed/di";
 import {
   BodyParams,
-  HeaderParams,
-  PathParams,
   QueryParams,
 } from "@tsed/platform-params";
-import { Get, Post, Put, Delete, Security, Header, Returns } from "@tsed/schema";
-import { Authenticate, Authorize } from "@tsed/passport";
+import { Get, Post,  Delete } from "@tsed/schema";
+import { Authenticate} from "@tsed/passport";
 import { Req, Res } from "@tsed/common";
-import { ObservationService } from "src/services/observation/observation.service";
 import { Sensor } from "src/models/Sensor";
 import { SensorService } from "src/services/sensor/sensor.service";
 

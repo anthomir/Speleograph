@@ -78,19 +78,6 @@ export class CaveService {
         if ( err ) 
             return res.status(500).json({success: false, err: ""})
     });
-
-    let results : any= []
-    fs.createReadStream(`./public/uploads/${filename}.${mimetype}`).pipe(csv(['index', 'serialNo', 'number', 'year', 'month', 'day', 'minute', 'second', 'i', 'j', 'k', 'l', 'm']))
-      .on("data", (data)=>{
-        results.push(data);
-      })
-      .on("end", async () => {
-        await this.Observation.insertMany(results)
-        
-        // for(const result of results){
-        //   console.log(`hello`)
-        // }
-      })
-    return res.status(200).json({success: false, data: {filename: `${filename}.${mimetype}`}})
+    return res.status(200).json({success: false, data: {fileUrl: `${process.env.DEVELOPMENT_URL}/${filename}.${mimetype}`}})
   }
 }

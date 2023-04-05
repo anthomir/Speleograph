@@ -21,6 +21,14 @@ const rootDir = __dirname;
   acceptMimes: ["application/json"],
   httpPort: process.env.PORT || 8083,
   httpsPort: false, // CHANGE
+  statics: {
+    "/": [
+      {
+        root: `./public`,
+        hook: "$beforeRoutesInit" 
+      }
+    ]
+  },
   componentsScan: [
     `${rootDir}/services/**/**.ts`,
     `${rootDir}/protocols/**.ts`,
