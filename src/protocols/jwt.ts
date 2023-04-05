@@ -27,7 +27,6 @@ export class JwtProtocol implements OnVerify, OnInstall {
   }
 
   $onInstall(strategy: Strategy): void {
-    console.log("Test")
   }
 }
 

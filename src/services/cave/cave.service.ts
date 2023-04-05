@@ -3,14 +3,9 @@ import { MongooseModel } from "@tsed/mongoose";
 import axios from "axios";
 import { CaveMetadata } from "src/models/CaveMetadata";
 import fs from "fs"
-import csv from 'csv-parser'
-import { Observation } from "src/models/Observation";
 
 @Service()
 export class CaveService {
-  @Inject(Observation)
-  private Observation: MongooseModel<Observation>;
-
   @Inject(CaveMetadata)
   private CaveMetadata: MongooseModel<CaveMetadata>;
 
@@ -26,7 +21,7 @@ export class CaveService {
   async findById(@Req() req : Req, @Res() res: Res, id: string) {
     try{
       let response = await axios({
-        method: 'get',
+        method: 'GET',
         url: `${process.env.GROTTOCAVE_API}/caves/${id}`,
       });
 
@@ -35,6 +30,15 @@ export class CaveService {
       }
 
       return res.status(200).json({success: true, data: response.data})
+    } catch(err){
+      return res.status(500).json({success: true, err: err})
+    }
+  }
+
+  async searchByNameAutoFill(@Req() req : Req, @Res() res: Res) {
+    try{
+
+      return res.status(200).json({success: true, data: "arrayNames"})
     } catch(err){
       return res.status(500).json({success: true, err: err})
     }

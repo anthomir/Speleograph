@@ -17,18 +17,18 @@ export class CaveController {
   private caveService: CaveService;
 
   @Post("/")
-  post(@Req() req: Req, @Res() res: Res, @BodyParams() body: CaveMetadata) {
-      return this.caveService.create(req, res, body);
+  async post(@Req() req: Req, @Res() res: Res, @BodyParams() body: CaveMetadata) {
+      return await this.caveService.create(req, res, body);
   }
 
-  @Get("/:id")
-  getById(@Req() req: Req, @Res() res: Res, @PathParams("id") id: string) {
-      return this.caveService.findById(req, res, id);
+  @Get("/search/:id")
+  async getById(@Req() req: Req, @Res() res: Res, @PathParams("id") id: string) {
+      return await this.caveService.findById(req, res, id);
   }
 
   @Get("/search")
-  search(@Req() req: Req, @Res() res: Res, @BodyParams() body: any) {
-      return this.caveService.findById(req, res, body);
+  async search(@Req() req: Req, @Res() res: Res) {
+    return await this.caveService.searchByNameAutoFill(req, res);
   }
 
   @Post("/upload")
@@ -41,8 +41,8 @@ export class CaveController {
         cb(null, true)
     }
   }})
-  uploadFile(@MultipartFile("file") file: PlatformMulterFile, @Req() req: Req, @Res() res : Res ) {
-    return this.caveService.postFile(req,res, file);
+  async uploadFile(@MultipartFile("file") file: PlatformMulterFile, @Req() req: Req, @Res() res : Res ) {
+    return await this.caveService.postFile(req,res, file);
   }
 }
 

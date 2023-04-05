@@ -11,6 +11,7 @@ import { SensorService } from "src/services/sensor/sensor.service";
 
 @Controller("/sensor")
 export class SensorController {
+  
   @Inject(SensorService)
   private sensorService: SensorService;
 

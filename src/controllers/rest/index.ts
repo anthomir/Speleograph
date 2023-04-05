@@ -3,6 +3,5 @@
  */
 
 export * from "./cave.controller";
-export * from "./observations.controller";
 export * from "./sensor.controller";
 export * from "./user.controller";

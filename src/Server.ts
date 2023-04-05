@@ -32,7 +32,8 @@ const rootDir = __dirname;
   componentsScan: [
     `${rootDir}/services/**/**.ts`,
     `${rootDir}/protocols/**.ts`,
-    `${rootDir}/validation/**.ts`
+    `${rootDir}/validation/**.ts`,
+    `${rootDir}/controllers/**.ts`
   ],
   mount: {
     "/api": [
