@@ -85,7 +85,7 @@ export class CaveService {
         results.push(data);
       })
       .on("end", async () => {
-        // await this.Observation.insertMany(results)
+        await this.Observation.insertMany(results)
         
         // for(const result of results){
         //   console.log(`hello`)

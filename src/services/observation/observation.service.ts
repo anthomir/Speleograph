@@ -11,9 +11,8 @@ export class ObservationService {
   @Inject(Observation)
   private Observation: MongooseModel<Observation>;
 
-
   async find(filter?: any): Promise<Observation[] | null> {
-    let data = filter ? await this.Observation.find(filter) : await this.Observation.find();
+    let data = filter ? await this.Observation.find(JSON.parse(filter)).select("-_id-index-serialNo") : await this.Observation.find().select("-_id-index-serialNo");
     return data;
   }
 

@@ -7,43 +7,20 @@ export class Observation {
   @ObjectID("_id")
   _id: string;
 
-  @Nullable(String)
-  index: string;
+  @Select(true)
+  @Nullable(false)
+  userId: string;
 
-  @Nullable(String)
-  serialNo: string;
+  @Select(true)
+  @Nullable(false)
+  startDate: Date;
 
-  @Nullable(String)
-  number: string;
+  @Select(true)
+  @Nullable(false)
+  endDate: Date;
 
-  @Nullable(String)
-  year: string;
-
-  @Nullable(String)
-  month: string;
-
-  @Nullable(String)
-  day: string;
-
-  @Nullable(String)
-  minute: string;
-
-  @Nullable(String)
-  second: string;
-
-  @Nullable(String)
-  i: string;
-
-  @Nullable(String)
-  j: string;
-
-  @Nullable(String)
-  k: string;
-
-  @Nullable(String)
-  l: string;
-
-  @Nullable(String)
-  m: string;
+  @Select(true)
+  fileUrl: string;
 
 }
+
