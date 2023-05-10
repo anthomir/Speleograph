@@ -46,10 +46,10 @@ export class CaveService {
 
   async create(req: Req, res: Res, caveMetadata: CaveMetadata) {
     try{
-
-
+      let cave = await this.CaveMetadata.create(caveMetadata);
+      return res.status(200).json({success: true, data: cave})
     } catch(err){
-
+      return res.status(500).json({success: true, err: err})
     }
   }
 
