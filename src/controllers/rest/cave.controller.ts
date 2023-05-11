@@ -16,16 +16,19 @@ export class CaveController {
   @Inject(CaveService)
   private caveService: CaveService;
 
+  @Authenticate("jwt")
   @Post("/")
-  async post(@Req() req: Req, @Res() res: Res, @BodyParams() body: CaveMetadata) {
+  async post(@Req() req: Req, @Res() res: Res, @BodyParams() body: any) {
       return await this.caveService.create(req, res, body);
   }
 
+  @Authenticate("jwt")
   @Get("/search/:id")
   async getById(@Req() req: Req, @Res() res: Res, @PathParams("id") id: string) {
       return await this.caveService.findById(req, res, id);
   }
 
+  @Authenticate("jwt")
   @Get("/search")
   async search(@Req() req: Req, @Res() res: Res) {
     return await this.caveService.searchByNameAutoFill(req, res);

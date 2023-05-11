@@ -9,7 +9,6 @@ export class Sensor {
   _id: string;
 
   @Select(true)
-  @Enum(SensorType)
   name: string;
 
   @Select(true)

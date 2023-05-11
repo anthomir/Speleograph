@@ -21,7 +21,7 @@ export class SensorController {
   }
 
   @Post("/")
-  async post( @Req() req: Req, @Res() res: Res, @BodyParams() body?: Sensor) {
+  async post( @Req() req: Req, @Res() res: Res, @BodyParams() body?: any) {
     return res.status(200).json({success: true, data: await this.sensorService.post(req, res, body)})
   }
 

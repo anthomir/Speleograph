@@ -25,4 +25,7 @@ export class User {
   @Required().Error("Password is Required")
   @Select(false)
   password: string;
+
+  @Default(Date.now)
+  createdAt: Date = new Date();
 }

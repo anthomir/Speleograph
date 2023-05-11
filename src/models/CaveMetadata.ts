@@ -19,7 +19,7 @@ export class CaveMetadata {
   caveName: string;
 
   @Required()
-  fileId: string;
+  filePath: string;
 
   @Required()
   @Ref(() => Sensor)

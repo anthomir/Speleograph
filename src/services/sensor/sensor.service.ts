@@ -34,7 +34,13 @@ export class SensorService implements OnInit {
   // Only Admin
   async delete(req : Req, res: Res, filter: any){
     try{
-        return res.status(200).json({success: true, data: await this.Sensor.deleteMany(filter)  })
+      let user : any = req.user;
+
+      if(!user || user.role != user.Admin){
+        return res.status(200).json({success: false, err: "Access denied, This is only available for administrators" })
+      }
+
+      return res.status(200).json({success: true, data: await this.Sensor.deleteOne(JSON.parse(filter))  })
     } catch (err){
         return res.status(200).json({success: false, err: err })
     }

@@ -12,7 +12,6 @@ export class CaveService {
   async find(filter?: any) {
     try{
 
-
     } catch(err){
 
     }
@@ -37,15 +36,20 @@ export class CaveService {
 
   async searchByNameAutoFill(@Req() req : Req, @Res() res: Res) {
     try{
-
       return res.status(200).json({success: true, data: "arrayNames"})
     } catch(err){
       return res.status(500).json({success: true, err: err})
     }
   }
 
-  async create(req: Req, res: Res, caveMetadata: CaveMetadata) {
+  async create(req: Req, res: Res, caveMetadata: any) {
     try{
+      let user : any = req.user
+      if(!user){
+        return res.status(500).json({success: true, err: "unauthorized"})
+      }
+      caveMetadata.userId = user._id;
+
       let cave = await this.CaveMetadata.create(caveMetadata);
       return res.status(200).json({success: true, data: cave})
     } catch(err){

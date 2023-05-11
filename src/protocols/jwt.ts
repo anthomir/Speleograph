@@ -17,12 +17,11 @@ export class JwtProtocol implements OnVerify, OnInstall {
   usersService: UserService;
 
   async $onVerify(@Req() req: Req, @Arg(0) jwtPayload: any, @Res() res: Res) {
-    const user = await this.usersService.findById(jwtPayload.sub);
+    const user : any = await this.usersService.findById(jwtPayload.sub);
 
     if (!user) {
       return res.status(401).json({success: false, err: "unauthorized"})
     }
-    req.user = user;
     return user;
   }
 

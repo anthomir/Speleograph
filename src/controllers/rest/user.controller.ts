@@ -30,8 +30,8 @@ export class UserController {
 
   @Get("/")
   @Authenticate("jwt")
-  async get( @Req() req: Req, @Res() res: Res, @QueryParams("filter") filter?: string) {
-    return res.status(200).json({success: true, data: filter ? await this.usersService.find(filter) : await this.usersService.find()})
+  async get( @Req() req: Req, @Res() res: Res, @QueryParams("filter") filter?: string, @QueryParams("take") take?: string, @QueryParams("skip") skip?: string, @QueryParams("sortBy") sortBy?: string) {
+    return res.status(200).json({success: true, data: filter ? await this.usersService.find(filter, take,skip,sortBy) : await this.usersService.find({}, take, skip, sortBy)})
   }
 
   @Get("/profile")

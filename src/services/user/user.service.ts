@@ -10,8 +10,8 @@ export class UserService {
   @Inject(User)
   private User: MongooseModel<User>;
 
-  async find(filter?: any): Promise<User[] | null> {
-    let data = filter ? await this.User.find(filter) : await this.User.find();
+  async find(filter?: any, take?: string, skip?: string, sortBy?: string): Promise<User[] | null> {
+    let data = filter ? await this.User.find(filter).limit(take ? parseInt(take): 100).skip(skip ? parseInt(skip) : 0).sort(sortBy ? sortBy : undefined) : await this.User.find();
     return data;
   }
 
