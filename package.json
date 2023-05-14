@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@hapi/joi": "^17.1.1",
+    "@sendgrid/mail": "^7.7.0",
     "@tsed/ajv": "^7.18.2",
     "@tsed/common": "^7.18.2",
     "@tsed/core": "^7.18.2",
@@ -36,6 +37,7 @@
     "@types/express-session": "^1.17.6",
     "@types/hapi__joi": "^17.1.9",
     "@types/jsonwebtoken": "^9.0.1",
+    "@types/otp-generator": "^4.0.0",
     "@types/passport-jwt": "^3.0.8",
     "ajv": "^8.12.0",
     "ajv-errors": "^3.0.0",
@@ -58,6 +60,7 @@
     "jsonwebtoken": "^9.0.0",
     "method-override": "^3.0.0",
     "mongoose": "^7.0.1",
+    "otp-generator": "^4.0.1",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1"
   },

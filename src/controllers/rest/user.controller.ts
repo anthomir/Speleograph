@@ -51,4 +51,13 @@ export class UserController {
   async delete(@Req() req: Req, @Res() res: Res) {
     return await this.usersService.delete(req, res);
   }
+  @Post("/forgot-password")
+  async forgotPassword(@Req() req: Req, @Res() res: Res, @BodyParams() body: any) {
+    return await this.usersService.forgetPasswordSendMail(req, res, body);
+  }
+
+  @Post("/reset-password")
+  async resetPassword(@Req() req: Req, @Res() res: Res, @BodyParams() body: any) {
+    // return await this.usersService.resetPassword(req, res, body);
+  }
 }

@@ -4,6 +4,9 @@ import { $log } from "@tsed/logger";
 import { User } from "../../models/User";
 import jwt from "jsonwebtoken";
 import { comparePassword, cryptPassword } from "src/utils/compare_password";
+import sgMail from '@sendgrid/mail'
+import otpGenerator from "otp-generator"
+sgMail.setApiKey(String(process.env.SENDGRID_API))
 
 @Service()
 export class UserService {
@@ -93,5 +96,64 @@ export class UserService {
   } catch(err){
     return res.status(500).json({success: false, err: "An unexpected error occured"})
   }
+  }
+
+  async forgetPasswordSendMail(req: Req, res: Res, body: any){
+    try{
+      if(!body.email){
+        return res.status(500).json({success: false, err: "Email is required"})
+      }
+      let user = await this.User.findOne({email: body.email}).lean()
+
+      if(!user){
+        return res.status(500).json({success: false, err: "User not found"})
+      }
+
+      let otp = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false });
+
+      user.emailOTP = otp;
+
+      const mailOptions = {
+        to: body.email,
+        from: String(process.env.EMAIL),
+        subject: "Email verification",
+        html: `Your verification code is: ${otp} `
+      }
+
+      await sgMail.send(mailOptions, false, (err, result): any => {
+        if (err) 
+          return res.status(500).json({ success: false, err: err.message });
+        else
+          return res.status(200).json({ success: true, message: `A verification email has been sent to ${body.email}` });
+    });
+
+  } catch(err){
+    return res.status(500).json({success: false, err: "An unexpected error occured"})
+  }
+
+}
+  async resetPasssword(req: Req, res: Res, body: any) {
+    try{
+      if(!body.otp || !body.newPassword){
+        return res.status(400).json({success: false, err: "Bad Request"})
+      }
+
+      let user = await this.User.findOne({emailOTP: body.otp});
+
+      if(!user){
+        return res.status(404).json({success: false, err: "User not found"})
+      }
+
+      if(body.otp != user.emailOTP){
+        const passwordEncrypted = await cryptPassword(body.newPassword);
+        user.password = passwordEncrypted;
+        user.emailOTP = "";
+        user.save();
+      }
+
+      return res.status(200).json({ success: true, data: "New password has been set"})
+    } catch(err){
+      return res.status(500).json({success: false, err: "An unexpected error occured"})
+    }
   }
 }

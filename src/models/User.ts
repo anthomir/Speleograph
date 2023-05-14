@@ -1,4 +1,4 @@
-import { Email, Required, Default, ErrorMsg } from "@tsed/schema";
+import { Email, Required, Default, ErrorMsg, Nullable} from "@tsed/schema";
 import { Model, ObjectID, Select, Unique } from "@tsed/mongoose";
 import { Role } from "./Enum";
 
@@ -11,8 +11,11 @@ export class User {
   @Required().Error("license is Required")
   license: string;
 
-  @Required().Error("Name is Required")
-  name: string;
+  @Required().Error("First Name is Required")
+  firstName: string;
+
+  @Required().Error("Last Name is Required")
+  lastName: string;
 
   @Required().Error("Email is Required")
   @Email()
@@ -28,4 +31,8 @@ export class User {
 
   @Default(Date.now)
   createdAt: Date = new Date();
+
+  @Nullable(String)
+  @Default("")
+  emailOTP : string;
 }
