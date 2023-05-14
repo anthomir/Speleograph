@@ -16,7 +16,7 @@ export class SensorController {
 
   @Get("/")
   async get( @Req() req: Req, @Res() res: Res, @QueryParams("filter") filter?: string) {
-    return await this.sensorService.find(req, res);
+    return await this.sensorService.find(req, res, filter);
   }
 
   @Post("/")

@@ -11,9 +11,9 @@ export class SensorService implements OnInit {
   private Sensor: MongooseModel<Sensor>;
 
   //JWT
-  async find(req : Req, res: Res) {
+  async find(req : Req, res: Res, filter?: any) {
     try{
-        return res.status(200).json({success: true, data: await this.Sensor.find() })
+        return res.status(200).json({success: true, data: filter ? await this.Sensor.find(JSON.parse(filter)) : this.Sensor.find() })
     } catch (err){
         return res.status(500).json({success: false, err: err })
     }
@@ -55,9 +55,9 @@ export class SensorService implements OnInit {
         let ctdArray: Array<string> = new Array("Date-Time", "Pressure(cmH20)", "Temperature(C)", "Conductivity");
         let pluvioArray : Array<string> = new Array("Date-Time", "RainMeter");
 
-        await this.Sensor.create({name: SensorType.ReefNet, properties: reefArray})
-        await this.Sensor.create({name: SensorType.CTDSensor, properties: ctdArray})
-        await this.Sensor.create({name: SensorType.PluvioMeter, properties: pluvioArray})
+        await this.Sensor.create({name: SensorType.ReefNet, properties: reefArray, isDefault: true})
+        await this.Sensor.create({name: SensorType.CTDSensor, properties: ctdArray, isDefault: true})
+        await this.Sensor.create({name: SensorType.PluvioMeter, properties: pluvioArray, isDefault: true})
 
         console.log("Default Sensor Creation Successful");
         return;
