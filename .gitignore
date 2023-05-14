@@ -49,9 +49,6 @@ test/**/*.js.map
 .idea
 
 # Project
-/public
 /dist
 
-#env
-.env.local
-.env.development
+
