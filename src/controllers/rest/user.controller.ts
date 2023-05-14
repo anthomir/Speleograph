@@ -6,7 +6,7 @@ import {
   QueryParams,
 } from "@tsed/platform-params";
 import { Get, Post, Put, Delete, Security, Header, Returns } from "@tsed/schema";
-import { User } from "src/models/User";
+import { User } from "../../models/User";
 import { UserService } from "../../services/user/user.service";
 import { Authenticate, Authorize } from "@tsed/passport";
 import { Req, Res } from "@tsed/common";

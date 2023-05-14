@@ -1,19 +1,4 @@
-###############################################################################
-###############################################################################
-##                      _______ _____ ______ _____                           ##
-##                     |__   __/ ____|  ____|  __ \                          ##
-##                        | | | (___ | |__  | |  | |                         ##
-##                        | |  \___ \|  __| | |  | |                         ##
-##                        | |  ____) | |____| |__| |                         ##
-##                        |_| |_____/|______|_____/                          ##
-##                                                                           ##
-## description     : Dockerfile for TsED Application                         ##
-## author          : TsED team                                               ##
-## date            : 2022-03-05                                              ##
-## version         : 2.0                                                     ##
-##                                                                           ##
-###############################################################################
-###############################################################################
+
 ARG NODE_VERSION=16.13.1
 
 FROM node:${NODE_VERSION}-alpine as build
@@ -25,8 +10,8 @@ RUN yarn install --pure-lockfile
 
 
 COPY ./src ./src
-
-
+COPY ./dist ./dist
+COPY ./public ./public
 
 FROM node:${NODE_VERSION}-alpine as runtime
 ENV WORKDIR /opt
@@ -42,8 +27,8 @@ RUN yarn install --pure-lockfile --production
 COPY ./views ./views
 COPY processes.config.js .
 
-EXPOSE 8081
-ENV PORT 8081
+EXPOSE 8083
+ENV PORT 8083
 ENV NODE_ENV production
 
 CMD ["pm2-runtime", "start", "processes.config.js", "--env", "production"]

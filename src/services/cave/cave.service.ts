@@ -1,7 +1,7 @@
 import { Inject, Req, Res, Service } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
 import axios from "axios";
-import { CaveMetadata } from "src/models/CaveMetadata";
+import { CaveMetadata } from "../../models/CaveMetadata";
 import fs from "fs"
 
 @Service()

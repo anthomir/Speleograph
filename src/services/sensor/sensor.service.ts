@@ -1,8 +1,8 @@
 import { Inject, OnInit, OnRoutesInit, Req, Res, Service } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
 import jwt from "jsonwebtoken";
-import { Sensor } from "src/models/Sensor";
-import { SensorType } from "src/models/Enum";
+import { Sensor } from "../../models/Sensor";
+import { SensorType } from "../../models/Enum";
 
 @Service()
 export class SensorService implements OnInit {

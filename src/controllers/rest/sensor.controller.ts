@@ -6,8 +6,7 @@ import {
 import { Get, Post,  Delete } from "@tsed/schema";
 import { Authenticate} from "@tsed/passport";
 import { Req, Res } from "@tsed/common";
-import { Sensor } from "src/models/Sensor";
-import { SensorService } from "src/services/sensor/sensor.service";
+import { SensorService } from "../../services/sensor/sensor.service";
 
 @Controller("/sensor")
 export class SensorController {

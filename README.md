@@ -1,20 +1,18 @@
 <div align="center">
-  <h1>Speleograph - Eurecom - Anthony El-Mir</h1>
+  <h1>Speleograph Backend - Eurecom - Anthony El-Mir</h1>
   <br />
 </div>
 
-> An awesome project based on Ts.ED framework
-
 ## Getting started
 
-> **Important!** Ts.ED requires Node >= 14, Express >= 4 and TypeScript >= 4.
+> **Important!** requires Node >= 14, Express >= 4 and TypeScript >= 4.
 
 ```batch
 # install dependencies
-$  install
+$  yarn
 
 # serve
-$  start
+$  yarn start
 
 # build for production
 $  build
@@ -23,12 +21,17 @@ $  start:prod
 
 ## Docker
 
+> By Default Port :: 8083
+
 ```
+# Make sure The project is built before using Docker
+$ yarn build
+
 # build docker image
-docker compose build
+$ docker compose build
 
 # start docker image
-docker compose up
+$ docker compose up
 ```
 
 

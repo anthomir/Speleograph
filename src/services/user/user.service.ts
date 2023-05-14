@@ -3,7 +3,7 @@ import { MongooseModel } from "@tsed/mongoose";
 import { $log } from "@tsed/logger";
 import { User } from "../../models/User";
 import jwt from "jsonwebtoken";
-import { comparePassword, cryptPassword } from "src/utils/compare_password";
+import { comparePassword, cryptPassword } from "../../utils/compare_password";
 import sgMail from '@sendgrid/mail'
 import otpGenerator from "otp-generator"
 sgMail.setApiKey(String(process.env.SENDGRID_API))
