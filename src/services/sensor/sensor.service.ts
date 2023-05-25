@@ -10,19 +10,19 @@ export class SensorService implements OnInit {
   @Inject(Sensor)
   private Sensor: MongooseModel<Sensor>;
 
-  //JWT
+  // JWT
   async find(req : Req, res: Res, filter?: any) {
     try{
-        return res.status(200).json({success: true, data: filter ? await this.Sensor.find(JSON.parse(filter)) : this.Sensor.find() })
+        return res.status(200).json({success: true, data: filter ? await this.Sensor.find(JSON.parse(filter)) : await this.Sensor.find() })
     } catch (err){
         return res.status(500).json({success: false, err: err })
     }
   }
 
-  //Anyone
+  // JWT
   async post(req : Req, res: Res, body: any){
     try{
-        return res.status(201).json({success: true, data: await this.Sensor.create(body) })
+        return res.status(201).json({success: true, data: await this.Sensor.create({name: body.name, properties: body.properties, isDefault: false, createdBy: req.user}) })
     } catch (err){
         return res.status(500).json({success: false, err: err })
     }

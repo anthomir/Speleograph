@@ -31,8 +31,9 @@ export class UserService {
 
       if(userByEmail)
         return res.status(409).json({success: false, err: "Account with this email already exists"})
-        
-      return await this.User.create(userToCreate);
+        let userCreated = await this.User.create(userToCreate)
+
+      return res.status(201).json({success: true, data: userCreated})
     } catch(err){
       return res.status(500).json({success: false, err: "Internal Server Error"})
     }

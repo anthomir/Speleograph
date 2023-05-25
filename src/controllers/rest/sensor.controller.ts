@@ -15,11 +15,13 @@ export class SensorController {
   private sensorService: SensorService;
 
   @Get("/")
+  @Authenticate("jwt")
   async get( @Req() req: Req, @Res() res: Res, @QueryParams("filter") filter?: string) {
     return await this.sensorService.find(req, res, filter);
   }
 
   @Post("/")
+  @Authenticate("jwt")
   async post( @Req() req: Req, @Res() res: Res, @BodyParams() body?: any) {
     return res.status(200).json({success: true, data: await this.sensorService.post(req, res, body)})
   }

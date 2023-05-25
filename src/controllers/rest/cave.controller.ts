@@ -10,6 +10,7 @@ import { MulterOptions, MultipartFile, PlatformMulterFile, Req, Res } from "@tse
 import { CaveService } from "../../services/cave/cave.service";
 import { CaveMetadata } from "../../models/CaveMetadata";
 import path from "path";
+import { Query } from "mongoose";
 
 @Controller("/cave")
 export class CaveController {
@@ -30,8 +31,8 @@ export class CaveController {
 
   @Authenticate("jwt")
   @Get("/search")
-  async search(@Req() req: Req, @Res() res: Res) {
-    return await this.caveService.searchByNameAutoFill(req, res);
+  async search(@Req() req: Req, @Res() res: Res, @QueryParams("name") name : string) {
+    return await this.caveService.searchByNameAutoFill(req, res, name);
   }
 
   @Post("/upload")
