@@ -1,10 +1,10 @@
 import { Email, Required, Default, ErrorMsg, Nullable, Enum  } from "@tsed/schema";
 import { Model, ObjectID, Ref, Select, Unique } from "@tsed/mongoose";
+import { SensorTypeEnum } from "./Enum";
 import { User } from "./User";
-import { SensorType } from "./SensorType";
 
 @Model()
-export class Sensor {
+export class SensorType {
   @Select(true)
   @ObjectID("_id")
   _id: string;
@@ -13,12 +13,15 @@ export class Sensor {
   name: string;
 
   @Select(true)
-  @Required(true)
-  @Ref(() => SensorType)
-  sensorType: Ref<SensorType>
+  @Nullable(false)
+  properties: Array<string>;
 
   @Select(true)
-  @Required(true)
+  @Default(false)
+  isDefault: boolean
+
+  @Select(true)
+  @Required()
   @Ref(() => User)
   createdBy: Ref<User>;
 }

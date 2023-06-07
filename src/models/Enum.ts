@@ -9,7 +9,7 @@ export enum Role {
     Pending = "Pending",
   }
 
-  export enum SensorType {
+  export enum SensorTypeEnum {
     ReefNet = "ReefNet",
     CTDSensor = "CTDSensor",
     PluvioMeter = "PluvioMeter",

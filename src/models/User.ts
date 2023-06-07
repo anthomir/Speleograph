@@ -34,5 +34,6 @@ export class User {
 
   @Nullable(String)
   @Default("")
+  @Select(false)
   emailOTP : string;
 }

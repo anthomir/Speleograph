@@ -8,9 +8,7 @@ import {  Get, Post } from "@tsed/schema";
 import { Authenticate, Authorize } from "@tsed/passport";
 import { MulterOptions, MultipartFile, PlatformMulterFile, Req, Res } from "@tsed/common";
 import { CaveService } from "../../services/cave/cave.service";
-import { CaveMetadata } from "../../models/CaveMetadata";
 import path from "path";
-import { Query } from "mongoose";
 
 @Controller("/cave")
 export class CaveController {
@@ -31,8 +29,8 @@ export class CaveController {
 
   @Authenticate("jwt")
   @Get("/search")
-  async search(@Req() req: Req, @Res() res: Res, @QueryParams("name") name : string) {
-    return await this.caveService.searchByNameAutoFill(req, res, name);
+  async search(@Req() req: Req, @Res() res: Res, @QueryParams("name") name : string, @QueryParams("country") country?: string) {
+    return await this.caveService.searchByNameAutoFill(req, res, name, country);
   }
 
   @Post("/upload")

@@ -1,6 +1,7 @@
 import {CollectionOf, Email, Required, Default,Minimum,Maximum} from "@tsed/schema";
-import {Model, ObjectID, Ref} from "@tsed/mongoose";
+import {Model, ObjectID, Ref, Select} from "@tsed/mongoose";
 import { User } from "./User";
+import { SensorType } from "./SensorType";
 import { Sensor } from "./Sensor";
 
 @Model()
@@ -12,16 +13,19 @@ export class CaveMetadata {
   @Ref(() => User)
   userId: Ref<User>;
 
-  @Required()
+  @Required(true)
   caveId: string;
 
-  @Required()
-  caveName: string;
+  @Select(true)
+  beginDate: Date;
 
-  @Required()
+  @Select(true)
+  endDate: Date;
+
+  @Required(false)
   filePath: string;
 
-  @Required()
+  @Required(false)
   @Ref(() => Sensor)
   sensorId: Ref<Sensor>;
 }

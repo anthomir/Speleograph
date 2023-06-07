@@ -58,6 +58,6 @@ export class UserController {
 
   @Post("/reset-password")
   async resetPassword(@Req() req: Req, @Res() res: Res, @BodyParams() body: any) {
-    // return await this.usersService.resetPassword(req, res, body);
+    return await this.usersService.resetPassword(req, res, body);
   }
 }

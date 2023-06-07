@@ -34,7 +34,7 @@ export class CaveService {
     }
   }
 
-  async searchByNameAutoFill(@Req() req : Req, @Res() res: Res, name: string) {
+  async searchByNameAutoFill(@Req() req : Req, @Res() res: Res, name: string, country?: string) {
     try{
       let response = await axios({
         method: 'POST',
@@ -43,6 +43,7 @@ export class CaveService {
           complete: true,
           resourceType: "entrances",
           name: name,
+          country: country ? country : undefined,
         }
       });
 

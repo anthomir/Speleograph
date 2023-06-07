@@ -4,4 +4,5 @@
 
 export * from "./cave.controller";
 export * from "./sensor.controller";
+export * from "./sensorType.controller";
 export * from "./user.controller";
