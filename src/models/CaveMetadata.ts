@@ -22,7 +22,7 @@ export class CaveMetadata {
   @Select(true)
   endDate: Date;
 
-  @Required(false)
+  @Required(true)
   filePath: string;
 
   @Required(false)
