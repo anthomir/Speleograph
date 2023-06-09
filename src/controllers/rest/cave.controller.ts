@@ -16,12 +16,6 @@ export class CaveController {
   private caveService: CaveService;
 
   @Authenticate("jwt")
-  @Post("/")
-  async post(@Req() req: Req, @Res() res: Res, @BodyParams() body: any) {
-      return await this.caveService.create(req, res, body);
-  }
-
-  @Authenticate("jwt")
   @Get("/search/:id")
   async getById(@Req() req: Req, @Res() res: Res, @PathParams("id") id: string) {
       return await this.caveService.findById(req, res, id);
@@ -29,22 +23,9 @@ export class CaveController {
 
   @Authenticate("jwt")
   @Get("/search")
-  async search(@Req() req: Req, @Res() res: Res, @QueryParams("name") name : string, @QueryParams("country") country?: string) {
+  async search(@Req() req: Req, @Res() res: Res, @QueryParams("name") name?: string, @QueryParams("country") country?: string) {
     return await this.caveService.searchByNameAutoFill(req, res, name, country);
   }
 
-  @Post("/upload")
-  @MulterOptions({dest: "./public/uploads", fileFilter(req: Req, file, cb ) {
-    const extension = path.extname(file.originalname).toLowerCase();
-    const mimetype = file.mimetype;
-    if (extension !== '.csv' || mimetype !== 'text/csv') {
-        cb(null, false)
-    }else{
-        cb(null, true)
-    }
-  }})
-  async uploadFile(@MultipartFile("file") file: PlatformMulterFile, @Req() req: Req, @Res() res : Res ) {
-    return await this.caveService.postFile(req,res, file);
-  }
 }
 

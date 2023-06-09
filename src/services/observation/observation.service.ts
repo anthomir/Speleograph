@@ -5,7 +5,7 @@ import { CaveObservation } from "../../models/CaveObservation";
 import fs from "fs"
 
 @Service()
-export class CaveObervationService {
+export class CaveObservationService {
   @Inject(CaveObservation)
   private CaveObservation: MongooseModel<CaveObservation>;
 
