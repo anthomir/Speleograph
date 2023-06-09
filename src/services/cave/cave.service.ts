@@ -1,21 +1,11 @@
 import { Inject, Req, Res, Service } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
 import axios from "axios";
-import { CaveMetadata } from "../../models/CaveMetadata";
 import fs from "fs"
 
 @Service()
 export class CaveService {
-  @Inject(CaveMetadata)
-  private CaveMetadata: MongooseModel<CaveMetadata>;
 
-  async find(filter?: any) {
-    try{
-
-    } catch(err){
-
-    }
-  }
 
   async findById(@Req() req : Req, @Res() res: Res, id: string) {
     try{
@@ -34,7 +24,7 @@ export class CaveService {
     }
   }
 
-  async searchByNameAutoFill(@Req() req : Req, @Res() res: Res, name: string, country?: string) {
+  async searchByNameAutoFill(@Req() req : Req, @Res() res: Res, name?: string, country?: string) {
     try{
       let response = await axios({
         method: 'POST',
@@ -42,7 +32,7 @@ export class CaveService {
         params: {
           complete: true,
           resourceType: "entrances",
-          name: name,
+          name: name ? name : undefined,
           country: country ? country : undefined,
         }
       });
@@ -57,50 +47,4 @@ export class CaveService {
     }
   }
 
-  async create(req: Req, res: Res, caveMetadata: any) {
-    try{
-      let user : any = req.user
-      if(!user){
-        return res.status(500).json({success: true, err: "unauthorized"})
-      }
-      caveMetadata.userId = user._id;
-
-      let cave = await this.CaveMetadata.create(caveMetadata);
-      return res.status(200).json({success: true, data: cave})
-    } catch(err){
-      return res.status(500).json({success: true, err: err})
-    }
-  }
-
-  async update(req: Req, body: any, res: Res) {
-    try{
-
-
-    } catch(err){
-
-    }
-  }
-
-  async delete(req: Req, res: Res){
-    try{
-
-
-    } catch(err){
-
-    }
-  }
-
-  async postFile(req: Req, res: Res, file: any){
-    if(!file)
-      res.status(400).json({success: false, err: "File should be of type .CSV"})
-
-    const filename = file.filename;
-    const mimetype = file.mimetype.substring(file.mimetype.indexOf("/")+1);
-
-    fs.rename(`./public/uploads/${filename}`, `./public/uploads/${filename}.${mimetype}`, function(err) {
-        if ( err ) 
-            return res.status(500).json({success: false, err: ""})
-    });
-    return res.status(200).json({success: false, data: {fileUrl: `${process.env.DEVELOPMENT_URL}/${filename}.${mimetype}`}})
-  }
 }

@@ -5,7 +5,7 @@ import { SensorType } from "./SensorType";
 import { Sensor } from "./Sensor";
 
 @Model()
-export class CaveMetadata {
+export class CaveObservation {
   @ObjectID("id")
   _id: string;
 

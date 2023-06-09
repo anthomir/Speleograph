@@ -1,4 +1,4 @@
-import { Inject, Req, Res, Service } from "@tsed/common";
+import { Inject, OnInit, Req, Res, Service } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
 import { $log } from "@tsed/logger";
 import { User } from "../../models/User";
@@ -9,7 +9,7 @@ import otpGenerator from "otp-generator"
 sgMail.setApiKey(String(process.env.SENDGRID_API))
 
 @Service()
-export class UserService {
+export class UserService implements OnInit{
   @Inject(User)
   private User: MongooseModel<User>;
 
@@ -410,6 +410,18 @@ export class UserService {
       return res.status(200).json({ success: true, data: "New password has been set"})
     } catch(err){
       return res.status(500).json({success: false, err: "An unexpected error occured"})
+    }
+  }
+
+  async $onInit() {
+    try{
+        const passwordEncrypted = await cryptPassword("hello");
+        await this.User.create({firstName: "Shubhika", lastName: "Garg", email: "gargshubhika@gmail.com", license: "SG1234", password: passwordEncrypted})
+
+        return; 
+    }
+    catch (err) {
+        console.log("Error while initializing the Default sensors: "+err)
     }
   }
 }
