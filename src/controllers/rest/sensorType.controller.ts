@@ -8,7 +8,7 @@ import { Authenticate} from "@tsed/passport";
 import { Req, Res } from "@tsed/common";
 import { SensorTypeService } from "../../services/sensorType/sensorType.service";
 
-@Controller("/sensor")
+@Controller("/sensorType")
 export class SensorTypeController {
   
   @Inject(SensorTypeService)
