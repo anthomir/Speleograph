@@ -1,6 +1,7 @@
 import { Controller, Inject } from "@tsed/di";
 import {
   BodyParams,
+  PathParams,
   QueryParams,
 } from "@tsed/platform-params";
 import { Get, Post,  Delete, Put } from "@tsed/schema";
@@ -28,14 +29,14 @@ export class SensorController {
 
   @Put("/:id")
   @Authenticate("jwt")
-  async update(@Req() req: Req, @Res() res: Res, @QueryParams("id") id: string, @BodyParams() body?: any) {
+  async update(@Req() req: Req, @Res() res: Res, @PathParams("id") id: string, @BodyParams() body?: any) {
     return res.status(200).json({success: true, data: await this.sensorService.update(req, res, id, body)})
   }
 
   
   @Delete("/:id")
   @Authenticate("jwt")
-  async delete(@Req() req: Req, @Res() res: Res, @QueryParams("id") id: string) {
+  async delete(@Req() req: Req, @Res() res: Res, @PathParams("id") id: string) {
     return res.status(200).json({success: true, data: await this.sensorService.delete(req, res, id)})
   }
 }

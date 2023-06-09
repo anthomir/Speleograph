@@ -9,9 +9,29 @@ import otpGenerator from "otp-generator"
 sgMail.setApiKey(String(process.env.SENDGRID_API))
 
 @Service()
-export class UserService implements OnInit{
+export class UserService {
   @Inject(User)
   private User: MongooseModel<User>;
+
+  async userProfile(req: Req, res: Res) {
+    try{
+      let request = { exp: undefined, iat: undefined, sub: undefined };
+      request = { ...request, ...req.user };
+  
+      let user = await this.User.findById(request.sub)
+      
+      if(!user){
+        return res.status(404).json({success: false, err: "Not Found"})
+      }
+
+      return res.status(200).json({success: true, data: user})
+    } 
+    catch (err){
+      return res.status(500).json({success: false, err: err})
+    }
+
+    
+  }
 
   async find(filter?: any, take?: string, skip?: string, sortBy?: string): Promise<User[] | null> {
     let data = filter ? await this.User.find(filter).limit(take ? parseInt(take): 100).skip(skip ? parseInt(skip) : 0).sort(sortBy ? sortBy : undefined) : await this.User.find();
@@ -77,11 +97,19 @@ export class UserService implements OnInit{
 
   async update(req: Req, res: Res, body: any){
     try{
-      if(!req.user)
+      let request = { exp: undefined, iat: undefined, sub: undefined };
+      request = { ...request, ...req.user };
+
+      let user = await this.User.findById(request.sub)
+      if(!user)
         return res.status(404).json({success:false, err: "Unable to find user to update"})
 
-      const response = await this.User.updateOne(req.user, { name: body.name })
-      return res.status(200).json({success: true, data: response})
+        user.firstName = body.firstName ? body.firstName : user.firstName;
+        user.lastName = body.lastName ? body.lastName : user.lastName;
+        user.save();
+
+        return res.status(200).json({success:true, data: user})
+
     } catch(err){
       return res.status(500).json({success: false, err: "An unexpected error occured"})
     }
@@ -89,10 +117,16 @@ export class UserService implements OnInit{
 
   async delete(req: Req, res: Res): Promise<User | any> {
     try{
-      if (!req.user) {
-      return res.status(404).json({ success: false, err: "Not Found" });
-    }
-    const response = await this.User.deleteOne(req.user);
+      let request = { exp: undefined, iat: undefined, sub: undefined };
+      request = { ...request, ...req.user };
+
+      let user = await this.User.findById(request.sub)
+
+      if (!user) {
+        return res.status(404).json({ success: false, err: "Not Found" });
+      }
+
+    const response = await this.User.deleteOne({_id: user.id});
     return res.status(200).json({ success: true, data: response })
   } catch(err){
     return res.status(500).json({success: false, err: "An unexpected error occured"})
@@ -413,15 +447,4 @@ export class UserService implements OnInit{
     }
   }
 
-  async $onInit() {
-    try{
-        const passwordEncrypted = await cryptPassword("hello");
-        await this.User.create({firstName: "Shubhika", lastName: "Garg", email: "gargshubhika@gmail.com", license: "SG1234", password: passwordEncrypted})
-
-        return; 
-    }
-    catch (err) {
-        console.log("Error while initializing the Default sensors: "+err)
-    }
-  }
 }

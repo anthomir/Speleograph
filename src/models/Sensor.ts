@@ -11,6 +11,10 @@ export class Sensor {
 
   @Select(true)
   name: string;
+  
+  @Select(true)
+  @Required(true)
+  serialNo: string;
 
   @Select(true)
   @Required(true)

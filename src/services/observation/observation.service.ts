@@ -3,11 +3,14 @@ import { MongooseModel } from "@tsed/mongoose";
 import axios from "axios";
 import { CaveObservation } from "../../models/CaveObservation";
 import fs from "fs"
+import { User } from "../../models/User";
 
 @Service()
 export class CaveObservationService {
   @Inject(CaveObservation)
   private CaveObservation: MongooseModel<CaveObservation>;
+  @Inject(User)
+  private User: MongooseModel<User>;
 
   async find(req: Req, res: Res, filter?: any) {
     try{
@@ -19,11 +22,16 @@ export class CaveObservationService {
 
   async create(req: Req, res: Res, caveMetadata: any) {
     try{
-      let user : any = req.user
+
+      let request = { exp: undefined, iat: undefined, sub: undefined };
+      request = { ...request, ...req.user };
+  
+      let user = await this.User.findById(request.sub)
+     
       if(!user){
         return res.status(500).json({success: true, err: "unauthorized"})
       }
-      caveMetadata.userId = user._id;
+      caveMetadata.createdBy = user._id;
 
       let cave = await this.CaveObservation.create(caveMetadata);
       return res.status(200).json({success: true, data: cave})

@@ -3,6 +3,7 @@ import {Unauthorized} from "@tsed/exceptions";
 import {Arg, OnInstall, OnVerify, Protocol} from "@tsed/passport";
 import {ExtractJwt, Strategy} from "passport-jwt";
 import { UserService } from "../services/user/user.service";
+import { User } from "../models/User";
 
 @Protocol({
   name: "jwt",
@@ -17,12 +18,13 @@ export class JwtProtocol implements OnVerify, OnInstall {
   usersService: UserService;
 
   async $onVerify(@Req() req: Req, @Arg(0) jwtPayload: any, @Res() res: Res) {
-    const user : any = await this.usersService.findById(jwtPayload.sub);
+    let userFound : User|null = await this.usersService.findById(jwtPayload.sub);
 
-    if (!user) {
+    if (!userFound) {
       return res.status(401).json({success: false, err: "unauthorized"})
     }
-    return user;
+
+    return jwtPayload;
   }
 
   $onInstall(strategy: Strategy): void {

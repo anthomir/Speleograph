@@ -9,10 +9,6 @@ export class CaveObservation {
   @ObjectID("id")
   _id: string;
 
-  @Required()
-  @Ref(() => User)
-  userId: Ref<User>;
-
   @Required(true)
   caveId: string;
 
@@ -28,4 +24,8 @@ export class CaveObservation {
   @Required(false)
   @Ref(() => Sensor)
   sensorId: Ref<Sensor>;
+
+  @Required()
+  @Ref(() => User)
+  createdBy: Ref<User>;
 }

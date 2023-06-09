@@ -37,12 +37,12 @@ export class UserController {
   @Get("/profile")
   @Authenticate("jwt")
   async getProfile( @Req() req: Req, @Res() res: Res) {
-    return res.status(200).json({success: true, data: req.user})
+    await this.usersService.userProfile(req, res);
   }
 
   @Put("/")
   @Authenticate("jwt")
-  async put(@Req() req: Req, @Res() res: Res, @BodyParams() body: any, @PathParams("id") id: string) {
+  async put(@Req() req: Req, @Res() res: Res, @BodyParams() body: any) {
     return await this.usersService.update(req, res, body);
   }
 

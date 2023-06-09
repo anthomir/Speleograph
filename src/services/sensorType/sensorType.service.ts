@@ -3,12 +3,15 @@ import { MongooseModel } from "@tsed/mongoose";
 import jwt from "jsonwebtoken";
 import { SensorType } from "../../models/SensorType";
 import { SensorTypeEnum } from "../../models/Enum";
+import { User } from "../../models/User";
 
 @Service()
 export class SensorTypeService implements OnInit {
 
   @Inject(SensorType)
   private SensorType: MongooseModel<SensorType>;
+  @Inject(User)
+  private User: MongooseModel<User>;
 
   // JWT
   async find(req : Req, res: Res, filter?: any) {
@@ -22,7 +25,15 @@ export class SensorTypeService implements OnInit {
   // JWT
   async post(req : Req, res: Res, body: any){
     try{
-        return res.status(201).json({success: true, data: await this.SensorType.create({name: body.name, properties: body.properties, isDefault: false, createdBy: req.user}) })
+
+      let request = { exp: undefined, iat: undefined, sub: undefined };
+      request = { ...request, ...req.user };
+      let user = await this.User.findById(request.sub)
+      
+      if(!user){
+        return res.status(401).json({success: false, err: "Unauthorized" })
+      }
+      return res.status(201).json({success: true, data: await this.SensorType.create({name: body.name, properties: body.properties, isDefault: false, createdBy: user.id}) })
     } catch (err){
         return res.status(500).json({success: false, err: err })
     }
@@ -32,7 +43,6 @@ export class SensorTypeService implements OnInit {
   async delete(req : Req, res: Res, filter: any){
     try{
       let user : any = req.user;
-
       if(!user || user.role != user.Admin){
         return res.status(200).json({success: false, err: "Access denied, This is only available for administrators" })
       }
