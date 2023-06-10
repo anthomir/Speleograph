@@ -14,12 +14,20 @@ export class CaveService {
         url: `${process.env.GROTTOCAVE_API}/caves/${id}`,
       });
 
+      if(response.data.status == "404"){
+        return res.status(404).json({success: false, err: "No data found"})
+      }
+      
       if(!response.data){
         return res.status(404).json({success: false, err: "No data found"})
       }
 
       return res.status(200).json({success: true, data: response.data})
     } catch(err){
+
+      if(err.response.status == 404){
+        return res.status(404).json({success: false, err: "No data found"})
+      }
       return res.status(500).json({success: true, err: err})
     }
   }
@@ -37,12 +45,21 @@ export class CaveService {
         }
       });
 
+      if(response.data.status == "404"){
+        return res.status(404).json({success: false, err: "No data found"})
+      }
+      
       if(!response.data){
         return res.status(404).json({success: false, err: "No data found"})
       }
 
       return res.status(200).json({success: true, data: response.data})
     } catch(err){
+
+      if(err.response.status == 404){
+        return res.status(404).json({success: false, err: "No data found"})
+      }
+      
       return res.status(500).json({success: true, err: err})
     }
   }
