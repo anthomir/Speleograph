@@ -33,7 +33,7 @@ export class SensorTypeService implements OnInit {
       if(!user){
         return res.status(401).json({success: false, err: "Unauthorized" })
       }
-      return res.status(201).json({success: true, data: await this.SensorType.create({name: body.name, properties: body.properties, isDefault: false, createdBy: user.id}) })
+      return res.status(201).json({success: true, data: await this.SensorType.create({name: body.name, properties: body.properties, type: body.name, manufacturer: body.manufacturer, isDefault: false, createdBy: user.id}) })
     } catch (err){
         return res.status(500).json({success: false, err: err })
     }

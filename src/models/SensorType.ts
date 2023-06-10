@@ -13,8 +13,15 @@ export class SensorType {
   name: string;
 
   @Select(true)
+  type: string;
+
+  @Select(true)
   @Nullable(false)
   properties: Array<string>;
+
+  @Select(true)
+  @Nullable(false)
+  manufacturer: Array<string>;
 
   @Select(true)
   @Default(false)
