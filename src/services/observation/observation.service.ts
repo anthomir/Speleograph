@@ -12,9 +12,10 @@ export class CaveObservationService {
   @Inject(User)
   private User: MongooseModel<User>;
 
-  async find(req: Req, res: Res, filter?: any) {
+  async find(req: Req, res: Res, filter?: string) {
     try{
-      return res.status(200).json({success: true,  data: filter ? await this.CaveObservation.find(JSON.parse(filter)) : await this.CaveObservation.find({})})
+
+      return res.status(200).json({success: true,  data: await this.CaveObservation.find(filter ? JSON.parse(filter) : {} ) })
     } catch(err){
       return res.status(500).json({success: false, err: err})
     }

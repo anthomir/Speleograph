@@ -34,7 +34,7 @@ export class UserService {
   }
 
   async find(filter?: any, take?: string, skip?: string, sortBy?: string): Promise<User[] | null> {
-    let data = filter ? await this.User.find(filter).limit(take ? parseInt(take): 100).skip(skip ? parseInt(skip) : 0).sort(sortBy ? sortBy : undefined) : await this.User.find();
+    let data = filter ? await this.User.find(JSON.parse(filter)).limit(take ? parseInt(take): 100).skip(skip ? parseInt(skip) : 0).sort(sortBy ? sortBy : undefined) : await this.User.find();
     return data;
   }
 

@@ -10,14 +10,14 @@ import { MulterOptions, MultipartFile, PlatformMulterFile, Req, Res } from "@tse
 import { CaveObservationService } from "../../services/observation/observation.service";
 import path from "path";
 
-@Controller("/cave")
+@Controller("/caveObservation")
 export class CaveObservationController {
   @Inject(CaveObservationService)
   private caveObservationService: CaveObservationService;
 
   @Authenticate("jwt")
   @Get("/")
-  async find(@Req() req: Req, @Res() res: Res, @QueryParams() filter?: any){
+  async find(@Req() req: Req, @Res() res: Res, @QueryParams("filter") filter?: string ){
     return await this.caveObservationService.find(req, res, filter)
   }
 
