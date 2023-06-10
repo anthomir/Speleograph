@@ -422,6 +422,7 @@ export class UserService {
   }
 
 }
+
   async resetPassword(req: Req, res: Res, body: any) {
     try{
       if(!body.otp || !body.newPassword){
@@ -443,7 +444,6 @@ export class UserService {
 
       }else{
         return res.status(401).json({ success: false, data: "Incorrect Otp Unable to change password"})
-
       }
 
     } catch(err){
