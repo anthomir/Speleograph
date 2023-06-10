@@ -434,14 +434,18 @@ export class UserService {
         return res.status(404).json({success: false, err: "User not found"})
       }
 
-      if(body.otp != user.emailOTP){
+      if(body.otp == user.emailOTP){
         const passwordEncrypted = await cryptPassword(body.newPassword);
         user.password = passwordEncrypted;
         user.emailOTP = "";
-        user.save();
+        await user.save();
+        return res.status(200).json({ success: true, data: "New password has been set"})
+
+      }else{
+        return res.status(401).json({ success: false, data: "Incorrect Otp Unable to change password"})
+
       }
 
-      return res.status(200).json({ success: true, data: "New password has been set"})
     } catch(err){
       return res.status(500).json({success: false, err: "An unexpected error occured"})
     }
