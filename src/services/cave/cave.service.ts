@@ -6,7 +6,6 @@ import fs from "fs"
 @Service()
 export class CaveService {
 
-
   async findById(@Req() req : Req, @Res() res: Res, id: string) {
     try{
       let response = await axios({
@@ -14,7 +13,7 @@ export class CaveService {
         url: `${process.env.GROTTOCAVE_API}/caves/${id}`,
       });
 
-      if(response.data.status == "404"){
+      if(response.data.status == 404){
         return res.status(404).json({success: false, err: "No Caves found"})
       }
       
@@ -45,7 +44,7 @@ export class CaveService {
         }
       });
 
-      if(response.data.status == "404"){
+      if(response.data.status == 404){
         return res.status(404).json({success: false, err: "No Caves found"})
       }
       
