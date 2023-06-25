@@ -20,7 +20,7 @@ export class UserController {
 
   @Post("/register")
   async post(@Req() req: Req, @Res() res: Res, @BodyParams() @UseJoiValidation(UserSchema) body: User) {
-      return await this.usersService.create(body, res);
+    return await this.usersService.create(body, res);
   }
 
   @Post("/login")
@@ -31,13 +31,13 @@ export class UserController {
   @Get("/")
   @Authenticate("jwt")
   async get( @Req() req: Req, @Res() res: Res, @QueryParams("filter") filter?: string, @QueryParams("take") take?: string, @QueryParams("skip") skip?: string, @QueryParams("sortBy") sortBy?: string) {
-    return res.status(200).json({success: true, data: filter ? await this.usersService.find(filter, take,skip,sortBy) : await this.usersService.find({}, take, skip, sortBy)})
+   return await this.usersService.find(filter, take,skip,sortBy)
   }
 
   @Get("/profile")
   @Authenticate("jwt")
   async getProfile( @Req() req: Req, @Res() res: Res) {
-    await this.usersService.userProfile(req, res);
+    return await this.usersService.userProfile(req, res);
   }
 
   @Put("/")
