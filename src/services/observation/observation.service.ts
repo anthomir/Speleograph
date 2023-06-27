@@ -17,7 +17,7 @@ export class CaveObservationService {
 
       return res.status(200).json({success: true,  data: await this.CaveObservation.find(filter ? JSON.parse(filter) : {} ).populate("sensorId") })
     } catch(err){
-      return res.status(500).json({success: false, err: err})
+      return res.status(500).json({success: false, err: "Internal Server Error"})
     }
   }
 
@@ -37,7 +37,7 @@ export class CaveObservationService {
       let cave = await this.CaveObservation.create(caveMetadata);
       return res.status(200).json({success: true, data: cave})
     } catch(err){
-      return res.status(500).json({success: true, err: err})
+      return res.status(500).json({success: false, err: "Internal Server Error"})
     }
   }
 
