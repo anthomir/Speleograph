@@ -13,6 +13,7 @@ import * as rest from "./controllers/rest";
 import * as pages from "./controllers/pages";
 import session from "express-session";
 import "./protocols";
+import { specOS3 } from "./spec/specOS3";
 
 const rootDir = __dirname;
 
@@ -46,7 +47,8 @@ const rootDir = __dirname;
   swagger: [
     {
       path: "/api",
-      specVersion: "3.0.1"
+      specVersion: "3.0.1",
+      spec: specOS3
     }
   ],
   middlewares: [
