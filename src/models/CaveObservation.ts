@@ -2,7 +2,6 @@ import {CollectionOf, Email, Required, Default,Minimum,Maximum} from "@tsed/sche
 import {Model, ObjectID, Ref, Select} from "@tsed/mongoose";
 import { User } from "./User";
 import { SensorType } from "./SensorType";
-import { Sensor } from "./Sensor";
 
 @Model()
 export class CaveObservation {

@@ -19,7 +19,7 @@ services:
       - DEVELOPMENT_URL=http://localhost:8083
       - PRODUCTION_URL=https://speleograph.tools.eurecom.fr
       - SENDGRID_API=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
-      - EMAIL=elmiranthony@gmail.com
+      - EMAIL=anthonymeer1@gmail.com
   mongodb:
     image: mongo:5.0.8
     ports:

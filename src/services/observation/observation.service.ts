@@ -8,8 +8,10 @@ import { Role } from "../../models/Enum";
 
 @Service()
 export class CaveObservationService {
+
   @Inject(CaveObservation)
   private CaveObservation: MongooseModel<CaveObservation>;
+
   @Inject(User)
   private User: MongooseModel<User>;
 
@@ -62,21 +64,23 @@ export class CaveObservationService {
       let request = { exp: undefined, iat: undefined, sub: undefined };
       request = { ...request, ...req.user };
       
-      let contribution = await this.CaveObservation.findById(id)
+      let contributionData = await this.CaveObservation.findById(id).lean();
+
       let user = await this.User.findById(request.sub).select("+role");
 
-      if(!contribution){
+      if(!contributionData){
         return res.status(404).json({success: false, err: "Contribution not found"})
       }
       if(!user){
         return res.status(404).json({success: false, err: "User not found"})
       }
 
-      if((contribution.createdBy != user.id) && (user.role != Role.Admin)){
-        let response = await this.CaveObservation.deleteOne({id: id})
+      if((contributionData.createdBy != user.id) && (user.role != Role.Admin)){
+        return res.status(500).json({success: true, err: "Internal server error"});
+      } 
+      else{
+        let response = await this.CaveObservation.deleteOne({_id: id})
         return res.status(200).json({success: true, data: response});
-      } else{
-        return 
       }
     } 
     catch(err){

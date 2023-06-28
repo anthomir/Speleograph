@@ -46,7 +46,7 @@ export class CaveObservationController {
   @Authenticate("jwt")
   @Delete("/:id")
   async Delete(@Req() req: Req, @Res() res: Res, @PathParams("id") id: string ){
-    await this.caveObservationService.delete(req, res, id);
+    return await this.caveObservationService.delete(req, res, id);
   }
 
 }
