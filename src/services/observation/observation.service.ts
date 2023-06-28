@@ -15,7 +15,7 @@ export class CaveObservationService {
   async find(req: Req, res: Res, filter?: string) {
     try{
 
-      return res.status(200).json({success: true,  data: await this.CaveObservation.find(filter ? JSON.parse(filter) : {} ).populate("sensorId") })
+      return res.status(200).json({success: true,  data: await this.CaveObservation.find(filter ? JSON.parse(filter) : {} ) })
     } catch(err){
       return res.status(500).json({success: false, err: "Internal Server Error"})
     }

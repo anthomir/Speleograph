@@ -4,7 +4,7 @@ import {
   PathParams,
   QueryParams,
 } from "@tsed/platform-params";
-import {  Get, Post } from "@tsed/schema";
+import {  Delete, Get, Post } from "@tsed/schema";
 import { Authenticate } from "@tsed/passport";
 import { MulterOptions, MultipartFile, PlatformMulterFile, Req, Res } from "@tsed/common";
 import { CaveObservationService } from "../../services/observation/observation.service";
@@ -20,7 +20,6 @@ export class CaveObservationController {
   async find(@Req() req: Req, @Res() res: Res, @QueryParams("filter") filter?: string ){
     return await this.caveObservationService.find(req, res, filter)
   }
-
 
   @Authenticate("jwt")
   @Post("/")
@@ -41,5 +40,15 @@ export class CaveObservationController {
   async uploadFile(@MultipartFile("file") file: PlatformMulterFile, @Req() req: Req, @Res() res : Res ) {
     return await this.caveObservationService.postFile(req,res, file);
   }
+
+
+  //admin delete api
+  @Authenticate("jwt")
+  @Delete("/:id")
+  async Delete(@Req() req: Req, @Res() res: Res, @QueryParams("filter") filter?: string ){
+    return await this.caveObservationService.find(req, res, filter)
+  }
+
+
 }
 

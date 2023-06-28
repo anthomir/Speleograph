@@ -18,7 +18,7 @@ services:
       - GROTTOCAVE_API=https://api.grottocenter.org/api/v1
       - DEVELOPMENT_URL=http://localhost:8083
       - PRODUCTION_URL=https://speleograph.tools.eurecom.fr
-      - SENDGRID_API=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
+      - SENDGRID_API=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
       - EMAIL=elmiranthony@gmail.com
   mongodb:
     image: mongo:5.0.8
