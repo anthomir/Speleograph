@@ -75,6 +75,8 @@ export class CaveObservationService {
       if((contribution.createdBy != user.id) && (user.role != Role.Admin)){
         let response = await this.CaveObservation.deleteOne({id: id})
         return res.status(200).json({success: true, data: response});
+      } else{
+        return 
       }
     } 
     catch(err){
