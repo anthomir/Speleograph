@@ -45,10 +45,9 @@ export class CaveObservationController {
   //admin delete api
   @Authenticate("jwt")
   @Delete("/:id")
-  async Delete(@Req() req: Req, @Res() res: Res, @QueryParams("filter") filter?: string ){
-    return await this.caveObservationService.find(req, res, filter)
+  async Delete(@Req() req: Req, @Res() res: Res, @PathParams("id") id: string ){
+    await this.caveObservationService.delete(req, res, id);
   }
-
 
 }
 

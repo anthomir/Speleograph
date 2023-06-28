@@ -4,6 +4,7 @@ import axios from "axios";
 import { CaveObservation } from "../../models/CaveObservation";
 import fs from "fs"
 import { User } from "../../models/User";
+import { Role } from "../../models/Enum";
 
 @Service()
 export class CaveObservationService {
@@ -52,6 +53,32 @@ export class CaveObservationService {
         if ( err ) 
             return res.status(500).json({success: false, err: ""})
     });
-    return res.status(200).json({success: false, data: {fileUrl: `${process.env.PRODUCTION_URL}/uploads/${filename}.${mimetype}`}})
+    return res.status(200).json({success: false, data: {fileUrl: `${process.env.DEVELOPMENT_URL}/uploads/${filename}.${mimetype}`}})
+  }
+
+  async delete (req: Req, res: Res, id: string){
+    try{
+
+      let request = { exp: undefined, iat: undefined, sub: undefined };
+      request = { ...request, ...req.user };
+      
+      let contribution = await this.CaveObservation.findById(id)
+      let user = await this.User.findById(request.sub).select("+role");
+
+      if(!contribution){
+        return res.status(404).json({success: false, err: "Contribution not found"})
+      }
+      if(!user){
+        return res.status(404).json({success: false, err: "User not found"})
+      }
+
+      if((contribution.createdBy != user.id) && (user.role != Role.Admin)){
+        let response = await this.CaveObservation.deleteOne({id: id})
+        return res.status(200).json({success: true, data: response});
+      }
+    } 
+    catch(err){
+      return res.status(500).json({success: false, err: err})
+    }
   }
 }
