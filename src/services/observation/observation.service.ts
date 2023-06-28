@@ -53,7 +53,7 @@ export class CaveObservationService {
         if ( err ) 
             return res.status(500).json({success: false, err: ""})
     });
-    return res.status(200).json({success: false, data: {fileUrl: `${process.env.DEVELOPMENT_URL}/uploads/${filename}.${mimetype}`}})
+    return res.status(200).json({success: false, data: {fileUrl: `${process.env.PRODUCTION_URL}/uploads/${filename}.${mimetype}`}})
   }
 
   async delete (req: Req, res: Res, id: string){
