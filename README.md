@@ -9,22 +9,22 @@
 
 ```batch
 # Download required libraries
-
+ 
 # Download Node
-https://nodejs.org/en (download node LTS)
-
+$ https://nodejs.org/en (download node LTS)
+ 
 # Download Docker Desktop
-https://www.docker.com/products/docker-desktop/
-
+$ https://www.docker.com/products/docker-desktop/
+  
 # Download express
 $ npm install express --save
-
+ 
 # Download express
 $ npm install typescript --save-dev
-
+ 
 # Download Tsed 
 $ npm install -g @tsed/cli
-
+ 
 # Download Yarn
 $ npm install --global yarn
 ```
