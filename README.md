@@ -39,6 +39,8 @@ $  yarn
 
 # Start docker container (using project terminal)
 docker-compose up
+
+Once the project is up and running you can use postman to interact with the backend Apis
 ```
 
 ## Documentation
