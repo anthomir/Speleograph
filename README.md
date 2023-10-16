@@ -3,26 +3,33 @@
   <br />
 </div>
 
-## Getting started
+## Download required libraries
 
 > **Important!** requires Node >= 14, Express >= 4 and TypeScript >= 4.
 
 ```batch
-### Download required libraries
-Download Node
+# Download required libraries
+
+# Download Node
 https://nodejs.org/en (download node LTS)
-Download Docker Desktop
+
+# Download Docker Desktop
 https://www.docker.com/products/docker-desktop/
-Download express
-npm install express --save
-Download express
-npm install typescript --save-dev
-Download Tsed 
-npm install -g @tsed/cli
-Download Yarn
-npm install --global yarn
+
+# Download express
+$ npm install express --save
+
+# Download express
+$ npm install typescript --save-dev
+
+# Download Tsed 
+$ npm install -g @tsed/cli
+
+# Download Yarn
+$ npm install --global yarn
 ```
 
+## Start Project With Docker
 ```batch
 # pull project
 git pull "INSERT_GIT_REPOSITORY_URL"
