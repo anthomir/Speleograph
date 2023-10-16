@@ -8,32 +8,31 @@
 > **Important!** requires Node >= 14, Express >= 4 and TypeScript >= 4.
 
 ```batch
+### Download required libraries
+Download Node
+https://nodejs.org/en (download node LTS)
+Download Docker Desktop
+https://www.docker.com/products/docker-desktop/
+Download express
+npm install express --save
+Download express
+npm install typescript --save-dev
+Download Tsed 
+npm install -g @tsed/cli
+Download Yarn
+npm install --global yarn
+```
+
+```batch
+# pull project
+git pull "INSERT_GIT_REPOSITORY_URL"
+
 # install dependencies
 $  yarn
 
-# serve
-$  yarn start
-
-# build for production
-$  build
-$  start:prod
+# Start docker container (using project terminal)
+docker-compose up
 ```
-
-## Docker
-
-> By Default Port :: 8083
-
-```
-# Make sure The project is built before using Docker
-$ yarn build
-
-# build docker image
-$ docker compose build
-
-# start docker image
-$ docker compose up
-```
-
 
 ## Documentation
 
