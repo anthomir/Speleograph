@@ -52,6 +52,6 @@ test/**/*.js.map
 /dist
 
 # Environment variables
+.env.local
+.env.development
 .env
-
-
