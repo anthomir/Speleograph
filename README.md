@@ -8,6 +8,11 @@
 > **Important!** requires Node >= 14, Express >= 4 and TypeScript >= 4.
 
 ```batch
+
+# pull project
+git pull "INSERT_GIT_REPOSITORY_URL"
+
+
 # Download required libraries
  
 # Download Node
@@ -31,8 +36,6 @@ $ npm install --global yarn
 
 ## Start Project With Docker
 ```batch
-# pull project
-git pull "INSERT_GIT_REPOSITORY_URL"
 
 # install dependencies
 $  yarn
