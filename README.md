@@ -37,6 +37,9 @@ git pull "INSERT_GIT_REPOSITORY_URL"
 # install dependencies
 $  yarn
 
+# build project
+$  yarn build
+
 # Start docker container (using project terminal)
 docker-compose up
 
