@@ -36,7 +36,7 @@ export class CaveService {
                 url: `${process.env.GROTTOCAVE_API}/advanced-search`,
                 params: {
                     complete: true,
-                    resourceType: 'entrances',
+                    resourceType: 'caves',
                     name: name ? name : undefined,
                     country: country ? country : undefined,
                 },
