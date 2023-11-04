@@ -1,33 +1,33 @@
-import {CollectionOf, Email, Required, Default,Minimum,Maximum} from "@tsed/schema";
-import {Model, ObjectID, Ref, Select} from "@tsed/mongoose";
-import { User } from "./User";
-import { SensorType } from "./SensorType";
+import { CollectionOf, Email, Required, Default, Minimum, Maximum } from '@tsed/schema';
+import { Model, ObjectID, Ref, Select } from '@tsed/mongoose';
+import { User } from './User';
+import { SensorType } from './SensorType';
 
 @Model()
 export class CaveObservation {
-  @ObjectID("id")
-  _id: string;
+    @ObjectID('id')
+    _id: string;
 
-  @Required(true)
-  caveId: string;
+    @Required(true)
+    caveId: string;
 
-  @Select(true)
-  beginDate: Date;
+    @Select(true)
+    beginDate: Date;
 
-  @Select(true)
-  endDate: Date;
+    @Select(true)
+    endDate: Date;
 
-  @Required(true)
-  filePath: string;
+    @Required(true)
+    filePath: string;
 
-  @Required(true)
-  timeZone: string;
+    @Required(true)
+    timeZone: string;
 
-  @Required(false)
-  @Ref(() => SensorType)
-  sensorId: Ref<SensorType>;
+    @Required(false)
+    @Ref(() => SensorType)
+    sensorId: Ref<SensorType>;
 
-  @Required()
-  @Ref(() => User)
-  createdBy: Ref<User>;
+    @Required()
+    @Ref(() => User)
+    createdBy: Ref<User>;
 }

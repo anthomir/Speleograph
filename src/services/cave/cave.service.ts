@@ -1,5 +1,4 @@
-import { Inject, Req, Res, Service } from '@tsed/common';
-import { MongooseModel } from '@tsed/mongoose';
+import { Service } from '@tsed/common';
 import axios from 'axios';
 
 @Service()
