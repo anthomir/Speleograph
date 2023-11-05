@@ -1,6 +1,7 @@
-import { Inject, Service } from '@tsed/di';
+import { Inject, OnInit, OnRoutesInit, Req, Res, Service } from '@tsed/common';
 import { MongooseModel } from '@tsed/mongoose';
-import { Organization } from 'src/models/organization';
+import { Organization } from '../../models/Organization';
+import { UpdateOrganizationDto } from '../../dto/organization/updateOrganization';
 
 @Service()
 export class OrganizationService {
@@ -8,7 +9,27 @@ export class OrganizationService {
     private Organization: MongooseModel<Organization>;
 
     // JWT
-    async find(filter: any, take: string, skip: string, sortBy: string): Promise<{ response: any; err: String | null }> {
+    async findById(id: string): Promise<{ status: number; data: Organization | null; message: string | null }> {
+        try {
+            const organization = await this.Organization.findById(id);
+
+            if (!organization) {
+                return { status: 404, data: null, message: 'Sensor not found' };
+            }
+
+            return { status: 200, data: organization, message: 'Sensor found successfully' };
+        } catch (error) {
+            return { status: 500, data: null, message: 'Internal server error' };
+        }
+    }
+
+    // JWT
+    async find(
+        filter: any,
+        skip: string,
+        take: string,
+        sortBy: string,
+    ): Promise<{ status: number; data: Organization[] | null; message: string | null }> {
         try {
             const data = filter
                 ? await this.Organization.find(JSON.parse(filter))
@@ -20,20 +41,20 @@ export class OrganizationService {
                       .skip(skip ? parseInt(skip) : 0)
                       .sort(sortBy ? sortBy : undefined);
 
-            if (data.length == 0) {
-                return { response: null, err: null };
+            if (data.length === 0) {
+                return { status: 404, data: null, message: 'No organizations found' };
             }
 
-            return { response: data, err: null };
-        } catch (err) {
-            return { response: null, err: 'Internal server error' };
+            return { status: 200, data, message: 'Sensors found successfully' };
+        } catch (error) {
+            return { status: 500, data: null, message: 'Internal server error' };
         }
     }
 
     // JWT
-    async post(body: any): Promise<{ response: any; err: String | null }> {
+    async post(body: any): Promise<{ status: number; data: Organization | null; message: string }> {
         try {
-            const response = await this.Organization.create({
+            const newOrganization = await this.Organization.create({
                 mbox: body.mbox,
                 homepage: body.homepage,
                 streetAddress: body.streetAddress,
@@ -42,22 +63,58 @@ export class OrganizationService {
                 addressCountry: body.addressCountry,
             });
 
-            return { response, err: null };
-        } catch (err) {
-            return { response: null, err: 'Internal server error: ' + err };
+            if (newOrganization) {
+                return { status: 201, data: newOrganization, message: 'Sensor created successfully' };
+            } else {
+                return { status: 500, data: null, message: 'Failed to create the organization' };
+            }
+        } catch (error) {
+            return { status: 500, data: null, message: 'Internal server error' };
         }
     }
 
-    async delete(id: string): Promise<{ response: any; err: String | null }> {
+    async deleteById(id: string): Promise<{ status: number; message: string }> {
         try {
-            const data = await this.Organization.deleteOne({ _id: id });
+            const result = await this.Organization.deleteOne({ _id: id });
 
-            if (data.deletedCount == 0) {
-                return { response: null, err: 'Delete Failed: We encountered an issue while attempting to delete the data' };
+            if (result.deletedCount === 1) {
+                return { status: 200, message: 'Sensor deleted successfully' };
+            } else {
+                return { status: 404, message: 'Sensor not found' };
             }
-            return { response: 'Deleted successfully', err: null };
-        } catch (err) {
-            return { response: null, err: 'Internal server error' };
+        } catch (error) {
+            return { status: 500, message: 'Internal server error' };
+        }
+    }
+
+    async updateOrganization(id: string, newData: UpdateOrganizationDto): Promise<{ status: number; data: Organization | null; message: string }> {
+        try {
+            const organization = await this.Organization.findById(id);
+
+            if (!organization) {
+                return { status: 404, data: null, message: 'Sensor not found' };
+            }
+
+            const updateData: Partial<Organization> = {};
+
+            for (const field in newData) {
+                if (field in organization) {
+                    const key = field as keyof UpdateOrganizationDto;
+                    updateData[key] = newData[key];
+                }
+            }
+
+            const updatedOrganization = await this.Organization.findByIdAndUpdate(id, updateData, {
+                new: true,
+            });
+
+            if (updatedOrganization) {
+                return { status: 200, data: updatedOrganization, message: 'Sensor updated successfully' };
+            } else {
+                return { status: 500, data: null, message: 'Failed to update the organization' };
+            }
+        } catch (error) {
+            return { status: 500, data: null, message: 'Internal server error' };
         }
     }
 }

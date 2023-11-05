@@ -24,8 +24,8 @@ export class JwtProtocol implements OnVerify, OnInstall {
             return res.status(401).json({ success: false, err: 'unauthorized' });
         }
 
-        req.user = userFound;
-        return req.user;
+        ctx.user = userFound;
+        return userFound;
     }
 
     $onInstall(strategy: Strategy): void {}

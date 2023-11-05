@@ -1,7 +1,7 @@
 import { Inject, Service } from '@tsed/di';
 import { MongooseModel } from '@tsed/mongoose';
-import { Area } from 'src/models/area';
-import { BibliographicResource } from '../../models/bibliographicResource';
+import { Area } from 'src/models/Area';
+import { BibliographicResource } from '../../models/BibliographicResource';
 
 @Service()
 export class BibliographicResourceService {

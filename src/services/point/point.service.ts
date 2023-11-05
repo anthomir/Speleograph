@@ -1,63 +1,115 @@
-import { Inject, Service } from '@tsed/di';
+import { Inject, OnInit, OnRoutesInit, Req, Res, Service } from '@tsed/common';
 import { MongooseModel } from '@tsed/mongoose';
-import { Area } from 'src/models/area';
-import { Point } from 'src/models/point';
+import { UpdateSensorDto } from '../../dto/sensor/updateSensor';
+import { Point } from '../../models/point';
+import { UpdatePointDto } from '../../dto/point/updatePoint';
 
 @Service()
 export class PointService {
     @Inject(Point)
-    private Area: MongooseModel<Point>;
+    private Point: MongooseModel<Point>;
 
     // JWT
-    async find(filter: any, skip: string, take: string, sortBy: string): Promise<{ response: any; err: String | null }> {
+    async findById(id: string): Promise<{ status: number; data: Point | null; message: string | null }> {
+        try {
+            const sensor = await this.Point.findById(id);
+
+            if (!sensor) {
+                return { status: 404, data: null, message: 'Sensor not found' };
+            }
+
+            return { status: 200, data: sensor, message: 'Sensor found successfully' };
+        } catch (error) {
+            return { status: 500, data: null, message: 'Internal server error' };
+        }
+    }
+
+    // JWT
+    async find(filter: any, skip: string, take: string, sortBy: string): Promise<{ status: number; data: Point[] | null; message: string | null }> {
         try {
             const data = filter
-                ? await this.Area.find(JSON.parse(filter))
+                ? await this.Point.find(JSON.parse(filter))
                       .limit(take ? parseInt(take) : 100)
                       .skip(skip ? parseInt(skip) : 0)
                       .sort(sortBy ? sortBy : undefined)
-                : await this.Area.find()
+                : await this.Point.find()
                       .limit(take ? parseInt(take) : 100)
                       .skip(skip ? parseInt(skip) : 0)
                       .sort(sortBy ? sortBy : undefined);
 
-            if (data.length == 0) {
-                return { response: null, err: null };
+            if (data.length === 0) {
+                return { status: 404, data: null, message: 'No sensors found' };
             }
 
-            return { response: data, err: null };
-        } catch (err) {
-            return { response: null, err: 'Internal server error' };
+            return { status: 200, data, message: 'Sensors found successfully' };
+        } catch (error) {
+            return { status: 500, data: null, message: 'Internal server error' };
         }
     }
 
     // JWT
-    async post(body: any): Promise<{ response: any; err: String | null }> {
+    async post(body: any): Promise<{ status: number; data: Point | null; message: string }> {
         try {
-            const response = await this.Area.create({
-                pointType: body.pointType,
-                relatedToUndergroundCavity: body.relatedToUndergroundCavity,
+            const newSensor = await this.Point.create({
+                name: body.name,
+                serialNo: body.serialNo,
+                sensorTypeId: body.sensorTypeId,
+                createdBy: body.createdBy,
             });
 
-            return { response, err: null };
-        } catch (err) {
-            return { response: null, err: 'Internal server error: ' + err };
+            if (newSensor) {
+                return { status: 201, data: newSensor, message: 'Sensor created successfully' };
+            } else {
+                return { status: 500, data: null, message: 'Failed to create the sensor' };
+            }
+        } catch (error) {
+            return { status: 500, data: null, message: 'Internal server error' };
         }
     }
 
-    async delete(id: string): Promise<{ response: any; err: String | null }> {
+    async deleteById(id: string): Promise<{ status: number; message: string }> {
         try {
-            const data = await this.Area.deleteOne({ _id: id });
+            // Find the sensor by its _id and delete it
+            const result = await this.Point.deleteOne({ _id: id });
 
-            if (data.deletedCount == 0) {
-                return {
-                    response: null,
-                    err: 'Delete Failed: We encountered an issue while attempting to delete the data',
-                };
+            if (result.deletedCount === 1) {
+                return { status: 200, message: 'Sensor deleted successfully' };
+            } else {
+                return { status: 404, message: 'Sensor not found' };
             }
-            return { response: 'Deleted successfully', err: null };
-        } catch (err) {
-            return { response: null, err: 'Internal server error' };
+        } catch (error) {
+            return { status: 500, message: 'Internal server error' };
+        }
+    }
+
+    async updatePoint(id: string, newData: UpdatePointDto): Promise<{ status: number; data: Point | null; message: string }> {
+        try {
+            const sensor = await this.Point.findById(id);
+
+            if (!sensor) {
+                return { status: 404, data: null, message: 'Sensor not found' };
+            }
+
+            const updateData: Partial<Point> = {};
+
+            for (const field in newData) {
+                if (field in sensor) {
+                    const key = field as keyof UpdatePointDto;
+                    updateData[key] = newData[key];
+                }
+            }
+
+            const updatedSensor = await this.Point.findByIdAndUpdate(id, updateData, {
+                new: true,
+            });
+
+            if (updatedSensor) {
+                return { status: 200, data: updatedSensor, message: 'Sensor updated successfully' };
+            } else {
+                return { status: 500, data: null, message: 'Failed to update the sensor' };
+            }
+        } catch (error) {
+            return { status: 500, data: null, message: 'Internal server error' };
         }
     }
 }

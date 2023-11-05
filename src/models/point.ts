@@ -1,6 +1,5 @@
-import { Email, Required, Default, ErrorMsg, Nullable } from '@tsed/schema';
-import { Model, ObjectID, Select, Unique } from '@tsed/mongoose';
-import { Role } from './Enum';
+import { Nullable } from '@tsed/schema';
+import { Model, ObjectID, Select } from '@tsed/mongoose';
 
 @Model()
 export class Point {

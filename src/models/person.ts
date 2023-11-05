@@ -9,10 +9,10 @@ export class Person {
     _id: string;
 
     @Required().Error('First Name is Required')
-    firstName: string;
+    firstname: string;
 
     @Required().Error('Last Name is Required')
-    lastName: string;
+    lastname: string;
 
     @Nullable(String)
     nick: string;

@@ -9,56 +9,88 @@ import { User } from '../../models/User';
 export class SensorTypeService implements OnInit {
     @Inject(SensorType)
     private SensorType: MongooseModel<SensorType>;
-    @Inject(User)
-    private User: MongooseModel<User>;
 
     // JWT
-    async find(filter?: any): Promise<{ response: any; err: String | null }> {
+    async findById(id: string): Promise<{ status: number; data: SensorType | null; message: string | null }> {
         try {
-            const data = filter ? await this.SensorType.find(JSON.parse(filter)) : await this.SensorType.find();
+            const sensor = await this.SensorType.findById(id);
 
-            if (data.length == 0) {
-                return { response: null, err: null };
+            if (!sensor) {
+                return { status: 404, data: null, message: 'Sensor not found' };
             }
 
-            return { response: data, err: null };
-        } catch (err) {
-            return { response: null, err: 'Internal server error' };
+            return { status: 200, data: sensor, message: 'Sensor found successfully' };
+        } catch (error) {
+            return { status: 500, data: null, message: 'Internal server error' };
         }
     }
 
     // JWT
-    async post(body: any): Promise<{ response: any; err: String | null }> {
+    async find(
+        filter: any,
+        skip: string,
+        take: string,
+        sortBy: string,
+    ): Promise<{ status: number; data: SensorType[] | null; message: string | null }> {
         try {
-            const response = await this.SensorType.create({
+            const data = filter
+                ? await this.SensorType.find(JSON.parse(filter))
+                      .limit(take ? parseInt(take) : 100)
+                      .skip(skip ? parseInt(skip) : 0)
+                      .sort(sortBy ? sortBy : undefined)
+                : await this.SensorType.find()
+                      .limit(take ? parseInt(take) : 100)
+                      .skip(skip ? parseInt(skip) : 0)
+                      .sort(sortBy ? sortBy : undefined);
+
+            if (data.length === 0) {
+                return { status: 404, data: null, message: 'No sensors found' };
+            }
+
+            return { status: 200, data, message: 'Sensors found successfully' };
+        } catch (error) {
+            return { status: 500, data: null, message: 'Internal server error' };
+        }
+    }
+
+    // JWT
+    async post(body: any): Promise<{ status: number; data: SensorType | null; message: string }> {
+        try {
+            // Create a new sensor document using the provided data
+            const newSensor = await this.SensorType.create({
                 name: body.name,
                 properties: body.properties,
                 type: body.type,
                 manufacturer: body.manufacturer,
                 isDefault: false,
-                createdBy: body.id,
+                createdBy: body.createdBy,
             });
 
-            return { response, err: null };
-        } catch (err) {
-            return { response: null, err: 'Internal server error' };
+            if (newSensor) {
+                return { status: 201, data: newSensor, message: 'Sensor created successfully' };
+            } else {
+                return { status: 500, data: null, message: 'Failed to create the sensor' };
+            }
+        } catch (error) {
+            return { status: 500, data: null, message: 'Internal server error' };
         }
     }
 
-    // Only Admin
-    async delete(id: string): Promise<{ response: any; err: String | null }> {
-        try {
-            const data = await this.SensorType.deleteOne({ _id: id });
+    //TODO: Update
 
-            if (data.deletedCount == 0) {
-                return {
-                    response: null,
-                    err: 'Delete Failed: We encountered an issue while attempting to delete the data',
-                };
+    // Only Admin
+    async deleteById(id: string): Promise<{ status: number; message: string }> {
+        try {
+            // Find the sensor by its _id and delete it
+            const result = await this.SensorType.deleteOne({ _id: id });
+
+            if (result.deletedCount === 1) {
+                return { status: 200, message: 'Sensor deleted successfully' };
+            } else {
+                return { status: 404, message: 'Sensor not found' };
             }
-            return { response: 'Deleted successfully', err: null };
-        } catch (err) {
-            return { response: null, err: 'Internal server error' };
+        } catch (error) {
+            return { status: 500, message: 'Internal server error' };
         }
     }
 
