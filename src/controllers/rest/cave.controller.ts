@@ -14,74 +14,74 @@ export class CaveController {
     @Authenticate('jwt')
     @Get('/search/:id')
     async getById(@Res() res: Res, @PathParams('id') id: string) {
-        const objRes = await this.caveService.findById(id);
-
-        if (objRes.response == null && objRes.err == null) {
-            return res.status(404).json({ success: false, err: 'No caves found' });
+        try {
+            const result = await this.caveService.findById(id);
+            if (result.status === 200) {
+                return res.status(200).json(result.data);
+            } else if (result.status === 404) {
+                return res.status(404).json({ message: result.message });
+            } else {
+                return res.status(500).json({ message: result.message });
+            }
+        } catch (error) {
+            return res.status(500).json({ message: 'Internal server error' });
         }
-
-        if (objRes.err) {
-            return res.status(500).json({ success: false, err: objRes.err });
-        }
-
-        return res.status(200).json({ success: true, data: objRes.response });
     }
 
     @Authenticate('jwt')
     @Get('/search')
     async search(@Res() res: Res, @QueryParams('name') name?: string, @QueryParams('country') country?: string) {
-        const objRes = await this.caveService.searchByNameAutoFill(name, country);
-
-        if (objRes.response == null && objRes.err == null) {
-            return res.status(404).json({ success: false, err: 'No caves found' });
+        try {
+            const result = await this.caveService.searchByNameAutoFill(name, country);
+            if (result.status === 200) {
+                return res.status(200).json(result.data);
+            } else {
+                return res.status(result.status).json({ message: result.message });
+            }
+        } catch (error) {
+            return res.status(500).json({ message: 'Internal server error' });
         }
-
-        if (objRes.err) {
-            return res.status(500).json({ success: false, err: objRes.err });
-        }
-
-        return res.status(200).json({ success: true, data: objRes.response });
     }
 
     @Authenticate('jwt')
     @Get('/coordinates/geolocation')
     async coordinatesByGeolocation(
         @Res() res: Res,
-        @QueryParams('sw_lat') sw_lat: string,
-        @QueryParams('sw_lng') sw_lng: string,
-        @QueryParams('ne_lat') ne_lat: string,
-        @QueryParams('ne_lng') ne_lng: string,
+        @QueryParams('sw_lat') swLat: string,
+        @QueryParams('sw_lng') swLng: string,
+        @QueryParams('ne_lat') neLat: string,
+        @QueryParams('ne_lng') neLng: string,
     ) {
-        const objRes = await this.caveService.geolocationCoordinateSearch(sw_lat, sw_lng, ne_lat, ne_lng);
-
-        if (objRes.response == null && objRes.err == null) {
-            return res.status(404).json({ success: false, err: 'No coordinates found' });
+        try {
+            const result = await this.caveService.geolocationCoordinateSearch(swLat, swLng, neLat, neLng);
+            if (result.status === 200) {
+                return res.status(200).json(result.data);
+            } else {
+                return res.status(result.status).json({ message: result.message });
+            }
+        } catch (error) {
+            return res.status(500).json({ message: 'Internal server error' });
         }
-
-        if (objRes.err) {
-            return res.status(500).json({ success: false, err: objRes.err });
-        }
-
-        return res.status(200).json({ success: true, data: objRes.response });
     }
 
     @Authenticate('jwt')
     @Get('/data/geolocation')
     async CavesByGeolocation(
         @Res() res: Res,
-        @QueryParams('sw_lat') sw_lat: string,
-        @QueryParams('sw_lng') sw_lng: string,
-        @QueryParams('ne_lat') ne_lat: string,
-        @QueryParams('ne_lng') ne_lng: string,
+        @QueryParams('sw_lat') swLat: string,
+        @QueryParams('sw_lng') swLng: string,
+        @QueryParams('ne_lat') neLat: string,
+        @QueryParams('ne_lng') neLng: string,
     ) {
-        const objRes = await this.caveService.geolocationDataSearch(sw_lat, sw_lng, ne_lat, ne_lng);
-
-        if (objRes.response == null && objRes.err == null) {
-            return res.status(404).json({ success: false, err: 'no caves found' });
+        try {
+            const result = await this.caveService.geolocationDataSearch(swLat, swLng, neLat, neLng);
+            if (result.status === 200) {
+                return res.status(200).json(result.data);
+            } else {
+                return res.status(result.status).json({ message: result.message });
+            }
+        } catch (error) {
+            return res.status(500).json({ message: 'Internal server error' });
         }
-        if (objRes.err) {
-            return res.status(500).json({ success: false, err: objRes.err });
-        }
-        return res.status(200).json({ success: true, data: objRes.response });
     }
 }

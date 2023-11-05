@@ -6,101 +6,102 @@ export class CaveService {
     // response: data, err: null ==> sucess
     // response: null, err: null ==> 404
     // response: null, err: err  ==> err
-    async findById(id: string): Promise<{ response: any; err: String | null }> {
+    async findById(id: string): Promise<{ status: number; data: any | null; message: string | null }> {
         try {
-            let response = await axios({
-                method: 'GET',
-                url: `${process.env.GROTTOCAVE_API}/caves/${id}`,
-            });
+            const response = await axios.get(`${process.env.GROTTOCAVE_API}/caves/${id}`);
 
             if (!response.data) {
-                return { response: null, err: null };
+                return { status: 404, data: null, message: 'Cave not found' };
             }
 
-            return { response: response.data, err: null };
-        } catch (err) {
-            if (err.response.status == 404) {
-                return { response: null, err: null };
+            return { status: 200, data: response.data, message: 'Cave found successfully' };
+        } catch (error) {
+            if (error.response && error.response.status === 404) {
+                return { status: 404, data: null, message: 'Cave not found' };
             }
-            return { response: null, err: 'unable to connect to grottocenter' };
+            return { status: 500, data: null, message: 'Unable to connect to Grottocenter' };
         }
     }
 
     // response: data, err: null ==> sucess
     // response: null, err: null ==> 404
     // response: null, err: err  ==> err
-    async searchByNameAutoFill(name?: string, country?: string): Promise<{ response: any; err: String | null }> {
+    async searchByNameAutoFill(name?: string, country?: string): Promise<{ status: number; data: any | null; message: string | null }> {
         try {
-            let response = await axios({
-                method: 'POST',
-                url: `${process.env.GROTTOCAVE_API}/advanced-search`,
+            const response = await axios.post(`${process.env.GROTTOCAVE_API}/advanced-search`, null, {
                 params: {
                     complete: true,
                     resourceType: 'caves',
-                    name: name ? name : undefined,
-                    country: country ? country : undefined,
+                    name: name || undefined,
+                    country: country || undefined,
                 },
             });
 
-            if (response.data.length == 0) {
-                return { response: null, err: null };
+            if (response.data.length === 0) {
+                return { status: 200, data: null, message: 'No caves found' };
             }
 
-            return { response: response.data, err: null };
-        } catch (err) {
-            return { response: null, err: 'unable to connect to grottocenter' };
+            return { status: 200, data: response.data, message: 'Caves found successfully' };
+        } catch (error) {
+            return { status: 500, data: null, message: 'Unable to connect to Grottocenter' };
         }
     }
 
     // response: data, err: null ==> sucess
     // response: null, err: null ==> 404
     // response: null, err: err  ==> err
-    async geolocationCoordinateSearch(swLat: String, swLng: String, neLat: String, NeLng: String): Promise<{ response: any; err: String | null }> {
+    async geolocationCoordinateSearch(
+        swLat: string,
+        swLng: string,
+        neLat: string,
+        neLng: string,
+    ): Promise<{ status: number; data: any | null; message: string | null }> {
         try {
-            let response = await axios({
-                method: 'GET',
-                url: `${process.env.GROTTOCAVE_API}/geoloc/entrancesCoordinates`,
+            const response = await axios.get(`${process.env.GROTTOCAVE_API}/geoloc/entrancesCoordinates`, {
                 params: {
                     sw_lat: swLat,
                     sw_lng: swLng,
                     ne_lat: neLat,
-                    ne_lng: NeLng,
+                    ne_lng: neLng,
                 },
             });
 
-            if (response.data.length == 0) {
-                return { response: null, err: null };
+            if (response.data.length === 0) {
+                return { status: 200, data: null, message: 'No entrances found' };
             }
 
-            return { response: response.data, err: null };
-        } catch (err) {
-            return { response: null, err: 'unable to connect to grottoCenter' };
+            return { status: 200, data: response.data, message: 'Entrances found successfully' };
+        } catch (error) {
+            return { status: 500, data: null, message: 'Unable to connect to GrottoCenter' };
         }
     }
 
     // response: data, err: null ==> sucess
     // response: null, err: null ==> 404
     // response: null, err: err  ==> err
-    async geolocationDataSearch(swLat: String, swLng: String, neLat: String, NeLng: String): Promise<{ response: any; err: String | null }> {
+    async geolocationDataSearch(
+        swLat: string,
+        swLng: string,
+        neLat: string,
+        neLng: string,
+    ): Promise<{ status: number; data: any | null; message: string | null }> {
         try {
-            let response = await axios({
-                method: 'GET',
-                url: `${process.env.GROTTOCAVE_API}/geoloc/entrances`,
+            const response = await axios.get(`${process.env.GROTTOCAVE_API}/geoloc/entrances`, {
                 params: {
                     sw_lat: swLat,
                     sw_lng: swLng,
                     ne_lat: neLat,
-                    ne_lng: NeLng,
+                    ne_lng: neLng,
                 },
             });
 
-            if (response.data.length == 0) {
-                return { response: null, err: null };
+            if (response.data.length === 0) {
+                return { status: 200, data: null, message: 'No entrances found' };
             }
 
-            return { response: response.data, err: null };
-        } catch (err) {
-            return { response: null, err: 'unable to connect to grottoCenter' };
+            return { status: 200, data: response.data, message: 'Entrances found successfully' };
+        } catch (error) {
+            return { status: 500, data: null, message: 'Unable to connect to GrottoCenter' };
         }
     }
 }
