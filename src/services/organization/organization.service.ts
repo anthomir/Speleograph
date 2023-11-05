@@ -14,10 +14,10 @@ export class OrganizationService {
             const organization = await this.Organization.findById(id);
 
             if (!organization) {
-                return { status: 404, data: null, message: 'Sensor not found' };
+                return { status: 404, data: null, message: 'Organization not found' };
             }
 
-            return { status: 200, data: organization, message: 'Sensor found successfully' };
+            return { status: 200, data: organization, message: 'Organization found successfully' };
         } catch (error) {
             return { status: 500, data: null, message: 'Internal server error' };
         }
@@ -42,10 +42,10 @@ export class OrganizationService {
                       .sort(sortBy ? sortBy : undefined);
 
             if (data.length === 0) {
-                return { status: 404, data: null, message: 'No organizations found' };
+                return { status: 404, data: null, message: 'no organization found' };
             }
 
-            return { status: 200, data, message: 'Sensors found successfully' };
+            return { status: 200, data, message: 'Organization found successfully' };
         } catch (error) {
             return { status: 500, data: null, message: 'Internal server error' };
         }
@@ -64,7 +64,7 @@ export class OrganizationService {
             });
 
             if (newOrganization) {
-                return { status: 201, data: newOrganization, message: 'Sensor created successfully' };
+                return { status: 201, data: newOrganization, message: 'Organization created successfully' };
             } else {
                 return { status: 500, data: null, message: 'Failed to create the organization' };
             }
@@ -78,9 +78,9 @@ export class OrganizationService {
             const result = await this.Organization.deleteOne({ _id: id });
 
             if (result.deletedCount === 1) {
-                return { status: 200, message: 'Sensor deleted successfully' };
+                return { status: 200, message: 'Organization deleted successfully' };
             } else {
-                return { status: 404, message: 'Sensor not found' };
+                return { status: 404, message: 'Organization not found' };
             }
         } catch (error) {
             return { status: 500, message: 'Internal server error' };
@@ -92,7 +92,7 @@ export class OrganizationService {
             const organization = await this.Organization.findById(id);
 
             if (!organization) {
-                return { status: 404, data: null, message: 'Sensor not found' };
+                return { status: 404, data: null, message: 'Organization not found' };
             }
 
             const updateData: Partial<Organization> = {};
@@ -109,7 +109,7 @@ export class OrganizationService {
             });
 
             if (updatedOrganization) {
-                return { status: 200, data: updatedOrganization, message: 'Sensor updated successfully' };
+                return { status: 200, data: updatedOrganization, message: 'Organization updated successfully' };
             } else {
                 return { status: 500, data: null, message: 'Failed to update the organization' };
             }

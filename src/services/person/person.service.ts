@@ -14,10 +14,10 @@ export class PersonService {
             const person = await this.Person.findById(id);
 
             if (!person) {
-                return { status: 404, data: null, message: 'Sensor not found' };
+                return { status: 404, data: null, message: 'Person not found' };
             }
 
-            return { status: 200, data: person, message: 'Sensor found successfully' };
+            return { status: 200, data: person, message: 'Person found successfully' };
         } catch (error) {
             return { status: 500, data: null, message: 'Internal server error' };
         }
@@ -40,7 +40,7 @@ export class PersonService {
                 return { status: 404, data: null, message: 'No persons found' };
             }
 
-            return { status: 200, data, message: 'Sensors found successfully' };
+            return { status: 200, data, message: 'Persons found successfully' };
         } catch (error) {
             return { status: 500, data: null, message: 'Internal server error' };
         }
@@ -56,7 +56,7 @@ export class PersonService {
             });
 
             if (newPerson) {
-                return { status: 201, data: newPerson, message: 'Sensor created successfully' };
+                return { status: 201, data: newPerson, message: 'Person created successfully' };
             } else {
                 return { status: 500, data: null, message: 'Failed to create the person' };
             }
@@ -70,9 +70,9 @@ export class PersonService {
             const result = await this.Person.deleteOne({ _id: id });
 
             if (result.deletedCount === 1) {
-                return { status: 200, message: 'Sensor deleted successfully' };
+                return { status: 200, message: 'Person deleted successfully' };
             } else {
-                return { status: 404, message: 'Sensor not found' };
+                return { status: 404, message: 'Person not found' };
             }
         } catch (error) {
             return { status: 500, message: 'Internal server error' };
@@ -84,7 +84,7 @@ export class PersonService {
             const person = await this.Person.findById(id);
 
             if (!person) {
-                return { status: 404, data: null, message: 'Sensor not found' };
+                return { status: 404, data: null, message: 'Person not found' };
             }
 
             const updateData: Partial<Person> = {};
@@ -101,7 +101,7 @@ export class PersonService {
             });
 
             if (updatedPerson) {
-                return { status: 200, data: updatedPerson, message: 'Sensor updated successfully' };
+                return { status: 200, data: updatedPerson, message: 'Person updated successfully' };
             } else {
                 return { status: 500, data: null, message: 'Failed to update the person' };
             }

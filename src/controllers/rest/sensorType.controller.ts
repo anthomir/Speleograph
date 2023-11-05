@@ -1,10 +1,11 @@
 import { Controller, Inject } from '@tsed/di';
 import { BodyParams, Context, PathParams, QueryParams } from '@tsed/platform-params';
-import { Get, Post, Delete } from '@tsed/schema';
+import { Get, Post, Delete, Put } from '@tsed/schema';
 import { Authenticate } from '@tsed/passport';
 import { Res } from '@tsed/common';
 import { SensorTypeService } from '../../services/sensorType/sensorType.service';
 import { User } from '../../models/User';
+import { UpdateSensorTypeDto } from 'src/dto/sensorType/updateSensorDto';
 
 @Controller('/sensorType')
 export class SensorTypeController {
@@ -62,6 +63,27 @@ export class SensorTypeController {
             const result = await this.sensorTypeService.post(body);
             if (result.status === 201) {
                 return res.status(201).json({ sucess: true, data: result.data });
+            } else {
+                return res.status(500).json({ sucess: false, err: result.message });
+            }
+        } catch (error) {
+            return res.status(500).json({ sucess: false, err: 'Internal server error' });
+        }
+    }
+
+    @Put('/:id')
+    @Authenticate('jwt')
+    async update(@Res() res: Res, @PathParams('id') id: string, @BodyParams() body: UpdateSensorTypeDto) {
+        try {
+            if (id.length != 24) {
+                return res.status(400).json({ sucess: false, message: 'Bad request' });
+            }
+
+            const result = await this.sensorTypeService.updateSensorType(id, body);
+            if (result.status === 404) {
+                return res.status(404).json({ sucess: false, err: result.message });
+            } else if (result.status === 200) {
+                return res.status(200).json({ sucess: true, data: result.data });
             } else {
                 return res.status(500).json({ sucess: false, err: result.message });
             }

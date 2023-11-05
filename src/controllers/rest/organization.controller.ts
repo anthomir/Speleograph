@@ -88,7 +88,6 @@ export class OrganizationController {
         }
     }
 
-    //TODO: Fix Update
     @Put('/:id')
     @Authenticate('jwt')
     async update(@Res() res: Res, @PathParams('id') id: string, @BodyParams() body: UpdateOrganizationDto) {

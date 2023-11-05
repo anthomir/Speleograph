@@ -14,10 +14,10 @@ export class AreaService {
             const area = await this.Area.findById(id);
 
             if (!area) {
-                return { status: 404, data: null, message: 'Sensor not found' };
+                return { status: 404, data: null, message: 'Area not found' };
             }
 
-            return { status: 200, data: area, message: 'Sensor found successfully' };
+            return { status: 200, data: area, message: 'Area found successfully' };
         } catch (error) {
             return { status: 500, data: null, message: 'Internal server error' };
         }
@@ -37,10 +37,10 @@ export class AreaService {
                       .sort(sortBy ? sortBy : undefined);
 
             if (data.length === 0) {
-                return { status: 404, data: null, message: 'No areas found' };
+                return { status: 404, data: null, message: 'No Area found' };
             }
 
-            return { status: 200, data, message: 'Sensors found successfully' };
+            return { status: 200, data, message: 'Areas found successfully' };
         } catch (error) {
             return { status: 500, data: null, message: 'Internal server error' };
         }
@@ -55,7 +55,7 @@ export class AreaService {
             });
 
             if (newArea) {
-                return { status: 201, data: newArea, message: 'Sensor created successfully' };
+                return { status: 201, data: newArea, message: 'Area created successfully' };
             } else {
                 return { status: 500, data: null, message: 'Failed to create the area' };
             }
@@ -69,9 +69,9 @@ export class AreaService {
             const result = await this.Area.deleteOne({ _id: id });
 
             if (result.deletedCount === 1) {
-                return { status: 200, message: 'Sensor deleted successfully' };
+                return { status: 200, message: 'Area deleted successfully' };
             } else {
-                return { status: 404, message: 'Sensor not found' };
+                return { status: 404, message: 'Area not found' };
             }
         } catch (error) {
             return { status: 500, message: 'Internal server error' };
@@ -83,7 +83,7 @@ export class AreaService {
             const area = await this.Area.findById(id);
 
             if (!area) {
-                return { status: 404, data: null, message: 'Sensor not found' };
+                return { status: 404, data: null, message: 'Area not found' };
             }
 
             const updateData: Partial<Area> = {};
@@ -100,7 +100,7 @@ export class AreaService {
             });
 
             if (updatedArea) {
-                return { status: 200, data: updatedArea, message: 'Sensor updated successfully' };
+                return { status: 200, data: updatedArea, message: 'Area updated successfully' };
             } else {
                 return { status: 500, data: null, message: 'Failed to update the area' };
             }

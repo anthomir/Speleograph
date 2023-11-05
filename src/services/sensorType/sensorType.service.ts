@@ -1,9 +1,9 @@
 import { Inject, OnInit, OnRoutesInit, Req, Res, Service } from '@tsed/common';
 import { MongooseModel } from '@tsed/mongoose';
-import jwt from 'jsonwebtoken';
 import { SensorType } from '../../models/SensorType';
 import { SensorTypeEnum } from '../../models/Enum';
-import { User } from '../../models/User';
+import { UpdateSensorDto } from 'src/dto/sensor/updateSensor';
+import { UpdateSensorTypeDto } from 'src/dto/sensorType/updateSensorDto';
 
 @Service()
 export class SensorTypeService implements OnInit {
@@ -76,7 +76,41 @@ export class SensorTypeService implements OnInit {
         }
     }
 
-    //TODO: Update
+    // JWT
+    async updateSensorType(id: string, newData: UpdateSensorTypeDto): Promise<{ status: number; data: SensorType | null; message: string }> {
+        try {
+            const sensor = await this.SensorType.findById(id);
+
+            if (!sensor) {
+                return { status: 404, data: null, message: 'Sensor not found' };
+            }
+
+            const updateData: Partial<SensorType> = {};
+
+            for (const field in newData) {
+                if (field in sensor) {
+                    const key = field as keyof UpdateSensorTypeDto;
+                    if (key === 'properties') {
+                        updateData[key] = newData[key] as string[];
+                    } else {
+                        updateData[key] = newData[key];
+                    }
+                }
+            }
+
+            const updatedSensor = await this.SensorType.findByIdAndUpdate(id, updateData, {
+                new: true,
+            });
+
+            if (updatedSensor) {
+                return { status: 200, data: updatedSensor, message: 'Sensor updated successfully' };
+            } else {
+                return { status: 500, data: null, message: 'Failed to update the sensor' };
+            }
+        } catch (error) {
+            return { status: 500, data: null, message: 'Internal server error' };
+        }
+    }
 
     // Only Admin
     async deleteById(id: string): Promise<{ status: number; message: string }> {
@@ -85,9 +119,9 @@ export class SensorTypeService implements OnInit {
             const result = await this.SensorType.deleteOne({ _id: id });
 
             if (result.deletedCount === 1) {
-                return { status: 200, message: 'Sensor deleted successfully' };
+                return { status: 200, message: 'SensorType deleted successfully' };
             } else {
-                return { status: 404, message: 'Sensor not found' };
+                return { status: 404, message: 'SensorType not found' };
             }
         } catch (error) {
             return { status: 500, message: 'Internal server error' };

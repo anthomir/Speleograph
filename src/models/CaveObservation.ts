@@ -1,4 +1,4 @@
-import { CollectionOf, Email, Required, Default, Minimum, Maximum } from '@tsed/schema';
+import { Required } from '@tsed/schema';
 import { Model, ObjectID, Ref, Select } from '@tsed/mongoose';
 import { User } from './User';
 import { SensorType } from './SensorType';

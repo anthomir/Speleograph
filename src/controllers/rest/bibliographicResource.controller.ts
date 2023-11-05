@@ -5,6 +5,7 @@ import { Authenticate } from '@tsed/passport';
 import { Req, Res } from '@tsed/common';
 import { BibliographicResourceService } from '../../services/bibliographicRessource/bibliographicRessource.service';
 
+//TODO: Refactor
 @Controller('/bibliographicRessource')
 export class BibliographicRessourceController {
     @Inject(BibliographicResourceService)
@@ -12,7 +13,13 @@ export class BibliographicRessourceController {
 
     @Get('/')
     @Authenticate('jwt')
-    async get(@Res() res: Res, @QueryParams('filter') filter: string, @QueryParams('skip') skip: string, @QueryParams('take') take: string, @QueryParams('sortBy') sortBy: string) {
+    async get(
+        @Res() res: Res,
+        @QueryParams('filter') filter: string,
+        @QueryParams('skip') skip: string,
+        @QueryParams('take') take: string,
+        @QueryParams('sortBy') sortBy: string,
+    ) {
         let objRes = await this.resourceService.find(filter, skip, take, sortBy);
 
         if (objRes.response == null && objRes.err == null) {
