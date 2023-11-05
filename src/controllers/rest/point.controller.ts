@@ -46,7 +46,7 @@ export class PointController {
 
     @Delete('/:id')
     @Authenticate('jwt')
-    async delete(@Req() req: Req, @Res() res: Res, @PathParams('id') id: string) {
+    async delete(@Res() res: Res, @PathParams('id') id: string) {
         if (!id) {
             return res.status(400).json({ success: false, err: 'Bad request' });
         }
