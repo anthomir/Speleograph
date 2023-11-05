@@ -2,10 +2,9 @@ import { Controller, Inject } from '@tsed/di';
 import { BodyParams, Context, PathParams, QueryParams } from '@tsed/platform-params';
 import { Get, Post, Delete } from '@tsed/schema';
 import { Authenticate } from '@tsed/passport';
-import { Req, Res } from '@tsed/common';
+import { Res } from '@tsed/common';
 import { SensorTypeService } from '../../services/sensorType/sensorType.service';
-import { User } from 'src/models/User';
-import { Role } from 'src/models/Enum';
+import { User } from '../../models/User';
 
 @Controller('/sensorType')
 export class SensorTypeController {

@@ -4,8 +4,8 @@ import { Get, Post, Delete, Put } from '@tsed/schema';
 import { Authenticate } from '@tsed/passport';
 import { Res } from '@tsed/common';
 import { User } from '../../models/User';
-import { PersonService } from 'src/services/person/person.service';
-import { UpdatePersonDto } from 'src/dto/person/updatePerson';
+import { PersonService } from '../../services/person/person.service';
+import { UpdatePersonDto } from '../../dto/person/updatePerson';
 
 @Controller('/person')
 export class PersonController {

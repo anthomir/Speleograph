@@ -4,7 +4,7 @@ import { Get, Post, Delete, Put } from '@tsed/schema';
 import { Authenticate } from '@tsed/passport';
 import { Res } from '@tsed/common';
 import { User } from '../../models/User';
-import { AreaService } from 'src/services/area/area.service';
+import { AreaService } from '../../services/area/area.service';
 import { UpdateAreaDto } from '../../dto/area/updateArea';
 
 @Controller('/area')

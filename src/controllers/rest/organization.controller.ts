@@ -4,8 +4,8 @@ import { Get, Post, Delete, Put } from '@tsed/schema';
 import { Authenticate } from '@tsed/passport';
 import { Res } from '@tsed/common';
 import { User } from '../../models/User';
-import { OrganizationService } from 'src/services/organization/organization.service';
-import { UpdateOrganizationDto } from 'src/dto/organization/updateOrganization';
+import { OrganizationService } from '../../services/organization/organization.service';
+import { UpdateOrganizationDto } from '../../dto/organization/updateOrganization';
 
 @Controller('/organization')
 export class OrganizationController {
