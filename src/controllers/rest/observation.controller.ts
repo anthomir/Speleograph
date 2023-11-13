@@ -5,8 +5,8 @@ import { Authenticate } from '@tsed/passport';
 import { MulterOptions, MultipartFile, PlatformMulterFile, Req, Res } from '@tsed/common';
 import { CaveObservationService } from '../../services/observation/observation.service';
 import path from 'path';
-import { User } from '../../models/User';
-import { Role } from '../../models/Enum';
+import { User } from 'src/models/User';
+import { Role } from 'src/models/Enum';
 
 //TODO: Refactor
 @Controller('/caveObservation')
@@ -78,7 +78,7 @@ export class CaveObservationController {
         },
     })
     async uploadFile(@MultipartFile('file') file: PlatformMulterFile, @Req() req: Req, @Res() res: Res) {
-        return await this.caveObservationService.postFile(req, res, file);
+        return await this.caveObservationService.postFile(res, file);
     }
 
     //admin delete api
