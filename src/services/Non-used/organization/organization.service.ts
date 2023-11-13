@@ -1,7 +1,7 @@
 import { Inject, OnInit, OnRoutesInit, Req, Res, Service } from '@tsed/common';
 import { MongooseModel } from '@tsed/mongoose';
-import { Organization } from '../../models/Organization';
-import { UpdateOrganizationDto } from '../../dto/organization/updateOrganization';
+import { Organization } from '../../../models/Organization';
+import { UpdateOrganizationDto } from '../../../dto/organization/updateOrganization';
 
 @Service()
 export class OrganizationService {

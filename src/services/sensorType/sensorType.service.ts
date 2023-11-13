@@ -2,24 +2,27 @@ import { Inject, OnInit, OnRoutesInit, Req, Res, Service } from '@tsed/common';
 import { MongooseModel } from '@tsed/mongoose';
 import { SensorType } from '../../models/SensorType';
 import { SensorTypeEnum } from '../../models/Enum';
-import { UpdateSensorDto } from 'src/dto/sensor/updateSensor';
-import { UpdateSensorTypeDto } from 'src/dto/sensorType/updateSensorDto';
+import { UpdateSensorTypeDto } from '../../dto/sensorType/updateSensorDto';
+import { FilterQuery } from 'mongoose';
+import { Notification } from '../../models/Notification';
 
 @Service()
 export class SensorTypeService implements OnInit {
     @Inject(SensorType)
     private SensorType: MongooseModel<SensorType>;
+    @Inject(Notification)
+    private Notification: MongooseModel<Notification>;
 
     // JWT
-    async findById(id: string): Promise<{ status: number; data: SensorType | null; message: string | null }> {
+    async findById(filter: FilterQuery<SensorType>): Promise<{ status: number; data: SensorType | null; message: string | null }> {
         try {
-            const sensor = await this.SensorType.findById(id);
+            const sensor = await this.SensorType.findOne(filter);
 
             if (!sensor) {
                 return { status: 404, data: null, message: 'Sensor not found' };
             }
 
-            return { status: 200, data: sensor, message: 'Sensor found successfully' };
+            return { status: 200, data: sensor, message: 'SensorType found successfully' };
         } catch (error) {
             return { status: 500, data: null, message: 'Internal server error' };
         }
@@ -27,27 +30,27 @@ export class SensorTypeService implements OnInit {
 
     // JWT
     async find(
-        filter: any,
-        skip: string,
-        take: string,
+        filter: FilterQuery<SensorType>,
+        skip: number,
+        take: number,
         sortBy: string,
     ): Promise<{ status: number; data: SensorType[] | null; message: string | null }> {
         try {
             const data = filter
-                ? await this.SensorType.find(JSON.parse(filter))
-                      .limit(take ? parseInt(take) : 100)
-                      .skip(skip ? parseInt(skip) : 0)
+                ? await this.SensorType.find(filter)
+                      .limit(take ? take : 100)
+                      .skip(skip ? skip : 0)
                       .sort(sortBy ? sortBy : undefined)
                 : await this.SensorType.find()
-                      .limit(take ? parseInt(take) : 100)
-                      .skip(skip ? parseInt(skip) : 0)
+                      .limit(take ? take : 100)
+                      .skip(skip ? skip : 0)
                       .sort(sortBy ? sortBy : undefined);
 
             if (data.length === 0) {
-                return { status: 404, data: null, message: 'No sensors found' };
+                return { status: 404, data: null, message: 'No sensorType found' };
             }
 
-            return { status: 200, data, message: 'Sensors found successfully' };
+            return { status: 200, data, message: 'SensorTypes found successfully' };
         } catch (error) {
             return { status: 500, data: null, message: 'Internal server error' };
         }
@@ -112,18 +115,66 @@ export class SensorTypeService implements OnInit {
         }
     }
 
-    // Only Admin
+    //isDeleted = true
     async deleteById(id: string): Promise<{ status: number; message: string }> {
         try {
-            // Find the sensor by its _id and delete it
-            const result = await this.SensorType.deleteOne({ _id: id });
+            const observation = await this.SensorType.findOne({ _id: id, isDeleted: false });
 
-            if (result.deletedCount === 1) {
-                return { status: 200, message: 'SensorType deleted successfully' };
-            } else {
+            if (!observation) {
                 return { status: 404, message: 'SensorType not found' };
             }
-        } catch (error) {
+
+            const data = await this.SensorType.updateOne({ _id: id }, { isDeleted: true, deletedAt: new Date() });
+            if (data.modifiedCount != 1) {
+                return { status: 500, message: 'Unable to delete SensorType' };
+            }
+
+            await this.Notification.create({ title: 'Delete notification', description: `SensorType soft deleted , id: ${id}` });
+
+            return { status: 200, message: 'SensorType deleted successfully' };
+        } catch (err) {
+            return { status: 500, message: 'Internal server error' };
+        }
+    }
+
+    async forceDeleteById(id: string): Promise<{ status: number; message: string }> {
+        try {
+            const observation = await this.SensorType.findOne({ _id: id });
+
+            if (!observation) {
+                return { status: 404, message: 'SensorType not found' };
+            }
+
+            const data = await this.SensorType.deleteOne({ _id: id });
+
+            if (data.deletedCount != 1) {
+                return { status: 500, message: 'Internal server error' };
+            }
+
+            await this.Notification.create({ title: 'Delete notification', description: `SensorType force deleted , id: ${id}` });
+
+            return { status: 200, message: 'SensorType deleted successfully' };
+        } catch (err) {
+            return { status: 500, message: 'Internal server error' };
+        }
+    }
+
+    async restore(filter: FilterQuery<SensorType>): Promise<{ status: number; message: string }> {
+        try {
+            const observations = await this.SensorType.find(filter);
+
+            if (observations.length === 0) {
+                return { status: 404, message: 'No sensorType found for the provided IDs' };
+            }
+
+            const updateResult = await this.SensorType.updateMany(filter, { $set: { isDeleted: false } });
+
+            if (updateResult.matchedCount !== observations.length) {
+                return { status: 500, message: 'Not all sensor types were updated' };
+            }
+
+            return { status: 200, message: 'Observations restored successfully' };
+        } catch (err) {
             return { status: 500, message: 'Internal server error' };
         }
     }
@@ -146,6 +197,7 @@ export class SensorTypeService implements OnInit {
                 'HH',
                 'mm',
                 'ss',
+                'offset',
                 'Pressure(hPa)',
                 'Temperature(Kelvin) 1',
                 'Temperature(Kelvin) 2',

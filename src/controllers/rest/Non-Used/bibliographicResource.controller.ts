@@ -3,7 +3,7 @@ import { BodyParams, PathParams, QueryParams } from '@tsed/platform-params';
 import { Get, Post, Delete, Put } from '@tsed/schema';
 import { Authenticate } from '@tsed/passport';
 import { Req, Res } from '@tsed/common';
-import { BibliographicResourceService } from '../../services/bibliographicRessource/bibliographicRessource.service';
+import { BibliographicResourceService } from '../../../services/Non-used/bibliographicRessource/bibliographicRessource.service';
 
 //TODO: Refactor
 @Controller('/bibliographicRessource')

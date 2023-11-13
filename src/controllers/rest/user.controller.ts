@@ -15,7 +15,14 @@ export class UserController {
     private usersService: UserService;
 
     @Post('/register')
-    async post(@Req() req: Req, @Res() res: Res, @BodyParams() @UseJoiValidation(UserSchema) body: User) {
+    async post(@Res() res: Res, @BodyParams() @UseJoiValidation(UserSchema) body: User) {
+        let response = await this.usersService.findOne({
+            $or: [{ email: body.email }, { license: body.license }],
+        });
+        if (response) {
+            return res.status(409).json({ success: false, err: 'Email/License already exists' });
+        }
+
         return await this.usersService.create(body, res);
     }
 

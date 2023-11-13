@@ -5,20 +5,57 @@ import { CaveObservation } from '../../models/CaveObservation';
 import fs from 'fs';
 import { User } from '../../models/User';
 import { Role } from '../../models/Enum';
+import { FilterQuery } from 'mongoose';
+import { Notification } from '../../models/Notification';
 
 @Service()
 export class CaveObservationService {
     @Inject(CaveObservation)
     private CaveObservation: MongooseModel<CaveObservation>;
-
+    @Inject(Notification)
+    private Notification: MongooseModel<Notification>;
     @Inject(User)
     private User: MongooseModel<User>;
 
-    async find(req: Req, res: Res, filter?: string) {
+    // JWT
+    async findById(filter: FilterQuery<CaveObservation>): Promise<{ status: number; data: CaveObservation | null; message: string | null }> {
         try {
-            return res.status(200).json({ success: true, data: await this.CaveObservation.find(filter ? JSON.parse(filter) : {}) });
-        } catch (err) {
-            return res.status(500).json({ success: false, err: 'Internal Server Error' });
+            const sensor = await this.CaveObservation.findOne(filter);
+
+            if (!sensor) {
+                return { status: 404, data: null, message: 'Observation not found' };
+            }
+
+            return { status: 200, data: sensor, message: 'Observation found successfully' };
+        } catch (error) {
+            return { status: 500, data: null, message: 'Internal server error' };
+        }
+    }
+
+    async find(
+        filter: any,
+        skip: string,
+        take: string,
+        sortBy: string,
+    ): Promise<{ status: number; data: CaveObservation[] | null; message: string | null }> {
+        try {
+            const data = filter
+                ? await this.CaveObservation.find(filter)
+                      .limit(take ? parseInt(take) : 100)
+                      .skip(skip ? parseInt(skip) : 0)
+                      .sort(sortBy ? sortBy : undefined)
+                : await this.CaveObservation.find()
+                      .limit(take ? parseInt(take) : 100)
+                      .skip(skip ? parseInt(skip) : 0)
+                      .sort(sortBy ? sortBy : undefined);
+
+            if (data.length === 0) {
+                return { status: 404, data: null, message: 'No sensors found' };
+            }
+
+            return { status: 200, data, message: 'Sensors found successfully' };
+        } catch (error) {
+            return { status: 500, data: null, message: 'Internal server error' };
         }
     }
 
@@ -41,7 +78,7 @@ export class CaveObservationService {
         }
     }
 
-    async postFile(req: Req, res: Res, file: any) {
+    async postFile(res: Res, file: any) {
         if (!file) return res.status(400).json({ success: false, err: 'File should be of type .CSV' });
 
         const filename = file.filename;
@@ -53,30 +90,68 @@ export class CaveObservationService {
         return res.status(200).json({ success: false, data: { fileUrl: `${process.env.PRODUCTION_URL}/uploads/${filename}.${mimetype}` } });
     }
 
-    async delete(req: Req, res: Res, id: string) {
+    //isDeleted = true
+    async deleteById(id: string): Promise<{ status: number; message: string }> {
         try {
-            let request = { exp: undefined, iat: undefined, sub: undefined };
-            request = { ...request, ...req.user };
+            const observation = await this.CaveObservation.findOne({ _id: id, isDeleted: false });
 
-            let contributionData = await this.CaveObservation.findById(id).lean();
-
-            let user = await this.User.findById(request.sub).select('+role');
-
-            if (!contributionData) {
-                return res.status(404).json({ success: false, err: 'Contribution not found' });
-            }
-            if (!user) {
-                return res.status(404).json({ success: false, err: 'User not found' });
+            if (!observation) {
+                return { status: 404, message: 'Observation not found' };
             }
 
-            if (contributionData.createdBy != user.id && user.role != Role.Admin) {
-                return res.status(500).json({ success: true, err: 'Internal server error' });
-            } else {
-                let response = await this.CaveObservation.deleteOne({ _id: id });
-                return res.status(200).json({ success: true, data: response });
+            const data = await this.CaveObservation.updateOne({ _id: id }, { isDeleted: true, deletedAt: new Date() });
+            if (data.modifiedCount != 1) {
+                return { status: 500, message: 'Unable to delete Observation' };
             }
+
+            await this.Notification.create({ title: 'Delete notification', description: `Observation soft deleted , id: ${id}` });
+
+            return { status: 200, message: 'Observation deleted successfully' };
         } catch (err) {
-            return res.status(500).json({ success: false, err: err });
+            return { status: 500, message: 'Internal server error' };
+        }
+    }
+
+    async forceDeleteById(id: string): Promise<{ status: number; message: string }> {
+        try {
+            const observation = await this.CaveObservation.findOne({ _id: id });
+
+            if (!observation) {
+                return { status: 404, message: 'Observation not found' };
+            }
+
+            const data = await this.CaveObservation.deleteOne({ _id: id });
+
+            if (data.deletedCount != 1) {
+                return { status: 500, message: 'Internal server error' };
+            }
+
+            await this.Notification.create({ title: 'Delete notification', description: `Observation soft deleted , id: ${id}` });
+
+            return { status: 200, message: 'Observation deleted successfully' };
+        } catch (err) {
+            return { status: 500, message: 'Internal server error' };
+        }
+    }
+
+    async restore(filter: FilterQuery<CaveObservation>): Promise<{ status: number; message: string }> {
+        try {
+            filter = { ...filter, ...{ isDeleted: true } };
+            const observations = await this.CaveObservation.find(filter);
+
+            if (observations.length === 0) {
+                return { status: 404, message: 'No observations found for the provided IDs' };
+            }
+
+            const updateResult = await this.CaveObservation.updateMany(filter, { $set: { isDeleted: false, deletedAt: null } });
+
+            if (updateResult.matchedCount !== observations.length) {
+                return { status: 500, message: 'Not all observations were updated' };
+            }
+
+            return { status: 200, message: 'Observations restored successfully' };
+        } catch (err) {
+            return { status: 500, message: 'Internal server error' };
         }
     }
 }

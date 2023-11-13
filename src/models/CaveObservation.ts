@@ -1,4 +1,4 @@
-import { Required } from '@tsed/schema';
+import { Default, Nullable, Required } from '@tsed/schema';
 import { Model, ObjectID, Ref, Select } from '@tsed/mongoose';
 import { User } from './User';
 import { SensorType } from './SensorType';
@@ -30,4 +30,12 @@ export class CaveObservation {
     @Required()
     @Ref(() => User)
     createdBy: Ref<User>;
+
+    @Select(false)
+    @Default(false)
+    isDeleted: boolean;
+
+    @Select(false)
+    @Nullable(true)
+    deletedAt: Date;
 }

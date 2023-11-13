@@ -2,21 +2,23 @@ import { Inject, OnInit, OnRoutesInit, Req, Res, Service } from '@tsed/common';
 import { MongooseModel } from '@tsed/mongoose';
 import { UpdateSensorDto } from '../../dto/sensor/updateSensor';
 import { Sensor } from '../../models/Sensor';
+import { FilterQuery } from 'mongoose';
+import { Notification } from '../../models/Notification';
 
 @Service()
 export class SensorService {
     @Inject(Sensor)
     private Sensor: MongooseModel<Sensor>;
-
+    @Inject(Notification)
+    private Notification: MongooseModel<Notification>;
     // JWT
-    async findById(id: string): Promise<{ status: number; data: Sensor | null; message: string | null }> {
+    async findById(filter: any): Promise<{ status: number; data: Sensor | null; message: string | null }> {
         try {
-            const sensor = await this.Sensor.findById(id);
+            const sensor = await this.Sensor.findOne(filter);
 
             if (!sensor) {
                 return { status: 404, data: null, message: 'Sensor not found' };
             }
-
             return { status: 200, data: sensor, message: 'Sensor found successfully' };
         } catch (error) {
             return { status: 500, data: null, message: 'Internal server error' };
@@ -27,7 +29,7 @@ export class SensorService {
     async find(filter: any, skip: string, take: string, sortBy: string): Promise<{ status: number; data: Sensor[] | null; message: string | null }> {
         try {
             const data = filter
-                ? await this.Sensor.find(JSON.parse(filter))
+                ? await this.Sensor.find(filter)
                       .limit(take ? parseInt(take) : 100)
                       .skip(skip ? parseInt(skip) : 0)
                       .sort(sortBy ? sortBy : undefined)
@@ -66,20 +68,6 @@ export class SensorService {
         }
     }
 
-    async deleteById(id: string): Promise<{ status: number; message: string }> {
-        try {
-            const result = await this.Sensor.deleteOne({ _id: id });
-
-            if (result.deletedCount === 1) {
-                return { status: 200, message: 'Sensor deleted successfully' };
-            } else {
-                return { status: 404, message: 'Sensor not found' };
-            }
-        } catch (error) {
-            return { status: 500, message: 'Internal server error' };
-        }
-    }
-
     // JWT
     async updateSensor(id: string, newData: UpdateSensorDto): Promise<{ status: number; data: Sensor | null; message: string }> {
         try {
@@ -109,6 +97,69 @@ export class SensorService {
             }
         } catch (error) {
             return { status: 500, data: null, message: 'Internal server error' };
+        }
+    }
+
+    //isDeleted = true
+    async deleteById(id: string): Promise<{ status: number; message: string }> {
+        try {
+            const observation = await this.Sensor.findOne({ _id: id, isDeleted: false });
+
+            if (!observation) {
+                return { status: 404, message: 'Sensor not found' };
+            }
+
+            const data = await this.Sensor.updateOne({ _id: id }, { isDeleted: true, deletedAt: new Date() });
+            if (data.modifiedCount != 1) {
+                return { status: 500, message: 'Unable to delete Sensor' };
+            }
+
+            await this.Notification.create({ title: 'Delete notification', description: `Sensor soft deleted , id: ${id}` });
+
+            return { status: 200, message: 'Sensor deleted successfully' };
+        } catch (err) {
+            return { status: 500, message: 'Internal server error' };
+        }
+    }
+
+    async forceDeleteById(id: string): Promise<{ status: number; message: string }> {
+        try {
+            const observation = await this.Sensor.findOne({ _id: id });
+
+            if (!observation) {
+                return { status: 404, message: 'Sensor not found' };
+            }
+
+            const data = await this.Sensor.deleteOne({ _id: id });
+
+            if (data.deletedCount != 1) {
+                return { status: 500, message: 'Internal server error' };
+            }
+            await this.Notification.create({ title: 'Delete notification', description: `Sensor force deleted , id: ${id}` });
+
+            return { status: 200, message: 'Sensor deleted successfully' };
+        } catch (err) {
+            return { status: 500, message: 'Internal server error' };
+        }
+    }
+
+    async restore(filter: FilterQuery<Sensor>): Promise<{ status: number; message: string }> {
+        try {
+            const observations = await this.Sensor.find(filter);
+
+            if (observations.length === 0) {
+                return { status: 404, message: 'No sensor found for the provided IDs' };
+            }
+
+            const updateResult = await this.Sensor.updateMany(filter, { $set: { isDeleted: false, deletedAt: null } });
+
+            if (updateResult.matchedCount !== observations.length) {
+                return { status: 500, message: 'Not all sensors were updated' };
+            }
+
+            return { status: 200, message: 'Sensors restored successfully' };
+        } catch (err) {
+            return { status: 500, message: 'Internal server error' };
         }
     }
 }

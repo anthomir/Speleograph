@@ -15,7 +15,7 @@ export class CaveController {
     @Get('/search/:id')
     async getById(@Res() res: Res, @PathParams('id') id: string) {
         try {
-            const result = await this.caveService.findById(id);
+            const result = await this.caveService.findById({ _id: id, isDeleted: false });
             if (result.status === 200) {
                 return res.status(200).json(result.data);
             } else if (result.status === 404) {

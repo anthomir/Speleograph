@@ -28,7 +28,14 @@ export class SensorType {
     isDefault: boolean;
 
     @Select(true)
-    @Nullable(true)
     @Ref(() => User)
     createdBy: Ref<User> | null;
+
+    @Select(false)
+    @Default(false)
+    isDeleted: boolean;
+
+    @Select(false)
+    @Nullable(true)
+    deletedAt: Date;
 }

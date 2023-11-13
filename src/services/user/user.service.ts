@@ -10,180 +10,154 @@ sgMail.setApiKey(String(process.env.SENDGRID_API));
 
 @Service()
 export class UserService {
-	@Inject(User)
-	private User: MongooseModel<User>;
+    @Inject(User)
+    private User: MongooseModel<User>;
 
-	async userProfile(req: Req, res: Res) {
-		try {
-			let request = { exp: undefined, iat: undefined, sub: undefined };
-			request = { ...request, ...req.user };
+    async userProfile(req: Req, res: Res) {
+        try {
+            let request = { exp: undefined, iat: undefined, sub: undefined };
+            request = { ...request, ...req.user };
 
-			let user = await this.User.findById(request.sub);
+            let user = await this.User.findById(request.sub);
 
-			if (!user) {
-				return res.status(404).json({ success: false, err: 'Not Found' });
-			}
+            if (!user) {
+                return res.status(404).json({ success: false, err: 'Not Found' });
+            }
 
-			return res.status(200).json({ success: true, data: user });
-		} catch (err) {
-			return res.status(500).json({ success: false, err: err });
-		}
-	}
+            return res.status(200).json({ success: true, data: user });
+        } catch (err) {
+            return res.status(500).json({ success: false, err: err });
+        }
+    }
 
-	async find(
-		filter?: any,
-		take?: string,
-		skip?: string,
-		sortBy?: string
-	): Promise<User[] | null> {
-		let data = filter
-			? await this.User.find(JSON.parse(filter))
-					.limit(take ? parseInt(take) : 100)
-					.skip(skip ? parseInt(skip) : 0)
-					.sort(sortBy ? sortBy : undefined)
-			: await this.User.find();
-		return data;
-	}
+    async find(filter?: any, take?: string, skip?: string, sortBy?: string): Promise<User[] | null> {
+        let data = filter
+            ? await this.User.find(JSON.parse(filter))
+                  .limit(take ? parseInt(take) : 100)
+                  .skip(skip ? parseInt(skip) : 0)
+                  .sort(sortBy ? sortBy : undefined)
+            : await this.User.find();
+        return data;
+    }
 
-	async findById(id: string): Promise<User | null> {
-		return await this.User.findById(id).lean();
-	}
+    async findById(id: string): Promise<User | null> {
+        return await this.User.findById(id).lean();
+    }
 
-	async create(user: User, res: Res) {
-		try {
-			const passwordEncrypted = await cryptPassword(user.password);
-			const userToCreate = { ...user, password: passwordEncrypted };
+    async findOne(filter: any): Promise<User | null> {
+        return await this.User.findOne(filter);
+    }
 
-			const userByEmail = await this.User.findOne({
-				email: userToCreate.email,
-			});
+    async create(user: User, res: Res) {
+        try {
+            const passwordEncrypted = await cryptPassword(user.password);
+            const userToCreate = { ...user, password: passwordEncrypted };
 
-			if (userByEmail)
-				return res.status(409).json({
-					success: false,
-					err: 'Account with this email already exists',
-				});
-			let userCreated = await this.User.create(userToCreate);
-			userCreated.password = '';
-			return res.status(201).json({ success: true, data: userCreated });
-		} catch (err) {
-			return res
-				.status(500)
-				.json({ success: false, err: 'Internal Server Error' });
-		}
-	}
+            const userByEmail = await this.User.findOne({
+                email: userToCreate.email,
+            });
 
-	async login(body: any, res: Res) {
-		if (!body.email || !body.password) {
-			return res.status(400).json({ success: false, err: 'Bad Request' });
-		}
+            if (userByEmail)
+                return res.status(409).json({
+                    success: false,
+                    err: 'Account with this email already exists',
+                });
+            let userCreated = await this.User.create(userToCreate);
+            userCreated.password = '';
+            return res.status(201).json({ success: true, data: userCreated });
+        } catch (err) {
+            return res.status(500).json({ success: false, err: 'Internal Server Error' });
+        }
+    }
 
-		let user = await this.User.findOne({ email: body.email })
-			.select('+password')
-			.lean();
-		if (!user) {
-			return res.status(404).json({ success: false, err: 'User not found' });
-		}
+    async login(body: any, res: Res) {
+        if (!body.email || !body.password) {
+            return res.status(400).json({ success: false, err: 'Bad Request' });
+        }
 
-		let valid;
-		try {
-			valid = await comparePassword(body.password, user.password);
-		} catch (err) {
-			valid = false;
-			return res
-				.status(500)
-				.json({ success: false, err: 'An unexpected error occured' });
-		}
+        let user = await this.User.findOne({ email: body.email }).select('+password').lean();
+        if (!user) {
+            return res.status(404).json({ success: false, err: 'User not found' });
+        }
 
-		if (!valid) {
-			return res
-				.status(401)
-				.json({ success: false, err: 'Incorrect credentials' });
-		}
+        let valid;
+        try {
+            valid = await comparePassword(body.password, user.password);
+        } catch (err) {
+            valid = false;
+            return res.status(500).json({ success: false, err: 'An unexpected error occured' });
+        }
 
-		const token = jwt.sign(
-			{ sub: user._id.toString() },
-			String(process.env.SECRET),
-			{
-				expiresIn: '1d',
-			}
-		);
+        if (!valid) {
+            return res.status(401).json({ success: false, err: 'Incorrect credentials' });
+        }
 
-		let userToReturn = { ...user, token: token };
-		userToReturn.password = '';
-		return res.status(200).json({ success: true, data: userToReturn });
-	}
+        const token = jwt.sign({ sub: user._id.toString() }, String(process.env.SECRET), {
+            expiresIn: '1d',
+        });
 
-	async update(req: Req, res: Res, body: any) {
-		try {
-			let request = { exp: undefined, iat: undefined, sub: undefined };
-			request = { ...request, ...req.user };
+        let userToReturn = { ...user, token: token };
+        userToReturn.password = '';
+        return res.status(200).json({ success: true, data: userToReturn });
+    }
 
-			let user = await this.User.findById(request.sub);
-			if (!user)
-				return res
-					.status(404)
-					.json({ success: false, err: 'Unable to find user to update' });
+    async update(req: Req, res: Res, body: any) {
+        try {
+            let request = { exp: undefined, iat: undefined, sub: undefined };
+            request = { ...request, ...req.user };
 
-			user.firstName = body.firstName ? body.firstName : user.firstName;
-			user.lastName = body.lastName ? body.lastName : user.lastName;
-			user.save();
+            let user = await this.User.findById(request.sub);
+            if (!user) return res.status(404).json({ success: false, err: 'Unable to find user to update' });
 
-			return res.status(200).json({ success: true, data: user });
-		} catch (err) {
-			return res
-				.status(500)
-				.json({ success: false, err: 'An unexpected error occured' });
-		}
-	}
+            user.firstName = body.firstName ? body.firstName : user.firstName;
+            user.lastName = body.lastName ? body.lastName : user.lastName;
+            user.save();
 
-	async delete(req: Req, res: Res): Promise<User | any> {
-		try {
-			let request = { exp: undefined, iat: undefined, sub: undefined };
-			request = { ...request, ...req.user };
+            return res.status(200).json({ success: true, data: user });
+        } catch (err) {
+            return res.status(500).json({ success: false, err: 'An unexpected error occured' });
+        }
+    }
 
-			let user = await this.User.findById(request.sub);
+    async delete(req: Req, res: Res): Promise<User | any> {
+        try {
+            let request = { exp: undefined, iat: undefined, sub: undefined };
+            request = { ...request, ...req.user };
 
-			if (!user) {
-				return res.status(404).json({ success: false, err: 'Not Found' });
-			}
+            let user = await this.User.findById(request.sub);
 
-			const response = await this.User.deleteOne({ _id: user.id });
-			return res.status(200).json({ success: true, data: response });
-		} catch (err) {
-			return res
-				.status(500)
-				.json({ success: false, err: 'An unexpected error occured' });
-		}
-	}
+            if (!user) {
+                return res.status(404).json({ success: false, err: 'Not Found' });
+            }
 
-	async forgetPasswordSendMail(req: Req, res: Res, body: any) {
-		try {
-			if (!body.email) {
-				return res
-					.status(500)
-					.json({ success: false, err: 'Email is required' });
-			}
-			let user = await this.User.findOne({ email: body.email }).select(
-				'+emailOTP'
-			);
+            const response = await this.User.deleteOne({ _id: user.id });
+            return res.status(200).json({ success: true, data: response });
+        } catch (err) {
+            return res.status(500).json({ success: false, err: 'An unexpected error occured' });
+        }
+    }
 
-			if (!user) {
-				return res.status(500).json({ success: false, err: 'User not found' });
-			}
+    async forgetPasswordSendMail(req: Req, res: Res, body: any) {
+        try {
+            if (!body.email) {
+                return res.status(500).json({ success: false, err: 'Email is required' });
+            }
+            let user = await this.User.findOne({ email: body.email }).select('+emailOTP');
 
-			let otp = otpGenerator
-				.generate(8, { upperCaseAlphabets: false, specialChars: false })
-				.toUpperCase();
+            if (!user) {
+                return res.status(500).json({ success: false, err: 'User not found' });
+            }
 
-			user.emailOTP = otp;
-			user.save();
+            let otp = otpGenerator.generate(8, { upperCaseAlphabets: false, specialChars: false }).toUpperCase();
 
-			const mailOptions = {
-				to: body.email,
-				from: String(process.env.EMAIL),
-				subject: 'Email verification',
-				html: `<!DOCTYPE html>
+            user.emailOTP = otp;
+            user.save();
+
+            const mailOptions = {
+                to: body.email,
+                from: String(process.env.EMAIL),
+                subject: 'Email verification',
+                html: `<!DOCTYPE html>
 
         <html lang="en" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:v="urn:schemas-microsoft-com:vml">
         <head>
@@ -438,56 +412,49 @@ export class UserService {
         </table><!-- End -->
         </body>
         </html> `,
-			};
+            };
 
-			await sgMail.send(mailOptions, false, (err, result): any => {
-				if (err)
-					return res.status(500).json({ success: false, err: err.message });
-				else
-					return res.status(200).json({
-						success: true,
-						message: `A verification email has been sent to ${body.email}`,
-					});
-			});
-		} catch (err) {
-			return res
-				.status(500)
-				.json({ success: false, err: 'An unexpected error occured:' });
-		}
-	}
+            await sgMail.send(mailOptions, false, (err, result): any => {
+                if (err) return res.status(500).json({ success: false, err: err.message });
+                else
+                    return res.status(200).json({
+                        success: true,
+                        message: `A verification email has been sent to ${body.email}`,
+                    });
+            });
+        } catch (err) {
+            return res.status(500).json({ success: false, err: 'An unexpected error occured:' });
+        }
+    }
 
-	async resetPassword(req: Req, res: Res, body: any) {
-		try {
-			if (!body.otp || !body.newPassword) {
-				return res.status(400).json({ success: false, err: 'Bad Request' });
-			}
+    async resetPassword(req: Req, res: Res, body: any) {
+        try {
+            if (!body.otp || !body.newPassword) {
+                return res.status(400).json({ success: false, err: 'Bad Request' });
+            }
 
-			let user = await this.User.findOne({
-				emailOTP: body.otp.toUpperCase(),
-			}).select('+emailOTP');
+            let user = await this.User.findOne({
+                emailOTP: body.otp.toUpperCase(),
+            }).select('+emailOTP');
 
-			if (!user) {
-				return res.status(404).json({ success: false, err: 'User not found' });
-			}
+            if (!user) {
+                return res.status(404).json({ success: false, err: 'User not found' });
+            }
 
-			if (body.otp == user.emailOTP) {
-				const passwordEncrypted = await cryptPassword(body.newPassword);
-				user.password = passwordEncrypted;
-				user.emailOTP = '';
-				await user.save();
-				return res
-					.status(200)
-					.json({ success: true, data: 'New password has been set' });
-			} else {
-				return res.status(401).json({
-					success: false,
-					data: 'Incorrect Otp Unable to change password',
-				});
-			}
-		} catch (err) {
-			return res
-				.status(500)
-				.json({ success: false, err: 'An unexpected error occured' });
-		}
-	}
+            if (body.otp == user.emailOTP) {
+                const passwordEncrypted = await cryptPassword(body.newPassword);
+                user.password = passwordEncrypted;
+                user.emailOTP = '';
+                await user.save();
+                return res.status(200).json({ success: true, data: 'New password has been set' });
+            } else {
+                return res.status(401).json({
+                    success: false,
+                    data: 'Incorrect Otp Unable to change password',
+                });
+            }
+        } catch (err) {
+            return res.status(500).json({ success: false, err: 'An unexpected error occured' });
+        }
+    }
 }

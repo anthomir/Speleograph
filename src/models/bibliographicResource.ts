@@ -37,4 +37,8 @@ export class BibliographicResource {
 
     @Nullable(String)
     source: string;
+
+    @Select(false)
+    @Default(false)
+    isDeleted: boolean;
 }

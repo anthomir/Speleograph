@@ -13,4 +13,8 @@ export class Area {
 
     @Nullable(String)
     polygon: string;
+
+    @Select(false)
+    @Default(false)
+    isDeleted: boolean;
 }

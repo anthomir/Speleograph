@@ -3,9 +3,9 @@ import { BodyParams, Context, PathParams, QueryParams } from '@tsed/platform-par
 import { Get, Post, Delete, Put } from '@tsed/schema';
 import { Authenticate } from '@tsed/passport';
 import { Res } from '@tsed/common';
-import { User } from '../../models/User';
-import { OrganizationService } from '../../services/organization/organization.service';
-import { UpdateOrganizationDto } from '../../dto/organization/updateOrganization';
+import { User } from '../../../models/User';
+import { OrganizationService } from '../../../services/Non-used/organization/organization.service';
+import { UpdateOrganizationDto } from '../../../dto/organization/updateOrganization';
 
 @Controller('/organization')
 export class OrganizationController {

@@ -12,9 +12,9 @@ import { config } from './config';
 import * as rest from './controllers/rest';
 import * as pages from './controllers/pages';
 import session from 'express-session';
-import './protocols';
+import './middlewares';
 import { specOS3 } from './spec/specOS3';
-
+import { BackgroundJobService } from './cron-jobs/30dayTrash';
 const rootDir = __dirname;
 
 @Configuration({
@@ -31,7 +31,13 @@ const rootDir = __dirname;
         ],
     },
     processEntites: false,
-    componentsScan: [`${rootDir}/services/**/**.ts`, `${rootDir}/protocols/**.ts`, `${rootDir}/validation/**.ts`, `${rootDir}/controllers/**/**.ts`],
+    componentsScan: [
+        `${rootDir}/services/**/**.ts`,
+        `${rootDir}/protocols/**.ts`,
+        `${rootDir}/validation/**.ts`,
+        `${rootDir}/controllers/**/**.ts`,
+        `${rootDir}/cron-jobs/**.ts`,
+    ],
     mount: {
         '/api': [...Object.values(rest)],
         '/': [...Object.values(pages)],
@@ -63,7 +69,13 @@ const rootDir = __dirname;
 export class Server {
     @Inject()
     protected app: PlatformApplication;
+    @Inject(BackgroundJobService)
+    bj: BackgroundJobService;
 
     @Configuration()
     protected settings: Configuration;
+
+    $onInit(): void {
+        this.bj.startBackgroundJob();
+    }
 }

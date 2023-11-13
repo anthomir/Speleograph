@@ -1,7 +1,7 @@
 import { Inject, OnInit, OnRoutesInit, Req, Res, Service } from '@tsed/common';
 import { MongooseModel } from '@tsed/mongoose';
-import { Area } from '../../models/Area';
-import { UpdateAreaDto } from '../../dto/area/updateArea';
+import { Area } from '../../../models/Area';
+import { UpdateAreaDto } from '../../../dto/area/updateArea';
 
 @Service()
 export class AreaService {

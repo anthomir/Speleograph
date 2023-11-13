@@ -1,7 +1,7 @@
 import { Inject, OnInit, OnRoutesInit, Req, Res, Service } from '@tsed/common';
 import { MongooseModel } from '@tsed/mongoose';
-import { Point } from '../../models/Point';
-import { UpdatePointDto } from '../../dto/point/updatePoint';
+import { Point } from '../../../models/Point';
+import { UpdatePointDto } from '../../../dto/point/updatePoint';
 
 @Service()
 export class PointService {
@@ -64,20 +64,6 @@ export class PointService {
         }
     }
 
-    async deleteById(id: string): Promise<{ status: number; message: string }> {
-        try {
-            const result = await this.Point.deleteOne({ _id: id });
-
-            if (result.deletedCount === 1) {
-                return { status: 200, message: 'Point deleted successfully' };
-            } else {
-                return { status: 404, message: 'Point not found' };
-            }
-        } catch (error) {
-            return { status: 500, message: 'Internal server error' };
-        }
-    }
-
     async updatePoint(id: string, newData: UpdatePointDto): Promise<{ status: number; data: Point | null; message: string }> {
         try {
             const point = await this.Point.findById(id);
@@ -106,6 +92,20 @@ export class PointService {
             }
         } catch (error) {
             return { status: 500, data: null, message: 'Internal server error' };
+        }
+    }
+
+    async deleteById(id: string): Promise<{ status: number; message: string }> {
+        try {
+            const result = await this.Point.deleteOne({ _id: id });
+
+            if (result.deletedCount === 1) {
+                return { status: 200, message: 'Point deleted successfully' };
+            } else {
+                return { status: 404, message: 'Point not found' };
+            }
+        } catch (error) {
+            return { status: 500, message: 'Internal server error' };
         }
     }
 }

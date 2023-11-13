@@ -6,9 +6,9 @@ export class CaveService {
     // response: data, err: null ==> sucess
     // response: null, err: null ==> 404
     // response: null, err: err  ==> err
-    async findById(id: string): Promise<{ status: number; data: any | null; message: string | null }> {
+    async findById(filter: any): Promise<{ status: number; data: any | null; message: string | null }> {
         try {
-            const response = await axios.get(`${process.env.GROTTOCAVE_API}/caves/${id}`);
+            const response = await axios.get(`${process.env.GROTTOCAVE_API}/caves/${filter._id}`);
 
             if (!response.data) {
                 return { status: 404, data: null, message: 'Cave not found' };

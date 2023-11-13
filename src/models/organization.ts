@@ -1,4 +1,4 @@
-import { Nullable } from '@tsed/schema';
+import { Default, Nullable } from '@tsed/schema';
 import { Model, ObjectID, Select } from '@tsed/mongoose';
 
 @Model()
@@ -24,4 +24,8 @@ export class Organization {
 
     @Nullable(String)
     addressCountry: string;
+
+    @Select(false)
+    @Default(false)
+    isDeleted: boolean;
 }

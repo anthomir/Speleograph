@@ -16,4 +16,8 @@ export class Person {
 
     @Nullable(String)
     nick: string;
+
+    @Select(false)
+    @Default(false)
+    isDeleted: boolean;
 }

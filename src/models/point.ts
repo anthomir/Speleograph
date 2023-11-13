@@ -1,4 +1,4 @@
-import { Nullable } from '@tsed/schema';
+import { Default, Nullable } from '@tsed/schema';
 import { Model, ObjectID, Select } from '@tsed/mongoose';
 
 @Model()
@@ -12,4 +12,8 @@ export class Point {
 
     @Nullable(String)
     relatedToUndergroundCavity: string;
+
+    @Select(false)
+    @Default(false)
+    isDeleted: boolean;
 }
