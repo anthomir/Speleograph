@@ -5,8 +5,8 @@ import { Authenticate } from '@tsed/passport';
 import { MulterOptions, MultipartFile, PlatformMulterFile, Req, Res } from '@tsed/common';
 import { CaveObservationService } from '../../services/observation/observation.service';
 import path from 'path';
-import { User } from 'src/models/User';
-import { Role } from 'src/models/Enum';
+import { User } from '../../models/User';
+import { Role } from '../../models/Enum';
 
 //TODO: Refactor
 @Controller('/caveObservation')
