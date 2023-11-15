@@ -13,23 +13,6 @@ export class UserService {
     @Inject(User)
     private User: MongooseModel<User>;
 
-    async userProfile(req: Req, res: Res) {
-        try {
-            let request = { exp: undefined, iat: undefined, sub: undefined };
-            request = { ...request, ...req.user };
-
-            let user = await this.User.findById(request.sub);
-
-            if (!user) {
-                return res.status(404).json({ success: false, err: 'Not Found' });
-            }
-
-            return res.status(200).json({ success: true, data: user });
-        } catch (err) {
-            return res.status(500).json({ success: false, err: err });
-        }
-    }
-
     async find(filter?: any, take?: string, skip?: string, sortBy?: string): Promise<User[] | null> {
         let data = filter
             ? await this.User.find(JSON.parse(filter))

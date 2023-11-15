@@ -1,5 +1,5 @@
 import { Controller, Inject } from '@tsed/di';
-import { BodyParams, HeaderParams, PathParams, QueryParams } from '@tsed/platform-params';
+import { BodyParams, Context, HeaderParams, PathParams, QueryParams } from '@tsed/platform-params';
 import { Get, Post, Put, Delete, Security, Header, Returns } from '@tsed/schema';
 import { User } from '../../models/User';
 import { UserService } from '../../services/user/user.service';
@@ -46,8 +46,12 @@ export class UserController {
 
     @Get('/profile')
     @Authenticate('jwt')
-    async getProfile(@Req() req: Req, @Res() res: Res) {
-        return await this.usersService.userProfile(req, res);
+    async getProfile(@Context('user') user: User, @Res() res: Res) {
+        if (user) {
+            return res.status(200).json({ success: true, data: user });
+        } else {
+            return res.status(500).json({ success: false, err: 'Internal server error' });
+        }
     }
 
     @Put('/')
