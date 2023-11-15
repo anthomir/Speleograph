@@ -56,8 +56,8 @@ export class UserController {
 
     @Put('/')
     @Authenticate('jwt')
-    async put(@Req() req: Req, @Res() res: Res, @BodyParams() body: any) {
-        return await this.usersService.update(req, res, body);
+    async put(@Context('user') user: User, @Res() res: Res, @BodyParams() body: any) {
+        return await this.usersService.update(user, res, body);
     }
 
     @Delete('/')

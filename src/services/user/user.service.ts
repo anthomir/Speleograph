@@ -84,17 +84,15 @@ export class UserService {
         return res.status(200).json({ success: true, data: userToReturn });
     }
 
-    async update(req: Req, res: Res, body: any) {
+    async update(user: User, res: Res, body: any) {
         try {
-            let request = { exp: undefined, iat: undefined, sub: undefined };
-            request = { ...request, ...req.user };
-
-            let user = await this.User.findById(request.sub);
-            if (!user) return res.status(404).json({ success: false, err: 'Unable to find user to update' });
-
+            let userToUpdate = await this.User.findById(user._id);
+            if (!userToUpdate) {
+                return res.status(404).json({ success: false, err: 'user not found' });
+            }
             user.firstName = body.firstName ? body.firstName : user.firstName;
             user.lastName = body.lastName ? body.lastName : user.lastName;
-            user.save();
+            userToUpdate.save();
 
             return res.status(200).json({ success: true, data: user });
         } catch (err) {
