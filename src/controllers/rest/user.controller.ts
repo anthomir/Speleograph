@@ -62,8 +62,8 @@ export class UserController {
 
     @Delete('/')
     @Authenticate('jwt')
-    async delete(@Req() req: Req, @Res() res: Res) {
-        return await this.usersService.delete(req, res);
+    async delete(@Context('user') user: User, @Res() res: Res) {
+        return await this.usersService.delete(user, res);
     }
     @Post('/forgot-password')
     async forgotPassword(@Req() req: Req, @Res() res: Res, @BodyParams() body: any) {

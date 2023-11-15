@@ -100,12 +100,9 @@ export class UserService {
         }
     }
 
-    async delete(req: Req, res: Res): Promise<User | any> {
+    async delete(userReq: User, res: Res): Promise<User | any> {
         try {
-            let request = { exp: undefined, iat: undefined, sub: undefined };
-            request = { ...request, ...req.user };
-
-            let user = await this.User.findById(request.sub);
+            let user = await this.User.findById(userReq._id);
 
             if (!user) {
                 return res.status(404).json({ success: false, err: 'Not Found' });
