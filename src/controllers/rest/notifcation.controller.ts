@@ -1,25 +1,27 @@
-import { PathParams, QueryParams, Res } from '@tsed/common';
+import { Context, PathParams, QueryParams, Res } from '@tsed/common';
 import { Controller, Inject } from '@tsed/di';
 import { Authenticate } from '@tsed/passport';
-import { Use } from '@tsed/platform-middlewares';
 import { Get, Patch, Put } from '@tsed/schema';
-import { AdminAuth } from '../../middlewares/adminAuth';
 import { NotificationService } from '../../services/notification/notification.service';
+import { User } from '../../models/User';
+import { Role } from '../../models/Enum';
 
-@Controller('/sensor')
+@Controller('/notification')
 export class NotificationController {
     @Inject(NotificationService)
     private notificationService: NotificationService;
 
     @Get('/:id')
-    @Use(AdminAuth)
     @Authenticate('jwt')
-    async findById(@Res() res: Res, @PathParams('id') id: string) {
+    async findById(@Context('user') user: User, @Res() res: Res, @PathParams('id') id: string) {
         try {
+            if (user.role != Role.Admin) {
+                return res.status(401).json({ message: 'Unauthorized' });
+            }
             if (id.length != 24) {
                 return res.status(400).json({ sucess: false, err: 'Bad request' });
             }
-            const result = await this.notificationService.findById({ _id: id, isDeleted: false });
+            const result = await this.notificationService.findById({ _id: id /*, isDeleted: false */ });
 
             if (result.status === 200) {
                 return res.status(200).json({ success: true, data: result.data });
@@ -34,9 +36,9 @@ export class NotificationController {
     }
 
     @Get('/')
-    @Use(AdminAuth)
     @Authenticate('jwt')
     async find(
+        @Context('user') user: User,
         @Res() res: Res,
         @QueryParams('filter') filter: string,
         @QueryParams('skip') skip: string,
@@ -44,8 +46,12 @@ export class NotificationController {
         @QueryParams('sortBy') sortBy: string,
     ) {
         try {
+            if (user.role != Role.Admin) {
+                return res.status(401).json({ message: 'Unauthorized' });
+            }
+
             let query = filter ? filter : {};
-            query = { ...query, ...{ isDeleted: false } };
+            // query = { ...query, ...{ isDeleted: false } };
 
             const result = await this.notificationService.find(query, skip, take, sortBy);
             if (result.status === 200) {
@@ -58,10 +64,13 @@ export class NotificationController {
         }
     }
     @Patch('/mark-as-read')
-    @Use(AdminAuth)
     @Authenticate('jwt')
-    async markAsRead(@Res() res: Res, @QueryParams('ids') ids: string[]) {
+    async markAsRead(@Context('user') user: User, @Res() res: Res, @QueryParams('ids') ids: string[]) {
         try {
+            if (user.role != Role.Admin) {
+                return res.status(401).json({ message: 'Unauthorized' });
+            }
+
             const result = await this.notificationService.markNotificationsAsRead({ _id: { $in: ids } });
 
             if (result.status === 200) {

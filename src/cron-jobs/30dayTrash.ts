@@ -14,7 +14,7 @@ export class BackgroundJobService {
     @Inject(CaveObservation)
     caveObservation: MongooseModel<CaveObservation>;
 
-    //Cron Job that runs every day at mid night
+    //Midnight everyday
     startBackgroundJob(): void {
         console.log('Initializing Background Jobs');
         cron.schedule('0 0 * * *', () => {

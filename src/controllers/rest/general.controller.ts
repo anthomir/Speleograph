@@ -1,15 +1,16 @@
-import { Res } from '@tsed/common';
+import { Context, Res } from '@tsed/common';
 import { Controller, Inject } from '@tsed/di';
 import { Authenticate } from '@tsed/passport';
 import { Use } from '@tsed/platform-middlewares';
 import { Patch } from '@tsed/schema';
-import { AdminAuth } from '../../middlewares/adminAuth';
 import { CaveObservationService } from '../../services/observation/observation.service';
 import { SensorService } from '../../services/sensor/sensor.service';
 import { SensorTypeService } from '../../services/sensorType/sensorType.service';
+import { User } from 'src/models/User';
+import { Role } from 'src/models/Enum';
 
 @Controller('/general')
-export class CaveController {
+export class GeneralController {
     @Inject(CaveObservationService)
     private observationSevice: CaveObservationService;
     @Inject(SensorService)
@@ -18,10 +19,12 @@ export class CaveController {
     private sensorTypeService: SensorTypeService;
 
     @Authenticate('jwt')
-    @Use(AdminAuth)
     @Patch('/restore')
-    async getById(@Res() res: Res) {
+    async getById(@Context('user') user: User, @Res() res: Res) {
         try {
+            if (user.role != Role.Admin) {
+                return res.status(401).json({ message: 'Unauthorized' });
+            }
             const cor = await this.observationSevice.restore({});
             const str = await this.sensorTypeService.restore({});
             const sr = await this.sensorService.restore({});

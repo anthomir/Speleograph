@@ -3,14 +3,14 @@ import { BodyParams, Context, PathParams, QueryParams } from '@tsed/platform-par
 import { Get, Post, Delete, Put } from '@tsed/schema';
 import { Authenticate } from '@tsed/passport';
 import { Res } from '@tsed/common';
-import { User } from '../../../models/User';
-import { PersonService } from '../../../services/Non-used/person/person.service';
-import { UpdatePersonDto } from '../../../dto/person/updatePerson';
+import { User } from '../../models/User';
+import { PointService } from '../../services/point/point.service';
+import { UpdatePointDto } from '../../dto/point/updatePoint';
 
-@Controller('/person')
-export class PersonController {
-    @Inject(PersonService)
-    private personService: PersonService;
+@Controller('/point')
+export class PointController {
+    @Inject(PointService)
+    private pointService: PointService;
 
     @Get('/:id')
     @Authenticate('jwt')
@@ -20,7 +20,7 @@ export class PersonController {
                 return res.status(400).json({ sucess: false, err: 'Bad request' });
             }
 
-            const result = await this.personService.findById(id);
+            const result = await this.pointService.findById(id);
 
             if (result.status === 200) {
                 return res.status(200).json({ success: true, data: result.data });
@@ -44,7 +44,7 @@ export class PersonController {
         @QueryParams('sortBy') sortBy: string,
     ) {
         try {
-            const result = await this.personService.find(filter, skip, take, sortBy);
+            const result = await this.pointService.find(filter, skip, take, sortBy);
             if (result.status === 200) {
                 return res.status(200).json({ success: false, data: result.data });
             } else {
@@ -60,7 +60,7 @@ export class PersonController {
     async post(@Context('user') user: User, @Res() res: Res, @BodyParams() body?: any) {
         body.createdBy = user._id;
         try {
-            const result = await this.personService.post(body);
+            const result = await this.pointService.post(body);
             if (result.status === 201) {
                 return res.status(201).json({ sucess: true, data: result.data });
             } else {
@@ -75,7 +75,7 @@ export class PersonController {
     @Authenticate('jwt')
     async delete(@Res() res: Res, @PathParams('id') id: string) {
         try {
-            const result = await this.personService.deleteById(id);
+            const result = await this.pointService.deleteById(id);
             if (result.status === 404) {
                 return res.status(404).json({ sucess: false, err: result.message });
             } else if (result.status === 200) {
@@ -90,13 +90,13 @@ export class PersonController {
 
     @Put('/:id')
     @Authenticate('jwt')
-    async update(@Res() res: Res, @PathParams('id') id: string, @BodyParams() body: UpdatePersonDto) {
+    async update(@Res() res: Res, @PathParams('id') id: string, @BodyParams() body: UpdatePointDto) {
         try {
             if (id.length != 24) {
                 return res.status(400).json({ sucess: false, message: 'Bad request' });
             }
 
-            const result = await this.personService.updatePerson(id, body);
+            const result = await this.pointService.updatePoint(id, body);
             if (result.status === 404) {
                 return res.status(404).json({ sucess: false, err: result.message });
             } else if (result.status === 200) {

@@ -1,7 +1,7 @@
 import { Inject, OnInit, OnRoutesInit, Req, Res, Service } from '@tsed/common';
 import { MongooseModel } from '@tsed/mongoose';
-import { Point } from '../../../models/Point';
-import { UpdatePointDto } from '../../../dto/point/updatePoint';
+import { Point } from '../../models/point';
+import { UpdatePointDto } from '../../dto/point/updatePoint';
 
 @Service()
 export class PointService {

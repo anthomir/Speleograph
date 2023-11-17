@@ -7,6 +7,8 @@ import { User } from '../../models/User';
 import { SensorService } from '../../services/sensor/sensor.service';
 import { UpdateSensorDto } from '../../dto/sensor/updateSensor';
 import { Role } from '../../models/Enum';
+import { FilterQuery } from 'mongoose';
+import { Sensor } from 'src/models/Sensor';
 
 @Controller('/sensor')
 export class SensorController {
@@ -37,6 +39,7 @@ export class SensorController {
     @Get('/')
     @Authenticate('jwt')
     async find(
+        @Context('user') user: User,
         @Res() res: Res,
         @QueryParams('filter') filter: string,
         @QueryParams('skip') skip: string,
@@ -44,8 +47,10 @@ export class SensorController {
         @QueryParams('sortBy') sortBy: string,
     ) {
         try {
-            let query = filter ? filter : {};
-            query = { ...query, ...{ isDeleted: false } };
+            let query = filter ? JSON.parse(filter) : {};
+            if (user.role != Role.Admin) {
+                query = { ...query, ...{ isDeleted: false } };
+            }
 
             const result = await this.sensorService.find(query, skip, take, sortBy);
             if (result.status === 200) {
@@ -110,6 +115,7 @@ export class SensorController {
             if (id.length != 24) {
                 return res.status(400).json({ sucess: false, err: 'Bad request' });
             }
+
             // Checking Permissions
             const sensor = await this.sensorService.findById({ _id: id });
             if (!sensor.data) {
@@ -120,6 +126,7 @@ export class SensorController {
                 return res.status(401).json({ sucess: false, err: 'Requirements not met' });
             }
             ///
+
             let result;
             if (force == true && user.role == Role.Admin) {
                 result = await this.sensorService.forceDeleteById(id);

@@ -1,6 +1,6 @@
 import { Inject, Service } from '@tsed/di';
 import { MongooseModel } from '@tsed/mongoose';
-import { BibliographicResource } from '../../../models/BibliographicResource';
+import { BibliographicResource } from '../../models/bibliographicResource';
 
 @Service()
 export class BibliographicResourceService {

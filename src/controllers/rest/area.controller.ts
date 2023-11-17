@@ -3,9 +3,9 @@ import { BodyParams, Context, PathParams, QueryParams } from '@tsed/platform-par
 import { Get, Post, Delete, Put } from '@tsed/schema';
 import { Authenticate } from '@tsed/passport';
 import { Res } from '@tsed/common';
-import { User } from '../../../models/User';
-import { AreaService } from '../../../services/Non-used/area/area.service';
-import { UpdateAreaDto } from '../../../dto/area/updateArea';
+import { User } from '../../models/User';
+import { AreaService } from '../../services/area/area.service';
+import { UpdateAreaDto } from '../../dto/area/updateArea';
 
 @Controller('/area')
 export class AreaController {

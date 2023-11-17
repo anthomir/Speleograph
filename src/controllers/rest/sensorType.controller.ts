@@ -37,6 +37,7 @@ export class SensorTypeController {
     @Get('/')
     @Authenticate('jwt')
     async find(
+        @Context() user: User,
         @Res() res: Res,
         @QueryParams('filter') filter: string,
         @QueryParams('skip') skip: number,
@@ -44,9 +45,10 @@ export class SensorTypeController {
         @QueryParams('sortBy') sortBy: string,
     ) {
         try {
-            let query = filter ? filter : {};
-            query = { ...query, ...{ isDeleted: false } };
-
+            let query = filter ? JSON.parse(filter) : {};
+            if (user.role != Role.Admin) {
+                query = { ...query, ...{ isDeleted: false } };
+            }
             const result = await this.sensorTypeService.find(query, skip, take, sortBy);
             if (result.status === 200) {
                 return res.status(200).json({ success: false, data: result.data });
