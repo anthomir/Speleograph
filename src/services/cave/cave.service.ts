@@ -26,12 +26,16 @@ export class CaveService {
     // response: data, err: null ==> sucess
     // response: null, err: null ==> 404
     // response: null, err: err  ==> err
-    async searchByNameAutoFill(name?: string, country?: string): Promise<{ status: number; data: any | null; message: string | null }> {
+    async searchByNameAutoFill(
+        name?: string,
+        country?: string,
+        resourceType?: string,
+    ): Promise<{ status: number; data: any | null; message: string | null }> {
         try {
             const response = await axios.post(`${process.env.GROTTOCAVE_API}/advanced-search`, null, {
                 params: {
                     complete: true,
-                    resourceType: 'caves',
+                    resourceType: resourceType ? resourceType : 'cave',
                     name: name || undefined,
                     country: country || undefined,
                 },

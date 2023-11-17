@@ -30,9 +30,14 @@ export class CaveController {
 
     @Authenticate('jwt')
     @Get('/search')
-    async search(@Res() res: Res, @QueryParams('name') name?: string, @QueryParams('country') country?: string) {
+    async search(
+        @Res() res: Res,
+        @QueryParams('name') name?: string,
+        @QueryParams('country') country?: string,
+        @QueryParams('resourceType') resourceType?: string,
+    ) {
         try {
-            const result = await this.caveService.searchByNameAutoFill(name, country);
+            const result = await this.caveService.searchByNameAutoFill(name, country, resourceType);
             if (result.status === 200) {
                 return res.status(200).json(result.data);
             } else {
