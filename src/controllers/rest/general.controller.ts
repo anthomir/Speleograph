@@ -6,8 +6,8 @@ import { Patch } from '@tsed/schema';
 import { CaveObservationService } from '../../services/observation/observation.service';
 import { SensorService } from '../../services/sensor/sensor.service';
 import { SensorTypeService } from '../../services/sensorType/sensorType.service';
-import { User } from 'src/models/User';
-import { Role } from 'src/models/Enum';
+import { User } from '../../models/User';
+import { Role } from '../../models/Enum';
 
 @Controller('/general')
 export class GeneralController {
