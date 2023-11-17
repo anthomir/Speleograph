@@ -63,8 +63,8 @@ export class CaveObservationController {
 
     @Authenticate('jwt')
     @Post('/')
-    async post(@Req() req: Req, @Res() res: Res, @BodyParams() body: any) {
-        return await this.caveObservationService.create(req, res, body);
+    async post(@Context('user') user: User, @Res() res: Res, @BodyParams() body: any) {
+        return await this.caveObservationService.create(user, res, body);
     }
 
     @Post('/upload')
@@ -115,7 +115,7 @@ export class CaveObservationController {
             } else if (result.status === 200) {
                 return res.status(200).json({ sucess: true, data: result.message });
             } else {
-                return res.status(500).json({ sucess: true, err: result.message });
+                return res.status(500).json({ sucess: false, err: result.message });
             }
         } catch (error) {
             return res.status(500).json({ sucess: false, err: 'Internal server error' });

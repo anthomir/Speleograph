@@ -59,16 +59,8 @@ export class CaveObservationService {
         }
     }
 
-    async create(req: Req, res: Res, caveMetadata: any) {
+    async create(user: User, res: Res, caveMetadata: any) {
         try {
-            let request = { exp: undefined, iat: undefined, sub: undefined };
-            request = { ...request, ...req.user };
-
-            let user = await this.User.findById(request.sub);
-
-            if (!user) {
-                return res.status(500).json({ success: true, err: 'unauthorized' });
-            }
             caveMetadata.createdBy = user._id;
 
             let cave = await this.CaveObservation.create(caveMetadata);
