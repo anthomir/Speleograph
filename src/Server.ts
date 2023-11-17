@@ -14,7 +14,8 @@ import * as pages from './controllers/pages';
 import session from 'express-session';
 import './middlewares';
 import { specOS3 } from './spec/specOS3';
-import { BackgroundJobService } from './cron-jobs/30dayTrash';
+import { TrashingService } from './cron-jobs/30dayTrash';
+import { SnapshotService } from './cron-jobs/snapshots';
 const rootDir = __dirname;
 
 @Configuration({
@@ -69,13 +70,16 @@ const rootDir = __dirname;
 export class Server {
     @Inject()
     protected app: PlatformApplication;
-    @Inject(BackgroundJobService)
-    bj: BackgroundJobService;
+    @Inject(TrashingService)
+    trashService: TrashingService;
+    @Inject(SnapshotService)
+    snapshotService: SnapshotService;
 
     @Configuration()
     protected settings: Configuration;
 
     $onInit(): void {
-        this.bj.startBackgroundJob();
+        this.trashService.startBackgroundJob();
+        this.snapshotService.startBackgroundJob();
     }
 }
