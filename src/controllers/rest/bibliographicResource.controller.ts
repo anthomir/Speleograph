@@ -23,7 +23,7 @@ export class BibliographicRessourceController {
         let objRes = await this.resourceService.find(filter, skip, take, sortBy);
 
         if (objRes.response == null && objRes.err == null) {
-            return res.status(404).json({ success: false, err: 'No areas found' });
+            return res.status(404).json({ success: false, err: 'No bibliographicRessource found' });
         }
 
         if (objRes.err) {

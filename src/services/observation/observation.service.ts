@@ -50,10 +50,10 @@ export class CaveObservationService {
                       .sort(sortBy ? sortBy : undefined);
 
             if (data.length === 0) {
-                return { status: 404, data: null, message: 'No sensors found' };
+                return { status: 404, data: null, message: 'No caveObservation found' };
             }
 
-            return { status: 200, data, message: 'Sensors found successfully' };
+            return { status: 200, data, message: 'CaveObservation found successfully' };
         } catch (error) {
             return { status: 500, data: null, message: 'Internal server error' };
         }

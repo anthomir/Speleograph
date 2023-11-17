@@ -7,8 +7,6 @@ import { User } from '../../models/User';
 import { SensorService } from '../../services/sensor/sensor.service';
 import { UpdateSensorDto } from '../../dto/sensor/updateSensor';
 import { Role } from '../../models/Enum';
-import { FilterQuery } from 'mongoose';
-import { Sensor } from '../../models/Sensor';
 
 @Controller('/sensor')
 export class SensorController {
