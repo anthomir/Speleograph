@@ -35,7 +35,7 @@ export class CaveService {
             const response = await axios.post(`${process.env.GROTTOCAVE_API}/advanced-search`, null, {
                 params: {
                     complete: true,
-                    resourceType: resourceType ? resourceType : 'cave',
+                    resourceType: resourceType ? resourceType : 'caves',
                     name: name || undefined,
                     country: country || undefined,
                 },

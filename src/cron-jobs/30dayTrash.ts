@@ -6,7 +6,7 @@ import { Sensor } from '../models/Sensor';
 import { SensorType } from '../models/SensorType';
 
 @Service()
-export class BackgroundJobService {
+export class TrashingService {
     @Inject(SensorType)
     sensorType: MongooseModel<SensorType>;
     @Inject(Sensor)
