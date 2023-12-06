@@ -6,14 +6,21 @@ import { exec } from 'child_process';
 @Service()
 export class SnapshotService {
     startBackgroundJob(): void {
-        console.log('Initializing Background Jobs');
+        console.log('Snapshot Service Started...');
         cron.schedule('0 0 * * *', () => {
             this.snapshot();
         });
     }
 
+    async createNow(): Promise<void> {
+        await this.snapshot();
+    }
+
     async snapshot(): Promise<void> {
-        exec('docker exec mongodb mongodump --out /backup', (error, stdout, stderr) => {
+        const timestamp = new Date().toISOString().replace(/[-T:]/g, '').split('.')[0];
+        const backupPath = `/backup/snapshot_${timestamp}`;
+
+        exec(`docker exec speleograph-mongodb-1 mongodump --out ${backupPath}`, (error, stdout, stderr) => {
             if (error) {
                 console.error(`Error: ${error.message}`);
                 return;

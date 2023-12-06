@@ -16,7 +16,7 @@ export class TrashingService {
 
     //Midnight everyday
     startBackgroundJob(): void {
-        console.log('Initializing Background Jobs');
+        console.log('Cleaning Service Started...');
         cron.schedule('0 0 * * *', () => {
             this.clearingSensors();
             this.clearingSensorTypes();

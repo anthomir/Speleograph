@@ -16,6 +16,7 @@ import './middlewares';
 import { specOS3 } from './spec/specOS3';
 import { TrashingService } from './cron-jobs/30dayTrash';
 import { SnapshotService } from './cron-jobs/snapshots';
+import { DailyEmail } from './cron-jobs/dailyEmails';
 const rootDir = __dirname;
 
 @Configuration({
@@ -74,6 +75,8 @@ export class Server {
     trashService: TrashingService;
     @Inject(SnapshotService)
     snapshotService: SnapshotService;
+    @Inject(DailyEmail)
+    dailyEmail: DailyEmail;
 
     @Configuration()
     protected settings: Configuration;
@@ -81,5 +84,7 @@ export class Server {
     $onInit(): void {
         this.trashService.startBackgroundJob();
         this.snapshotService.startBackgroundJob();
+        this.dailyEmail.startBackgroundJob();
+        this.snapshotService.createNow();
     }
 }
