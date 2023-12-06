@@ -1,12 +1,12 @@
 import { Inject, Service } from '@tsed/di';
 import cron from 'node-cron';
-import { SensorType } from 'src/models/SensorType';
+import { SensorType } from '../models/SensorType';
 import { MongooseModel } from '@tsed/mongoose';
-import { Sensor } from 'src/models/Sensor';
-import { CaveObservation } from 'src/models/CaveObservation';
-import { User } from 'src/models/User';
+import { Sensor } from '../models/Sensor';
+import { CaveObservation } from '../models/CaveObservation';
+import { User } from '../models/User';
 import sgMail from '@sendgrid/mail';
-import { Role } from 'src/models/Enum';
+import { Role } from '../models/Enum';
 sgMail.setApiKey(String(process.env.SENDGRID_API));
 
 @Service()
