@@ -25,7 +25,6 @@ export class DailyEmail {
 
         cron.schedule('0 0 * * *', () => {
             this.emailNotification();
-            console.log(' ** CRON JOB RAN ');
         });
     }
 
