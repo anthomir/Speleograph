@@ -31,6 +31,10 @@ export class CaveObservation {
     @Ref(() => User)
     createdBy: Ref<User>;
 
+    @Required()
+    @Default(Date.now)
+    createdAt: Date;
+
     @Select(false)
     @Default(false)
     isDeleted: boolean;
