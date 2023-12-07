@@ -90,7 +90,20 @@ export class CaveObservationService {
         return res.status(200).json({ success: false, data: { fileUrl: `${process.env.PRODUCTION_URL}/uploads/${filename}.${mimetype}` } });
     }
 
-    //isDeleted = true
+    async update(caveId: string, fileName: any, res: Res) {
+        try {
+            let cave = await this.CaveObservation.updateOne({ _id: caveId }, { fileName: fileName }, { new: true });
+
+            if (!cave) {
+                return res.status(404).json({ success: false, error: 'Document not found' });
+            }
+
+            return res.status(200).json({ success: true, data: cave });
+        } catch (err) {
+            return res.status(500).json({ success: false, error: 'Internal Server Error' });
+        }
+    }
+
     async deleteById(id: string): Promise<{ status: number; message: string }> {
         try {
             const observation = await this.CaveObservation.findOne({ _id: id, isDeleted: false });

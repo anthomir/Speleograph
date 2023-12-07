@@ -7,7 +7,6 @@ import { CaveObservation } from '../models/CaveObservation';
 import { User } from '../models/User';
 import sgMail from '@sendgrid/mail';
 import { Role } from '../models/Enum';
-import { error } from 'console';
 sgMail.setApiKey(String(process.env.SENDGRID_API));
 
 @Service()

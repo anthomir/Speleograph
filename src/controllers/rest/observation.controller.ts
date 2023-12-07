@@ -1,6 +1,6 @@
 import { Controller, Inject } from '@tsed/di';
 import { BodyParams, Context, PathParams, QueryParams } from '@tsed/platform-params';
-import { Delete, Get, Post, Patch } from '@tsed/schema';
+import { Delete, Get, Post, Patch, Put } from '@tsed/schema';
 import { Authenticate } from '@tsed/passport';
 import { MulterOptions, MultipartFile, PlatformMulterFile, Req, Res } from '@tsed/common';
 import { CaveObservationService } from '../../services/observation/observation.service';
@@ -65,6 +65,26 @@ export class CaveObservationController {
     @Post('/')
     async post(@Context('user') user: User, @Res() res: Res, @BodyParams() body: any) {
         return await this.caveObservationService.create(user, res, body);
+    }
+
+    @Authenticate('jwt')
+    @Put('/:id')
+    async update(@Context('user') user: User, @Res() res: Res, @BodyParams() body: { fileName: string }, @PathParams('id') id: string) {
+        try {
+            let response = await this.caveObservationService.findById({ _id: id, isDeleted: false });
+
+            if (!response.data) {
+                return res.status(404).json('observation not found');
+            }
+
+            if (user.role != Role.Admin && user._id != response.data.createdBy) {
+                return res.status(401).json({ sucess: false, err: 'Requirements not met' });
+            }
+
+            return await this.caveObservationService.update(id, { fileName: body.fileName }, res);
+        } catch (error) {
+            return res.status(500).json({ success: false, message: 'Internal server error' });
+        }
     }
 
     @Post('/upload')
