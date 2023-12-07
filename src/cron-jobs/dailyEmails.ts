@@ -7,6 +7,7 @@ import { CaveObservation } from '../models/CaveObservation';
 import { User } from '../models/User';
 import sgMail from '@sendgrid/mail';
 import { Role } from '../models/Enum';
+import { error } from 'console';
 sgMail.setApiKey(String(process.env.SENDGRID_API));
 
 @Service()
@@ -41,8 +42,8 @@ export class DailyEmail {
             const caveObservations = await this.CaveObservation.find({ deletedAt: { $gte: twentyFourHoursAgo } });
             const sensorTypes = await this.SensorType.find({ deletedAt: { $gte: twentyFourHoursAgo } });
 
-            if (!sensors && !caveObservations && !sensorTypes) {
-                return;
+            if (sensors.length == 0 && caveObservations.length == 0 && sensorTypes.length == 0) {
+                throw 'No Deleted Items: ' + new Date(Date.now());
             }
 
             const users = await this.User.find({ role: Role.Admin });
@@ -118,7 +119,7 @@ export class DailyEmail {
                 });
             });
         } catch (err) {
-            throw err;
+            console.log(err);
         }
     }
 }

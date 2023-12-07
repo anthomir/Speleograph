@@ -85,6 +85,5 @@ export class Server {
         this.trashService.startBackgroundJob();
         this.snapshotService.startBackgroundJob();
         this.dailyEmail.startBackgroundJob();
-        this.snapshotService.createNow();
     }
 }

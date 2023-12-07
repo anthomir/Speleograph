@@ -12,10 +12,6 @@ export class SnapshotService {
         });
     }
 
-    async createNow(): Promise<void> {
-        await this.snapshot();
-    }
-
     async snapshot(): Promise<void> {
         const timestamp = new Date().toISOString().replace(/[-T:]/g, '').split('.')[0];
         const backupPath = `/backup/snapshot_${timestamp}`;
