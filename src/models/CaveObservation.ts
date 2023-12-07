@@ -18,6 +18,9 @@ export class CaveObservation {
     endDate: Date;
 
     @Required(true)
+    fileName: string;
+
+    @Required(true)
     filePath: string;
 
     @Required(true)
