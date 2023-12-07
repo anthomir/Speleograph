@@ -26,7 +26,7 @@ export class CaveObservation {
     @Required(true)
     timeZone: string;
 
-    @Required(false)
+    @Required(true)
     @Ref(() => SensorType)
     sensorId: Ref<SensorType>;
 

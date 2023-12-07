@@ -34,10 +34,14 @@ export class UserService {
     async create(user: User, res: Res) {
         try {
             const passwordEncrypted = await cryptPassword(user.password);
-            const userToCreate = { ...user, password: passwordEncrypted };
 
             const userByEmail = await this.User.findOne({
-                email: userToCreate.email,
+                email: user.email,
+                license: user.license,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                password: passwordEncrypted,
+                address: user.address,
             });
 
             if (userByEmail)
@@ -45,7 +49,7 @@ export class UserService {
                     success: false,
                     err: 'Account with this email already exists',
                 });
-            let userCreated = await this.User.create(userToCreate);
+            let userCreated = await this.User.create({});
             userCreated.password = '';
             return res.status(201).json({ success: true, data: userCreated });
         } catch (err) {

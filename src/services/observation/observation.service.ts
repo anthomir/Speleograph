@@ -62,8 +62,16 @@ export class CaveObservationService {
     async create(user: User, res: Res, caveMetadata: any) {
         try {
             caveMetadata.createdBy = user._id;
-
-            let cave = await this.CaveObservation.create(caveMetadata);
+            let cave = await this.CaveObservation.create({
+                caveId: caveMetadata.caveId,
+                beginDate: caveMetadata.beginDate,
+                endDate: caveMetadata.endDate,
+                fileName: caveMetadata.fileName == null || caveMetadata.fileName == undefined ? 'Unnamed' : caveMetadata.fileName,
+                filePath: caveMetadata.filePath,
+                timeZone: caveMetadata.timeZone,
+                sensorId: caveMetadata.sensorId,
+                createdBy: user,
+            });
             return res.status(200).json({ success: true, data: cave });
         } catch (err) {
             return res.status(500).json({ success: false, err: 'Internal Server Error' });
