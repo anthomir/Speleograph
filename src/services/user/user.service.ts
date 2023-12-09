@@ -38,6 +38,7 @@ export class UserService {
             let userCreated = await this.User.create({
                 firstName: user.firstName,
                 lastName: user.lastName,
+                email: user.email,
                 license: user.license,
                 password: passwordEncrypted,
                 address: user.address,
