@@ -35,21 +35,13 @@ export class UserService {
         try {
             const passwordEncrypted = await cryptPassword(user.password);
 
-            const userByEmail = await this.User.findOne({
-                email: user.email,
-                license: user.license,
+            let userCreated = await this.User.create({
                 firstName: user.firstName,
                 lastName: user.lastName,
+                license: user.license,
                 password: passwordEncrypted,
                 address: user.address,
             });
-
-            if (userByEmail)
-                return res.status(409).json({
-                    success: false,
-                    err: 'Account with this email already exists',
-                });
-            let userCreated = await this.User.create({});
             userCreated.password = '';
             return res.status(201).json({ success: true, data: userCreated });
         } catch (err) {
