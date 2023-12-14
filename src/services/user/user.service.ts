@@ -24,11 +24,11 @@ export class UserService {
     }
 
     async findById(id: string): Promise<User | null> {
-        return await this.User.findById(id).lean();
+        return await this.User.findById(id).lean().select('-email');
     }
 
     async findOne(filter: any): Promise<User | null> {
-        return await this.User.findOne(filter);
+        return await this.User.findOne(filter).select('-email');
     }
 
     async create(user: User, res: Res) {

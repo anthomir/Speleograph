@@ -14,8 +14,6 @@ export class CaveObservationService {
     private CaveObservation: MongooseModel<CaveObservation>;
     @Inject(Notification)
     private Notification: MongooseModel<Notification>;
-    @Inject(User)
-    private User: MongooseModel<User>;
 
     // JWT
     async findById(filter: FilterQuery<CaveObservation>): Promise<{ status: number; data: CaveObservation | null; message: string | null }> {

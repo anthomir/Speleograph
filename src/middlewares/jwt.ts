@@ -16,17 +16,14 @@ import { User } from '../models/User';
 export class JwtProtocol implements OnVerify, OnInstall {
     @Inject()
     usersService: UserService;
-
     async $onVerify(@Req() req: Req, @Arg(0) jwtPayload: any, @Res() res: Res, @Context() ctx: Context) {
         let userFound: User | null = await this.usersService.findById(jwtPayload.sub);
 
         if (!userFound) {
             return res.status(401).json({ success: false, err: 'unauthorized' });
         }
-
         ctx.user = userFound;
         return userFound;
     }
-
     $onInstall(strategy: Strategy): void {}
 }

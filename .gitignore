@@ -58,3 +58,6 @@ test/**/*.js.map
 
 /backup
 /public
+
+docker-compose.yml
+docker-compose
