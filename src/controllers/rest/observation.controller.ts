@@ -103,23 +103,6 @@ export class CaveObservationController {
         }
     }
 
-    @Post('/upload')
-    @MulterOptions({
-        dest: './public/uploads',
-        fileFilter(req: Req, file, cb) {
-            const extension = path.extname(file.originalname).toLowerCase();
-            const mimetype = file.mimetype;
-            if (extension !== '.csv' || mimetype !== 'text/csv') {
-                cb(null, false);
-            } else {
-                cb(null, true);
-            }
-        },
-    })
-    async uploadFile(@MultipartFile('file') file: PlatformMulterFile, @Req() req: Req, @Res() res: Res) {
-        return await this.caveObservationService.postFile(res, file);
-    }
-
     //admin delete api
     @Authenticate('jwt')
     @Delete('/:id')
