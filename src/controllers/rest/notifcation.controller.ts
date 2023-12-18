@@ -5,6 +5,7 @@ import { Get, Patch, Put } from '@tsed/schema';
 import { NotificationService } from '../../services/notification/notification.service';
 import { User } from '../../models/User';
 import { Role } from '../../models/Enum';
+import mongoose from 'mongoose';
 
 @Controller('/notification')
 export class NotificationController {
@@ -69,6 +70,9 @@ export class NotificationController {
         try {
             if (user.role != Role.Admin) {
                 return res.status(401).json({ message: 'Unauthorized' });
+            }
+            if (!ids.every((id) => mongoose.Types.ObjectId.isValid(id))) {
+                return { status: 400, message: 'Invalid ObjectId in the array of notification IDs' };
             }
 
             const result = await this.notificationService.markNotificationsAsRead({ _id: { $in: ids } });
