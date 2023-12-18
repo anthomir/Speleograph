@@ -85,7 +85,7 @@ export class CaveObservationService {
         fs.rename(`./public/uploads/${filename}`, `./public/uploads/${filename}.${mimetype}`, function (err) {
             if (err) return res.status(500).json({ success: false, err: '' });
         });
-        return res.status(200).json({ success: false, data: { fileUrl: `${process.env.PRODUCTION_URL}/uploads/${filename}.${mimetype}` } });
+        return `${process.env.PRODUCTION_URL}/uploads/${filename}.${mimetype}`;
     }
 
     async update(caveId: string, fileName: any, res: Res) {

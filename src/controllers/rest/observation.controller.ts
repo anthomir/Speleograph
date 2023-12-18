@@ -63,7 +63,23 @@ export class CaveObservationController {
 
     @Authenticate('jwt')
     @Post('/')
-    async post(@Context('user') user: User, @Res() res: Res, @BodyParams() body: any) {
+    @MulterOptions({
+        dest: './public/uploads',
+        fileFilter(req: Req, file, cb) {
+            const extension = path.extname(file.originalname).toLowerCase();
+            const mimetype = file.mimetype;
+            if (extension !== '.csv' || mimetype !== 'text/csv') {
+                cb(null, false);
+            } else {
+                cb(null, true);
+            }
+        },
+    })
+    async post(@Context('user') user: User, @MultipartFile('file') file: PlatformMulterFile, @Res() res: Res, @BodyParams() body: any) {
+        let response = await this.caveObservationService.postFile(res, file);
+
+        body.filePath = response;
+
         return await this.caveObservationService.create(user, res, body);
     }
 
