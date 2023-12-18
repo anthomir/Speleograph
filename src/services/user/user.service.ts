@@ -19,7 +19,8 @@ export class UserService {
                   .limit(take ? parseInt(take) : 100)
                   .skip(skip ? parseInt(skip) : 0)
                   .sort(sortBy ? sortBy : undefined)
-            : await this.User.find();
+                  .select('-email')
+            : await this.User.find().select('-email');
         return data;
     }
 
@@ -45,8 +46,14 @@ export class UserService {
             });
             userCreated.password = '';
             return res.status(201).json({ success: true, data: userCreated });
-        } catch (err) {
-            return res.status(500).json({ success: false, err: 'Internal Server Error' });
+        } catch (error) {
+            if (error.name === 'ValidationError') {
+                return { status: 400, data: null, message: error.message };
+            } else if (error.name === 'MongoError' && error.code === 11000) {
+                return { status: 409, data: null, message: error.message };
+            } else {
+                return { status: 500, data: null, message: error.message };
+            }
         }
     }
 

@@ -69,13 +69,15 @@ export class SensorTypeService implements OnInit {
                 createdBy: body.createdBy,
             });
 
-            if (newSensor) {
-                return { status: 201, data: newSensor, message: 'Sensor created successfully' };
-            } else {
-                return { status: 500, data: null, message: 'Failed to create the sensor' };
-            }
+            return { status: 201, data: newSensor, message: 'SensorType created successfully' };
         } catch (error) {
-            return { status: 500, data: null, message: 'Internal server error' };
+            if (error.name === 'ValidationError') {
+                return { status: 400, data: null, message: error.message };
+            } else if (error.name === 'MongoError' && error.code === 11000) {
+                return { status: 409, data: null, message: 'Duplicate key error. The sensorType already exists.' };
+            } else {
+                return { status: 500, data: null, message: error.message };
+            }
         }
     }
 

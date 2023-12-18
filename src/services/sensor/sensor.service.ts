@@ -44,7 +44,7 @@ export class SensorService {
 
             return { status: 200, data, message: 'Sensors found successfully' };
         } catch (error) {
-            return { status: 500, data: null, message: 'Internal server error' };
+            return { status: 500, data: null, message: error.message };
         }
     }
 
@@ -64,7 +64,13 @@ export class SensorService {
                 return { status: 500, data: null, message: 'Failed to create the sensor' };
             }
         } catch (error) {
-            return { status: 500, data: null, message: 'Internal server error' };
+            if (error.name === 'ValidationError') {
+                return { status: 400, data: null, message: error.message };
+            } else if (error.name === 'MongoError' && error.code === 11000) {
+                return { status: 409, data: null, message: 'Duplicate key error. The sensor already exists.' };
+            } else {
+                return { status: 500, data: null, message: error.message };
+            }
         }
     }
 

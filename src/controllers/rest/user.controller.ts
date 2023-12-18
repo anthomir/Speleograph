@@ -5,8 +5,7 @@ import { User } from '../../models/User';
 import { UserService } from '../../services/user/user.service';
 import { Authenticate, Authorize } from '@tsed/passport';
 import { Req, Res } from '@tsed/common';
-import { UserSchema } from '../../schemas/UserSchema';
-import { UseJoiValidation } from '../../validation/validation.decorator';
+import { UserCreationSchema, UserLoginSchema } from '../../schemas/UserSchema';
 
 //TODO: Refactor
 @Controller('/user')
@@ -15,14 +14,13 @@ export class UserController {
     private usersService: UserService;
 
     @Post('/register')
-    async post(@Res() res: Res, @BodyParams() @UseJoiValidation(UserSchema) body: User) {
+    async post(@Res() res: Res, @BodyParams() body: any) {
         let response = await this.usersService.findOne({
             $or: [{ email: body.email }, { license: body.license }],
         });
         if (response) {
             return res.status(409).json({ success: false, err: 'Email/License already exists' });
         }
-
         return await this.usersService.create(body, res);
     }
 

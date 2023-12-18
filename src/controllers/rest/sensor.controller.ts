@@ -1,8 +1,8 @@
 import { Controller, Inject } from '@tsed/di';
-import { BodyParams, Context, PathParams, QueryParams } from '@tsed/platform-params';
+import { BodyParams, Context, PathParams, QueryParams, ValidationPipe } from '@tsed/platform-params';
 import { Get, Post, Delete, Put, Patch } from '@tsed/schema';
 import { Authenticate } from '@tsed/passport';
-import { Res } from '@tsed/common';
+import { Req, Res, Use } from '@tsed/common';
 import { User } from '../../models/User';
 import { SensorService } from '../../services/sensor/sensor.service';
 import { UpdateSensorDto } from '../../dto/sensor/updateSensor';
@@ -35,7 +35,6 @@ export class SensorController {
     }
 
     @Get('/')
-    @Authenticate('jwt')
     async find(
         @Context('user') user: User,
         @Res() res: Res,
@@ -70,7 +69,7 @@ export class SensorController {
             if (result.status === 201) {
                 return res.status(201).json({ sucess: true, data: result.data });
             } else {
-                return res.status(500).json({ sucess: false, err: result.message });
+                return res.status(result.status).json({ sucess: false, err: result.message });
             }
         } catch (error) {
             return res.status(500).json({ sucess: false, err: 'Internal server error' });
@@ -108,7 +107,7 @@ export class SensorController {
 
     @Delete('/:id')
     @Authenticate('jwt')
-    async delete(@Context('user') user: User, @Res() res: Res, @PathParams('id') id: string, @QueryParams('force') force: boolean) {
+    async delete(@Context('user') user: User, @Req() req: Req, @Res() res: Res, @PathParams('id') id: string, @QueryParams('force') force: boolean) {
         try {
             if (id.length != 24) {
                 return res.status(400).json({ sucess: false, err: 'Bad request' });
