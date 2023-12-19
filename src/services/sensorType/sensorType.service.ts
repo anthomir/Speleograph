@@ -66,7 +66,6 @@ export class SensorTypeService implements OnInit {
             }
             // Create a new sensor document using the provided data
             const newSensor = await this.SensorType.create({
-                name: body.name,
                 properties: body.properties,
                 type: body.type,
                 manufacturer: body.manufacturer,

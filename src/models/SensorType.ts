@@ -10,9 +10,6 @@ export class SensorType {
     _id: string;
 
     @Select(true)
-    name: string;
-
-    @Select(true)
     type: string;
 
     @Select(true)
