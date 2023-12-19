@@ -59,6 +59,11 @@ export class SensorTypeService implements OnInit {
     // JWT
     async post(body: any): Promise<{ status: number; data: SensorType | null; message: string }> {
         try {
+            let sensorFound = await this.SensorType.findOne({ $and: [{ type: body.type }, { manufacturer: body.manufacturer }] });
+
+            if (sensorFound) {
+                return { status: 409, data: null, message: 'Duplicate key error. The sensorType already exists.' };
+            }
             // Create a new sensor document using the provided data
             const newSensor = await this.SensorType.create({
                 name: body.name,

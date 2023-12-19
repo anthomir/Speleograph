@@ -1,17 +1,17 @@
 import { Controller, Inject } from '@tsed/di';
-import { BodyParams, Context, PathParams, QueryParams, ValidationPipe } from '@tsed/platform-params';
+import { BodyParams, Context, PathParams, QueryParams } from '@tsed/platform-params';
 import { Get, Post, Delete, Put, Patch } from '@tsed/schema';
 import { Authenticate } from '@tsed/passport';
-import { Req, Res, Use } from '@tsed/common';
+import { Res } from '@tsed/common';
+import { SensorTypeService } from '../../services/sensorType/sensorType.service';
 import { User } from '../../models/User';
-import { SensorService } from '../../services/sensor/sensor.service';
-import { UpdateSensorDto } from '../../dto/sensor/updateSensor';
+import { UpdateSensorTypeDto } from '../../dto/sensorType/updateSensorDto';
 import { Role } from '../../models/Enum';
 
-@Controller('/sensor')
-export class SensorController {
-    @Inject(SensorService)
-    private sensorService: SensorService;
+@Controller('/sensorType')
+export class SensorTypeController {
+    @Inject(SensorTypeService)
+    private sensorTypeService: SensorTypeService;
 
     @Get('/:id')
     @Authenticate('jwt')
@@ -20,7 +20,7 @@ export class SensorController {
             if (id.length != 24) {
                 return res.status(400).json({ sucess: false, err: 'Bad request' });
             }
-            const result = await this.sensorService.findById({ _id: id, isDeleted: false });
+            const result = await this.sensorTypeService.findById({ _id: id, isDeleted: false });
 
             if (result.status === 200) {
                 return res.status(200).json({ success: true, data: result.data });
@@ -35,12 +35,13 @@ export class SensorController {
     }
 
     @Get('/')
+    @Authenticate('jwt')
     async find(
-        @Context('user') user: User,
+        @Context() user: User,
         @Res() res: Res,
         @QueryParams('filter') filter: string,
-        @QueryParams('skip') skip: string,
-        @QueryParams('take') take: string,
+        @QueryParams('skip') skip: number,
+        @QueryParams('take') take: number,
         @QueryParams('sortBy') sortBy: string,
     ) {
         try {
@@ -48,8 +49,7 @@ export class SensorController {
             if (user.role != Role.Admin) {
                 query = { ...query, ...{ isDeleted: false } };
             }
-
-            const result = await this.sensorService.find(query, skip, take, sortBy);
+            const result = await this.sensorTypeService.find(query, skip, take, sortBy);
             if (result.status === 200) {
                 return res.status(200).json({ success: false, data: result.data });
             } else {
@@ -65,11 +65,11 @@ export class SensorController {
     async post(@Context('user') user: User, @Res() res: Res, @BodyParams() body?: any) {
         body.createdBy = user._id;
         try {
-            const result = await this.sensorService.post(body);
+            const result = await this.sensorTypeService.post(body);
             if (result.status === 201) {
                 return res.status(201).json({ sucess: true, data: result.data });
             } else {
-                return res.status(result.status).json({ sucess: false, err: result.message });
+                return res.status(500).json({ sucess: false, err: result.message });
             }
         } catch (error) {
             return res.status(500).json({ sucess: false, err: 'Internal server error' });
@@ -78,21 +78,13 @@ export class SensorController {
 
     @Put('/:id')
     @Authenticate('jwt')
-    async update(@Context('user') user: User, @Res() res: Res, @PathParams('id') id: string, @BodyParams() body: UpdateSensorDto) {
+    async update(@Res() res: Res, @PathParams('id') id: string, @BodyParams() body: UpdateSensorTypeDto) {
         try {
             if (id.length != 24) {
-                return res.status(400).json({ sucess: false, err: 'Bad request' });
-            }
-            const sensor = await this.sensorService.findById({ _id: id, isDeleted: false });
-            if (!sensor.data) {
-                return res.status(404).json({ sucess: false, err: 'Sensor not found' });
+                return res.status(400).json({ sucess: false, message: 'Bad request' });
             }
 
-            if (user.role != Role.Admin && user._id != sensor.data.createdBy) {
-                return res.status(401).json({ sucess: false, err: 'Permission not met' });
-            }
-
-            const result = await this.sensorService.updateSensor(id, body);
+            const result = await this.sensorTypeService.updateSensorType(id, body);
             if (result.status === 404) {
                 return res.status(404).json({ sucess: false, err: result.message });
             } else if (result.status === 200) {
@@ -107,18 +99,21 @@ export class SensorController {
 
     @Delete('/:id')
     @Authenticate('jwt')
-    async delete(@Context('user') user: User, @Req() req: Req, @Res() res: Res, @PathParams('id') id: string, @QueryParams('force') force: boolean) {
+    async delete(@Context('user') user: User, @Res() res: Res, @PathParams('id') id: string, @QueryParams('force') force: boolean) {
         try {
             if (id.length != 24) {
                 return res.status(400).json({ sucess: false, err: 'Bad request' });
             }
-
             // Checking Permissions
-            const sensor = await this.sensorService.findById({ _id: id });
+            const sensor = await this.sensorTypeService.findById({ _id: id, isDeleted: false });
             if (!sensor.data) {
-                return res.status(404).json({ sucess: false, err: 'Sensor not found' });
+                return res.status(404).json({ sucess: false, err: 'SensorType not found' });
             }
             let role = Role.Admin;
+            if (!sensor.data.createdBy) {
+                return res.status(401).json({ sucess: false, err: 'Requirements not met' });
+            }
+
             if (user.role != role && user._id.toString() != sensor.data.createdBy.toString()) {
                 return res.status(401).json({ sucess: false, err: 'Requirements not met' });
             }
@@ -126,9 +121,9 @@ export class SensorController {
 
             let result;
             if (force == true && user.role == Role.Admin) {
-                result = await this.sensorService.forceDeleteById(id);
+                result = await this.sensorTypeService.forceDeleteById(id);
             } else {
-                result = await this.sensorService.deleteById(id);
+                result = await this.sensorTypeService.deleteById(id);
             }
 
             if (result.status === 404) {
@@ -162,7 +157,7 @@ export class SensorController {
         }
 
         try {
-            const result = await this.sensorService.restore({ _id: { $in: ids }, isDeleted: true });
+            const result = await this.sensorTypeService.restore({ _id: { $in: ids }, isDeleted: true });
 
             if (result.status === 200) {
                 return res.status(200).json({ sucess: true, err: 'Observations successfully restored' });
