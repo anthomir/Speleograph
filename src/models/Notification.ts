@@ -4,6 +4,7 @@ import { NotificationType, ItemType } from './Enum';
 import { CaveObservation } from './CaveObservation';
 import { Sensor } from './Sensor';
 import { SensorType } from './SensorType';
+import { User } from './User';
 
 @Model()
 export class Notification {
@@ -37,4 +38,8 @@ export class Notification {
 
     @Default(new Date())
     createdAt: Date;
+
+    @Select(true)
+    @Ref(() => User)
+    deletedBy: Ref<User> | null;
 }

@@ -125,9 +125,9 @@ export class CaveObservationController {
 
             let result;
             if (force == true && user.role == Role.Admin) {
-                result = await this.caveObservationService.forceDeleteById(id);
+                result = await this.caveObservationService.forceDeleteById(id, user);
             } else {
-                result = await this.caveObservationService.deleteById(id);
+                result = await this.caveObservationService.deleteById(id, user);
             }
 
             if (result.status === 404) {

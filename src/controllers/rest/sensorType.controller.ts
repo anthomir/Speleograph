@@ -121,9 +121,9 @@ export class SensorTypeController {
 
             let result;
             if (force == true && user.role == Role.Admin) {
-                result = await this.sensorTypeService.forceDeleteById(id);
+                result = await this.sensorTypeService.forceDeleteById(id, user);
             } else {
-                result = await this.sensorTypeService.deleteById(id);
+                result = await this.sensorTypeService.deleteById(id, user);
             }
 
             if (result.status === 404) {

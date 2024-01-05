@@ -5,6 +5,7 @@ import { ItemType, NotificationType, SensorTypeEnum } from '../../models/Enum';
 import { UpdateSensorTypeDto } from '../../dto/sensorType/updateSensorDto';
 import { FilterQuery } from 'mongoose';
 import { Notification } from '../../models/Notification';
+import { User } from 'src/models/User';
 
 @Service()
 export class SensorTypeService implements OnInit {
@@ -122,7 +123,7 @@ export class SensorTypeService implements OnInit {
     }
 
     //isDeleted = true
-    async deleteById(id: string): Promise<{ status: number; message: string }> {
+    async deleteById(id: string, deletedBy: User): Promise<{ status: number; message: string }> {
         try {
             const sensorType = await this.SensorType.findOne({ _id: id, isDeleted: false });
 
@@ -140,6 +141,7 @@ export class SensorTypeService implements OnInit {
                 notificationType: NotificationType.SoftDelete,
                 itemType: ItemType.SensorType,
                 sensorType: sensorType._id,
+                deletedBy: deletedBy._id,
             });
 
             return { status: 200, message: 'SensorType deleted successfully' };
@@ -148,7 +150,7 @@ export class SensorTypeService implements OnInit {
         }
     }
 
-    async forceDeleteById(id: string): Promise<{ status: number; message: string }> {
+    async forceDeleteById(id: string, deletedBy: User): Promise<{ status: number; message: string }> {
         try {
             const sensorType = await this.SensorType.findOne({ _id: id });
 
@@ -167,6 +169,7 @@ export class SensorTypeService implements OnInit {
                 notificationType: NotificationType.HardDelete,
                 itemType: ItemType.SensorType,
                 sensorType: sensorType._id,
+                deletedBy: deletedBy._id,
             });
 
             return { status: 200, message: 'SensorType deleted successfully' };

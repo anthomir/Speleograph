@@ -102,7 +102,7 @@ export class CaveObservationService {
         }
     }
 
-    async deleteById(id: string): Promise<{ status: number; message: string }> {
+    async deleteById(id: string, deletedBy: User): Promise<{ status: number; message: string }> {
         try {
             const observation = await this.CaveObservation.findOne({ _id: id, isDeleted: false });
 
@@ -120,6 +120,7 @@ export class CaveObservationService {
                 notificationType: NotificationType.SoftDelete,
                 itemType: ItemType.Observation,
                 caveObservation: observation._id,
+                deletedBy: deletedBy._id,
             });
 
             return { status: 200, message: 'Observation deleted successfully' };
@@ -128,7 +129,7 @@ export class CaveObservationService {
         }
     }
 
-    async forceDeleteById(id: string): Promise<{ status: number; message: string }> {
+    async forceDeleteById(id: string, deletedBy: User): Promise<{ status: number; message: string }> {
         try {
             const observation = await this.CaveObservation.findOne({ _id: id });
 
@@ -147,6 +148,7 @@ export class CaveObservationService {
                 notificationType: NotificationType.SoftDelete,
                 itemType: ItemType.Observation,
                 caveObservation: observation._id,
+                deletedBy: deletedBy._id,
             });
 
             return { status: 200, message: 'Observation deleted successfully' };

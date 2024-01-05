@@ -5,6 +5,7 @@ import { Sensor } from '../../models/Sensor';
 import { FilterQuery } from 'mongoose';
 import { Notification } from '../../models/Notification';
 import { ItemType, NotificationType } from 'src/models/Enum';
+import { User } from 'src/models/User';
 
 @Service()
 export class SensorService {
@@ -108,7 +109,7 @@ export class SensorService {
     }
 
     //isDeleted = true
-    async deleteById(id: string): Promise<{ status: number; message: string }> {
+    async deleteById(id: string, deletedBy: User): Promise<{ status: number; message: string }> {
         try {
             const sensor = await this.Sensor.findOne({ _id: id, isDeleted: false });
 
@@ -126,6 +127,7 @@ export class SensorService {
                 notificationType: NotificationType.SoftDelete,
                 itemType: ItemType.Sensor,
                 sensor: sensor._id,
+                deletedBy: deletedBy._id,
             });
 
             return { status: 200, message: 'Sensor deleted successfully' };
@@ -134,7 +136,7 @@ export class SensorService {
         }
     }
 
-    async forceDeleteById(id: string): Promise<{ status: number; message: string }> {
+    async forceDeleteById(id: string, deletedBy: User): Promise<{ status: number; message: string }> {
         try {
             const sensor = await this.Sensor.findOne({ _id: id });
 
@@ -152,6 +154,7 @@ export class SensorService {
                 notificationType: NotificationType.HardDelete,
                 itemType: ItemType.Sensor,
                 sensor: sensor._id,
+                deletedBy: deletedBy._id,
             });
 
             return { status: 200, message: 'Sensor deleted successfully' };
