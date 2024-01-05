@@ -4,6 +4,7 @@ import { UpdateSensorDto } from '../../dto/sensor/updateSensor';
 import { Sensor } from '../../models/Sensor';
 import { FilterQuery } from 'mongoose';
 import { Notification } from '../../models/Notification';
+import { ItemType, NotificationType } from 'src/models/Enum';
 
 @Service()
 export class SensorService {
@@ -109,9 +110,9 @@ export class SensorService {
     //isDeleted = true
     async deleteById(id: string): Promise<{ status: number; message: string }> {
         try {
-            const observation = await this.Sensor.findOne({ _id: id, isDeleted: false });
+            const sensor = await this.Sensor.findOne({ _id: id, isDeleted: false });
 
-            if (!observation) {
+            if (!sensor) {
                 return { status: 404, message: 'Sensor not found' };
             }
 
@@ -120,7 +121,12 @@ export class SensorService {
                 return { status: 500, message: 'Unable to delete Sensor' };
             }
 
-            await this.Notification.create({ title: 'Delete notification', description: `Sensor soft deleted , id: ${id}` });
+            await this.Notification.create({
+                title: 'Delete notification',
+                notificationType: NotificationType.SoftDelete,
+                itemType: ItemType.Sensor,
+                sensor: sensor._id,
+            });
 
             return { status: 200, message: 'Sensor deleted successfully' };
         } catch (err) {
@@ -130,9 +136,9 @@ export class SensorService {
 
     async forceDeleteById(id: string): Promise<{ status: number; message: string }> {
         try {
-            const observation = await this.Sensor.findOne({ _id: id });
+            const sensor = await this.Sensor.findOne({ _id: id });
 
-            if (!observation) {
+            if (!sensor) {
                 return { status: 404, message: 'Sensor not found' };
             }
 
@@ -141,7 +147,12 @@ export class SensorService {
             if (data.deletedCount != 1) {
                 return { status: 500, message: 'Internal server error' };
             }
-            await this.Notification.create({ title: 'Delete notification', description: `Sensor force deleted , id: ${id}` });
+            await this.Notification.create({
+                title: 'Delete notification',
+                notificationType: NotificationType.HardDelete,
+                itemType: ItemType.Sensor,
+                sensor: sensor._id,
+            });
 
             return { status: 200, message: 'Sensor deleted successfully' };
         } catch (err) {

@@ -22,7 +22,7 @@ export class NotificationController {
             if (id.length != 24) {
                 return res.status(400).json({ sucess: false, err: 'Bad request' });
             }
-            const result = await this.notificationService.findById({ _id: id /*, isDeleted: false */ });
+            const result = await this.notificationService.findById({ _id: id });
 
             if (result.status === 200) {
                 return res.status(200).json({ success: true, data: result.data });
@@ -52,7 +52,6 @@ export class NotificationController {
             }
 
             let query = filter ? filter : {};
-            // query = { ...query, ...{ isDeleted: false } };
 
             const result = await this.notificationService.find(query, skip, take, sortBy);
             if (result.status === 200) {

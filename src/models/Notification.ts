@@ -1,5 +1,9 @@
-import { Required, Default } from '@tsed/schema';
-import { Model, ObjectID, Select } from '@tsed/mongoose';
+import { Required, Default, Nullable } from '@tsed/schema';
+import { Model, ObjectID, Ref, Select } from '@tsed/mongoose';
+import { NotificationType, ItemType } from './Enum';
+import { CaveObservation } from './CaveObservation';
+import { Sensor } from './Sensor';
+import { SensorType } from './SensorType';
 
 @Model()
 export class Notification {
@@ -11,7 +15,22 @@ export class Notification {
     title: string;
 
     @Required()
-    description: string;
+    notificationType: NotificationType;
+
+    @Required()
+    itemType: ItemType;
+
+    @Nullable(true)
+    @Ref(() => CaveObservation)
+    caveObservation: CaveObservation;
+
+    @Nullable(true)
+    @Ref(() => SensorType)
+    sensorType: SensorType;
+
+    @Nullable(true)
+    @Ref(() => Sensor)
+    sensor: Sensor;
 
     @Default(false)
     isRead: boolean;

@@ -4,7 +4,7 @@ import axios from 'axios';
 import { CaveObservation } from '../../models/CaveObservation';
 import fs from 'fs';
 import { User } from '../../models/User';
-import { Role } from '../../models/Enum';
+import { ItemType, NotificationType, Role } from '../../models/Enum';
 import { FilterQuery } from 'mongoose';
 import { Notification } from '../../models/Notification';
 
@@ -115,7 +115,12 @@ export class CaveObservationService {
                 return { status: 500, message: 'Unable to delete Observation' };
             }
 
-            await this.Notification.create({ title: 'Delete notification', description: `Observation soft deleted , id: ${id}` });
+            await this.Notification.create({
+                title: 'Delete notification',
+                notificationType: NotificationType.SoftDelete,
+                itemType: ItemType.Observation,
+                caveObservation: observation._id,
+            });
 
             return { status: 200, message: 'Observation deleted successfully' };
         } catch (err) {
@@ -137,7 +142,12 @@ export class CaveObservationService {
                 return { status: 500, message: 'Internal server error' };
             }
 
-            await this.Notification.create({ title: 'Delete notification', description: `Observation soft deleted , id: ${id}` });
+            await this.Notification.create({
+                title: 'Delete notification',
+                notificationType: NotificationType.SoftDelete,
+                itemType: ItemType.Observation,
+                caveObservation: observation._id,
+            });
 
             return { status: 200, message: 'Observation deleted successfully' };
         } catch (err) {

@@ -35,10 +35,16 @@ export class NotificationService {
                       .limit(take ? parseInt(take) : 100)
                       .skip(skip ? parseInt(skip) : 0)
                       .sort(sortBy ? sortBy : undefined)
+                      .populate('caveObservation')
+                      .populate('sensor')
+                      .populate('sensorType')
                 : await this.Notification.find()
                       .limit(take ? parseInt(take) : 100)
                       .skip(skip ? parseInt(skip) : 0)
-                      .sort(sortBy ? sortBy : undefined);
+                      .sort(sortBy ? sortBy : undefined)
+                      .populate('caveObservation')
+                      .populate('sensor')
+                      .populate('sensorType');
 
             const count = await this.Notification.find({ isRead: false }).count();
 

@@ -14,3 +14,14 @@ export enum SensorTypeEnum {
     CTDSensor = 'CTDSensor',
     PluvioMeter = 'PluvioMeter',
 }
+
+export enum NotificationType {
+    SoftDelete = 'SoftDelete',
+    HardDelete = 'HardDelete',
+}
+
+export enum ItemType {
+    Observation = 'Observation',
+    SensorType = 'SensorType',
+    Sensor = 'Sensor',
+}

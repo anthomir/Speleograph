@@ -1,7 +1,7 @@
+import { SensorType } from './../../models/SensorType';
 import { Inject, OnInit, OnRoutesInit, Req, Res, Service } from '@tsed/common';
 import { MongooseModel } from '@tsed/mongoose';
-import { SensorType } from '../../models/SensorType';
-import { SensorTypeEnum } from '../../models/Enum';
+import { ItemType, NotificationType, SensorTypeEnum } from '../../models/Enum';
 import { UpdateSensorTypeDto } from '../../dto/sensorType/updateSensorDto';
 import { FilterQuery } from 'mongoose';
 import { Notification } from '../../models/Notification';
@@ -124,9 +124,9 @@ export class SensorTypeService implements OnInit {
     //isDeleted = true
     async deleteById(id: string): Promise<{ status: number; message: string }> {
         try {
-            const observation = await this.SensorType.findOne({ _id: id, isDeleted: false });
+            const sensorType = await this.SensorType.findOne({ _id: id, isDeleted: false });
 
-            if (!observation) {
+            if (!sensorType) {
                 return { status: 404, message: 'SensorType not found' };
             }
 
@@ -135,7 +135,12 @@ export class SensorTypeService implements OnInit {
                 return { status: 500, message: 'Unable to delete SensorType' };
             }
 
-            await this.Notification.create({ title: 'Delete notification', description: `SensorType soft deleted , id: ${id}` });
+            await this.Notification.create({
+                title: 'Delete notification',
+                notificationType: NotificationType.SoftDelete,
+                itemType: ItemType.SensorType,
+                sensorType: sensorType._id,
+            });
 
             return { status: 200, message: 'SensorType deleted successfully' };
         } catch (err) {
@@ -145,9 +150,9 @@ export class SensorTypeService implements OnInit {
 
     async forceDeleteById(id: string): Promise<{ status: number; message: string }> {
         try {
-            const observation = await this.SensorType.findOne({ _id: id });
+            const sensorType = await this.SensorType.findOne({ _id: id });
 
-            if (!observation) {
+            if (!sensorType) {
                 return { status: 404, message: 'SensorType not found' };
             }
 
@@ -157,7 +162,12 @@ export class SensorTypeService implements OnInit {
                 return { status: 500, message: 'Internal server error' };
             }
 
-            await this.Notification.create({ title: 'Delete notification', description: `SensorType force deleted , id: ${id}` });
+            await this.Notification.create({
+                title: 'Delete notification',
+                notificationType: NotificationType.HardDelete,
+                itemType: ItemType.SensorType,
+                sensorType: sensorType._id,
+            });
 
             return { status: 200, message: 'SensorType deleted successfully' };
         } catch (err) {
