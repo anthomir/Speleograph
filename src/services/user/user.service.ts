@@ -96,6 +96,7 @@ export class UserService {
             }
             user.firstName = body.firstName ? body.firstName : user.firstName;
             user.lastName = body.lastName ? body.lastName : user.lastName;
+            user.address = body.address ? body.address : user.address;
             userToUpdate.save();
 
             return res.status(200).json({ success: true, data: user });
