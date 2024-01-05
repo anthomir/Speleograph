@@ -1,3 +1,4 @@
+import { Select } from '@tsed/mongoose';
 import { Context, Inject, Req, Res } from '@tsed/common';
 import { Unauthorized } from '@tsed/exceptions';
 import { Arg, OnInstall, OnVerify, Protocol } from '@tsed/passport';

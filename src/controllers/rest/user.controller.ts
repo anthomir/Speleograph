@@ -46,7 +46,9 @@ export class UserController {
     @Authenticate('jwt')
     async getProfile(@Context('user') user: User, @Res() res: Res) {
         if (user) {
-            return res.status(200).json({ success: true, data: user });
+            const userToReturn = await this.usersService.findProfile(user);
+
+            return res.status(200).json({ success: true, data: userToReturn });
         } else {
             return res.status(500).json({ success: false, err: 'Internal server error' });
         }

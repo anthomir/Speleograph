@@ -32,6 +32,9 @@ export class UserService {
         return await this.User.findOne(filter).select('-email');
     }
 
+    async findProfile(user: User) {
+        return await this.User.findById(user._id);
+    }
     async create(user: User, res: Res) {
         try {
             const passwordEncrypted = await cryptPassword(user.password);
