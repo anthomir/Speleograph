@@ -102,7 +102,7 @@ export class UserService {
             userToUpdate.address = body.address ? body.address : user.address;
             userToUpdate.save();
 
-            return res.status(200).json({ success: true, data: user });
+            return res.status(200).json({ success: true, data: userToUpdate });
         } catch (err) {
             return res.status(500).json({ success: false, err: 'An unexpected error occured' });
         }
