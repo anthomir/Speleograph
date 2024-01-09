@@ -1,7 +1,8 @@
-import { Default, Nullable, Required } from '@tsed/schema';
+import { Default, Nullable, Optional, Required } from '@tsed/schema';
 import { Model, ObjectID, Ref, Select } from '@tsed/mongoose';
 import { User } from './User';
 import { SensorType } from './SensorType';
+import { Sensor } from './Sensor';
 
 @Model()
 export class CaveObservation {
@@ -28,7 +29,11 @@ export class CaveObservation {
 
     @Required(true)
     @Ref(() => SensorType)
-    sensorId: Ref<SensorType>;
+    sensorTypeId: Ref<SensorType>;
+
+    @Nullable(true)
+    @Ref(() => Sensor)
+    isObservedBy: Ref<Sensor>;
 
     @Required()
     @Ref(() => User)

@@ -17,6 +17,10 @@ export class Sensor {
     serialNo: string;
 
     @Select(true)
+    @Nullable(true)
+    observes: string;
+
+    @Select(true)
     @Required(true)
     @Ref(() => SensorType)
     sensorTypeId: Ref<SensorType>;
