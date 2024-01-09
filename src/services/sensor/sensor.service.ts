@@ -58,7 +58,7 @@ export class SensorService {
                 serialNo: body.serialNo,
                 sensorTypeId: body.sensorTypeId,
                 createdBy: body.createdBy,
-                observes: body.observes,
+                observes: body.observes ? body.observes : null,
             });
 
             if (newSensor) {
