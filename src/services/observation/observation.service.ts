@@ -67,8 +67,9 @@ export class CaveObservationService {
                 fileName: caveMetadata.fileName == null || caveMetadata.fileName == undefined ? 'Unnamed' : caveMetadata.fileName,
                 filePath: caveMetadata.filePath,
                 timeZone: caveMetadata.timeZone,
-                sensorTypeId: caveMetadata.sensorTypeId,
+                sensorId: caveMetadata.sensorId,
                 isObservedBy: caveMetadata.sensorId,
+                madeObservation: caveMetadata.sensorId,
                 createdBy: user,
             });
             return res.status(200).json({ success: true, data: cave });

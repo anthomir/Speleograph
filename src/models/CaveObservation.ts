@@ -29,7 +29,7 @@ export class CaveObservation {
 
     @Required(true)
     @Ref(() => SensorType)
-    sensorTypeId: Ref<SensorType>;
+    sensorId: Ref<SensorType>;
 
     @Nullable(true)
     @Ref(() => Sensor)
