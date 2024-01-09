@@ -97,9 +97,9 @@ export class UserService {
             if (!userToUpdate) {
                 return res.status(404).json({ success: false, err: 'user not found' });
             }
-            user.firstName = body.firstName ? body.firstName : user.firstName;
-            user.lastName = body.lastName ? body.lastName : user.lastName;
-            user.address = body.address ? body.address : user.address;
+            userToUpdate.firstName = body.firstName ? body.firstName : user.firstName;
+            userToUpdate.lastName = body.lastName ? body.lastName : user.lastName;
+            userToUpdate.address = body.address ? body.address : user.address;
             userToUpdate.save();
 
             return res.status(200).json({ success: true, data: user });
@@ -442,5 +442,16 @@ export class UserService {
         } catch (err) {
             return res.status(500).json({ success: false, err: 'An unexpected error occured' });
         }
+    }
+
+    async updateProfile(id: string, fileLink: string, res: Res) {
+        const user = await this.User.findById(id);
+
+        if (!user) {
+            return res.status(404).json({ success: false, err: 'User not found' });
+        }
+
+        user.profileImage = fileLink;
+        user.save();
     }
 }

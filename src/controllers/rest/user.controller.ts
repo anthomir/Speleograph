@@ -98,7 +98,9 @@ export class UserController {
             const mimetype = file.mimetype.substring(file.mimetype.indexOf('/') + 1);
 
             const fileLink = `${process.env.PRODUCTION_URL}/profile/${file.filename}.${mimetype}`;
-            user.profileImage = fileLink;
+
+            await this.usersService.updateProfile(user._id, fileLink, res);
+
             fs.rename(`./public/profile/${file.filename}`, `./public/profile/${file.filename}.${mimetype}`, function (err: any) {
                 if (err) return res.status(500).json({ success: false, err: '' });
             });
