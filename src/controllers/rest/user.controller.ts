@@ -4,8 +4,10 @@ import { Get, Post, Put, Delete, Security, Header, Returns } from '@tsed/schema'
 import { User } from '../../models/User';
 import { UserService } from '../../services/user/user.service';
 import { Authenticate, Authorize } from '@tsed/passport';
-import { Req, Res } from '@tsed/common';
+import { MulterOptions, MultipartFile, PlatformMulterFile, Req, Res } from '@tsed/common';
 import { UserCreationSchema, UserLoginSchema } from '../../schemas/UserSchema';
+import path from 'path';
+import fs from 'fs';
 
 //TODO: Refactor
 @Controller('/user')
@@ -73,5 +75,38 @@ export class UserController {
     @Post('/reset-password')
     async resetPassword(@Req() req: Req, @Res() res: Res, @BodyParams() body: any) {
         return await this.usersService.resetPassword(req, res, body);
+    }
+
+    @Authenticate('jwt')
+    @Post('/upload-profile')
+    @MulterOptions({
+        dest: './public/profile',
+        fileFilter(req: Req, file, cb) {
+            const allowedExtensions = ['.jpeg', '.jpg', '.png'];
+            const extension = path.extname(file.originalname).toLowerCase();
+            const mimetype = file.mimetype;
+
+            if (allowedExtensions.includes(extension) && (mimetype === 'image/jpeg' || mimetype === 'image/png')) {
+                cb(null, true);
+            } else {
+                cb(null, false);
+            }
+        },
+    })
+    async uploadProfile(@Context('user') user: User, @MultipartFile('file') file: PlatformMulterFile, @Res() res: Res) {
+        try {
+            const mimetype = file.mimetype.substring(file.mimetype.indexOf('/') + 1);
+
+            const fileLink = `${process.env.PRODUCTION_URL}/profile/${file.filename}.${mimetype}`;
+            user.profileImage = fileLink;
+            fs.rename(`./public/profile/${file.filename}`, `./public/profile/${file.filename}.${mimetype}`, function (err: any) {
+                if (err) return res.status(500).json({ success: false, err: '' });
+            });
+
+            return res.status(200).json({ message: 'Profile image uploaded successfully', fileLink });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
     }
 }

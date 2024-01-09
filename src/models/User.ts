@@ -34,6 +34,10 @@ export class User {
     @Select(true)
     address: string;
 
+    @Nullable(String)
+    @Select(true)
+    profileImage: string;
+
     @Default(Date.now)
     createdAt: Date = new Date();
 
