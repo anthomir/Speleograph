@@ -100,6 +100,7 @@ export class UserService {
             userToUpdate.firstName = body.firstName ? body.firstName : user.firstName;
             userToUpdate.lastName = body.lastName ? body.lastName : user.lastName;
             userToUpdate.address = body.address ? body.address : user.address;
+            userToUpdate.profileImage = body.profileImage ? body.profileImage : user.profileImage;
             userToUpdate.save();
 
             return res.status(200).json({ success: true, data: userToUpdate });
