@@ -35,6 +35,7 @@ export class SensorController {
     }
 
     @Get('/')
+    @Authenticate('jwt')
     async find(
         @Context('user') user: User,
         @Res() res: Res,

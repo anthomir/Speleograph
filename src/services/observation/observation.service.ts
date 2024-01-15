@@ -42,10 +42,22 @@ export class CaveObservationService {
                       .limit(take ? parseInt(take) : 100)
                       .skip(skip ? parseInt(skip) : 0)
                       .sort(sortBy ? sortBy : undefined)
+                      .populate({
+                          path: 'isObservedBy',
+                          populate: {
+                              path: 'sensorTypeId',
+                          },
+                      })
                 : await this.CaveObservation.find()
                       .limit(take ? parseInt(take) : 100)
                       .skip(skip ? parseInt(skip) : 0)
-                      .sort(sortBy ? sortBy : undefined);
+                      .sort(sortBy ? sortBy : undefined)
+                      .populate({
+                          path: 'isObservedBy',
+                          populate: {
+                              path: 'sensorTypeId',
+                          },
+                      });
 
             if (data.length === 0) {
                 return { status: 404, data: null, message: 'No caveObservation found' };

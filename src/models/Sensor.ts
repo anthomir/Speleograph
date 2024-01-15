@@ -2,6 +2,7 @@ import { Default, Nullable, Required } from '@tsed/schema';
 import { Model, ObjectID, Ref, Select } from '@tsed/mongoose';
 import { User } from './User';
 import { SensorType } from './SensorType';
+import { CaveObservation } from './CaveObservation';
 
 @Model()
 export class Sensor {
@@ -17,6 +18,7 @@ export class Sensor {
     serialNo: string;
 
     @Select(true)
+    @Required(false)
     @Nullable(true)
     observes: string;
 

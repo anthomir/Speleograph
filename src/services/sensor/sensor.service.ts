@@ -35,10 +35,12 @@ export class SensorService {
                       .limit(take ? parseInt(take) : 100)
                       .skip(skip ? parseInt(skip) : 0)
                       .sort(sortBy ? sortBy : undefined)
+                      .populate('sensorTypeId')
                 : await this.Sensor.find()
                       .limit(take ? parseInt(take) : 100)
                       .skip(skip ? parseInt(skip) : 0)
-                      .sort(sortBy ? sortBy : undefined);
+                      .sort(sortBy ? sortBy : undefined)
+                      .populate('sensorTypeId');
 
             if (data.length === 0) {
                 return { status: 404, data: null, message: 'No sensors found' };
