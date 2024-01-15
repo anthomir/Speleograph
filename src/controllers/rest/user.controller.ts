@@ -58,7 +58,28 @@ export class UserController {
 
     @Put('/')
     @Authenticate('jwt')
-    async put(@Context('user') user: User, @Res() res: Res, @BodyParams() body: any) {
+    @MulterOptions({
+        dest: './public/profile',
+        fileFilter(req: Req, file, cb) {
+            const allowedExtensions = ['.jpeg', '.jpg', '.png'];
+            const extension = path.extname(file.originalname).toLowerCase();
+            const mimetype = file.mimetype;
+
+            if (allowedExtensions.includes(extension) && (mimetype === 'image/jpeg' || mimetype === 'image/png')) {
+                cb(null, true);
+            } else {
+                cb(null, false);
+            }
+        },
+    })
+    async put(@Context('user') user: User, @Res() res: Res, @BodyParams() body: any, @MultipartFile('file') file: PlatformMulterFile) {
+        const mimetype = file.mimetype.substring(file.mimetype.indexOf('/') + 1);
+        const fileLink = `${process.env.PRODUCTION_URL}/profile/${file.filename}.${mimetype}`;
+
+        fs.rename(`./public/profile/${file.filename}`, `./public/profile/${file.filename}.${mimetype}`, function (err: any) {
+            if (err) return res.status(500).json({ success: false, err: '' });
+        });
+        user.profileImage = fileLink;
         return await this.usersService.update(user, res, body);
     }
 
