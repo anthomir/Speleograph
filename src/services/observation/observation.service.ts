@@ -18,13 +18,13 @@ export class CaveObservationService {
     // JWT
     async findById(filter: FilterQuery<CaveObservation>): Promise<{ status: number; data: CaveObservation | null; message: string | null }> {
         try {
-            const sensor = await this.CaveObservation.findOne(filter);
+            const caveObservation = await this.CaveObservation.findOne(filter);
 
-            if (!sensor) {
+            if (!caveObservation) {
                 return { status: 404, data: null, message: 'Observation not found' };
             }
 
-            return { status: 200, data: sensor, message: 'Observation found successfully' };
+            return { status: 200, data: caveObservation, message: 'Observation found successfully' };
         } catch (error) {
             return { status: 500, data: null, message: 'Internal server error' };
         }
@@ -86,7 +86,7 @@ export class CaveObservationService {
             });
             return res.status(200).json({ success: true, data: cave });
         } catch (err) {
-            return res.status(500).json({ success: false, err: 'Internal Server Error' });
+            return res.status(400).json({ success: false, err: 'Bad Request' });
         }
     }
 
@@ -104,6 +104,10 @@ export class CaveObservationService {
 
     async update(caveId: string, fileName: any, res: Res) {
         try {
+            const findCave = await this.CaveObservation.findById(caveId);
+            if (!findCave) {
+                return res.status(404).json({ message: 'Cave Observation not found' });
+            }
             let cave = await this.CaveObservation.updateOne({ _id: caveId }, { fileName: fileName }, { new: true });
 
             if (!cave) {

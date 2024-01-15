@@ -25,3 +25,8 @@ export enum ItemType {
     SensorType = 'SensorType',
     Sensor = 'Sensor',
 }
+
+export enum CaveDatabase {
+    GrottoCenter = 'GrottoCenter',
+    Karsteau = 'Karsteau',
+}
