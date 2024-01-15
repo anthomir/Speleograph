@@ -225,17 +225,17 @@ export class SensorTypeService implements OnInit {
             let pluvioArray: Array<string> = new Array('Date-Time', 'RainMeter');
 
             await this.SensorType.create({
-                name: SensorTypeEnum.ReefNet,
+                type: SensorTypeEnum.ReefNet,
                 properties: reefArray,
                 isDefault: true,
             });
             await this.SensorType.create({
-                name: SensorTypeEnum.CTDSensor,
+                type: SensorTypeEnum.CTDSensor,
                 properties: ctdArray,
                 isDefault: true,
             });
             await this.SensorType.create({
-                name: SensorTypeEnum.PluvioMeter,
+                type: SensorTypeEnum.PluvioMeter,
                 properties: pluvioArray,
                 isDefault: true,
             });
