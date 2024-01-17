@@ -4,8 +4,8 @@ import { UpdateSensorDto } from '../../dto/sensor/updateSensor';
 import { Sensor } from '../../models/Sensor';
 import { FilterQuery } from 'mongoose';
 import { Notification } from '../../models/Notification';
-import { ItemType, NotificationType } from 'src/models/Enum';
-import { User } from 'src/models/User';
+import { ItemType, NotificationType } from '../../models/Enum';
+import { User } from '../../models/User';
 
 @Service()
 export class SensorService {

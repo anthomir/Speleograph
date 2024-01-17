@@ -1,14 +1,8 @@
 import { Email, Required, Default, ErrorMsg, Nullable } from '@tsed/schema';
 import { Model, ObjectID, Select, Unique } from '@tsed/mongoose';
-import { Role } from './Enum';
-import { Matches } from 'class-validator';
+import { IsEmail, Matches } from 'class-validator';
 
-@Model()
-export class User {
-    @Select(true)
-    @ObjectID('_id')
-    _id: string;
-
+export class RegistrationDto {
     @Required().Error('license is Required')
     @Unique()
     license: string;
@@ -20,15 +14,16 @@ export class User {
     lastName: string;
 
     @Required().Error('Email is Required')
-    @Email()
+    @IsEmail({}, { message: 'email must use a correct format' })
     @Unique()
     email: string;
 
-    @Default(Role.User)
-    role: string;
-
     @Required().Error('Password is Required')
     @Select(false)
+    @Matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*[a-zA-Z]).{8,}$/, {
+        message:
+            'Password too weak. It must contain at least 8 characters, one lowercase letter, one uppercase letter, one number, and one special character.',
+    })
     password: string;
 
     @Nullable(String)
@@ -38,12 +33,4 @@ export class User {
     @Nullable(String)
     @Select(true)
     profileImage: string;
-
-    @Default(Date.now)
-    createdAt: Date = new Date();
-
-    @Nullable(String)
-    @Default('')
-    @Select(false)
-    emailOTP: string;
 }

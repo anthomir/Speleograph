@@ -7,7 +7,7 @@ import { User } from '../../models/User';
 import { ItemType, NotificationType, Role } from '../../models/Enum';
 import { FilterQuery } from 'mongoose';
 import { Notification } from '../../models/Notification';
-import { LocationObservation } from 'src/models/locationObservation';
+import { LocationObservation } from '../../models/locationObservation';
 
 @Service()
 export class LocationObservationService {

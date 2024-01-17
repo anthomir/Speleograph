@@ -5,7 +5,7 @@ import { ItemType, NotificationType, SensorTypeEnum } from '../../models/Enum';
 import { UpdateSensorTypeDto } from '../../dto/sensorType/updateSensorDto';
 import { FilterQuery } from 'mongoose';
 import { Notification } from '../../models/Notification';
-import { User } from 'src/models/User';
+import { User } from '../../models/User';
 
 @Service()
 export class SensorTypeService implements OnInit {

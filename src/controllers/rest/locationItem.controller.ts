@@ -3,11 +3,10 @@ import { BodyParams, Context, PathParams, QueryParams } from '@tsed/platform-par
 import { Get, Post, Delete, Put, Patch } from '@tsed/schema';
 import { Authenticate } from '@tsed/passport';
 import { Res } from '@tsed/common';
-import { SensorTypeService } from '../../services/sensorType/sensorType.service';
 import { User } from '../../models/User';
 import { UpdateSensorTypeDto } from '../../dto/sensorType/updateSensorDto';
 import { Role } from '../../models/Enum';
-import { LocationItemService } from 'src/services/locationItem/locationItem.service';
+import { LocationItemService } from '../../services/locationItem/locationItem.service';
 
 @Controller('/locationItem')
 export class LocationItemController {

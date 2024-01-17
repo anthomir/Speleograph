@@ -8,6 +8,8 @@ import { MulterOptions, MultipartFile, PlatformMulterFile, Req, Res } from '@tse
 import { UserCreationSchema, UserLoginSchema } from '../../schemas/UserSchema';
 import path from 'path';
 import fs from 'fs';
+import { RegistrationDto } from '../../validation/registrationDto';
+import { validate } from 'class-validator';
 
 //TODO: Refactor
 @Controller('/user')
@@ -16,13 +18,19 @@ export class UserController {
     private usersService: UserService;
 
     @Post('/register')
-    async post(@Res() res: Res, @BodyParams() body: any) {
+    async post(@Res() res: Res, @BodyParams() body: RegistrationDto) {
+        const validationErrors = await validate(body);
+
+        if (validationErrors.length > 0) {
+            return res.status(400).json({ success: false, err: validationErrors[0].constraints });
+        }
         let response = await this.usersService.findOne({
             $or: [{ email: body.email }, { license: body.license }],
         });
         if (response) {
             return res.status(409).json({ success: false, err: 'Email/License already exists' });
         }
+
         return await this.usersService.create(body, res);
     }
 

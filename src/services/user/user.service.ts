@@ -6,6 +6,7 @@ import jwt from 'jsonwebtoken';
 import { comparePassword, cryptPassword } from '../../utils/compare_password';
 import sgMail from '@sendgrid/mail';
 import otpGenerator from 'otp-generator';
+import { RegistrationDto } from '../../validation/registrationDto';
 sgMail.setApiKey(String(process.env.SENDGRID_API));
 
 @Service()
@@ -35,7 +36,7 @@ export class UserService {
     async findProfile(user: User) {
         return await this.User.findById(user._id);
     }
-    async create(user: User, res: Res) {
+    async create(user: RegistrationDto, res: Res) {
         try {
             const passwordEncrypted = await cryptPassword(user.password);
 

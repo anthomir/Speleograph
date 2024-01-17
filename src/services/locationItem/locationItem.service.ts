@@ -3,10 +3,9 @@ import { SensorType } from './../../models/SensorType';
 import { Inject, OnInit, OnRoutesInit, Req, Res, Service } from '@tsed/common';
 import { MongooseModel } from '@tsed/mongoose';
 import { ItemType, NotificationType, SensorTypeEnum } from '../../models/Enum';
-import { UpdateSensorTypeDto } from '../../dto/sensorType/updateSensorDto';
 import { FilterQuery } from 'mongoose';
 import { Notification } from '../../models/Notification';
-import { User } from 'src/models/User';
+import { User } from '../../models/User';
 
 @Service()
 export class LocationItemService {

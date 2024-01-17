@@ -1,11 +1,10 @@
 import { Controller, Inject } from '@tsed/di';
 import { BodyParams, PathParams, QueryParams } from '@tsed/platform-params';
-import { Get, Post } from '@tsed/schema';
+import { Get } from '@tsed/schema';
 import { Authenticate, Authorize } from '@tsed/passport';
-import { MulterOptions, MultipartFile, PlatformMulterFile, Req, Res } from '@tsed/common';
+import { Res } from '@tsed/common';
 import { CaveService } from '../../services/cave/cave.service';
-import path from 'path';
-import { CaveDatabase } from 'src/models/Enum';
+import { CaveDatabase } from '../../models/Enum';
 
 @Controller('/cave')
 export class CaveController {
