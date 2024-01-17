@@ -24,6 +24,8 @@ export enum ItemType {
     Observation = 'Observation',
     SensorType = 'SensorType',
     Sensor = 'Sensor',
+    LocationItem = 'LocationItem',
+    LocationObservation = 'LocationObservation',
 }
 
 export enum CaveDatabase {

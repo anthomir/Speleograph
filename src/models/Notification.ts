@@ -1,3 +1,4 @@
+import { LocationItem } from './locationItem';
 import { Required, Default, Nullable } from '@tsed/schema';
 import { Model, ObjectID, Ref, Select } from '@tsed/mongoose';
 import { NotificationType, ItemType } from './Enum';
@@ -5,6 +6,7 @@ import { CaveObservation } from './CaveObservation';
 import { Sensor } from './Sensor';
 import { SensorType } from './SensorType';
 import { User } from './User';
+import { LocationObservation } from './locationObservation';
 
 @Model()
 export class Notification {
@@ -28,6 +30,14 @@ export class Notification {
     @Nullable(true)
     @Ref(() => SensorType)
     sensorType: SensorType;
+
+    @Nullable(true)
+    @Ref(() => LocationObservation)
+    locationObservation: LocationObservation;
+
+    @Nullable(true)
+    @Ref(() => LocationItem)
+    locationItem: LocationItem;
 
     @Nullable(true)
     @Ref(() => Sensor)

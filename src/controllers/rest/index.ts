@@ -4,6 +4,8 @@
 
 export * from "./cave.controller";
 export * from "./general.controller";
+export * from "./locationItem.controller";
+export * from "./locationObservation.controller";
 export * from "./notifcation.controller";
 export * from "./observation.controller";
 export * from "./sensor.controller";
