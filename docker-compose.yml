@@ -1,23 +1,23 @@
 version: '3.5'
 services:
-    # server:
-    #     build:
-    #         context: .
-    #         dockerfile: ./Dockerfile
-    #         args:
-    #             - http_proxy
-    #             - https_proxy
-    #             - no_proxy
-    #     image: speleograph/server:latest
-    #     ports:
-    #         - '8083:8083'
-    #     environment:
-    #         - MONGO_URL=mongodb://mongodb:27017
-    #         - SECRET=yrftg8yh9ujmnbt7g78
-    #         - GROTTOCAVE_API=https://api.grottocenter.org/api/v1
-    #         - PRODUCTION_URL=http://localhost:8083
-    #         - SENDGRID_API=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
-    #         - EMAIL=eric.madelaine@inria.fr
+    server:
+        build:
+            context: .
+            dockerfile: ./Dockerfile
+            args:
+                - http_proxy
+                - https_proxy
+                - no_proxy
+        image: speleograph/server:latest
+        ports:
+            - '8083:8083'
+        environment:
+            - MONGO_URL=
+            - SECRET=
+            - GROTTOCAVE_API=https://api.grottocenter.org/api/v1
+            - PRODUCTION_URL=http://localhost:8083
+            - SENDGRID_API=
+            - EMAIL=
     mongodb:
         image: mongo:5.0.8
         ports:
