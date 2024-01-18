@@ -229,18 +229,21 @@ export class SensorTypeService implements OnInit {
                 properties: reefArray,
                 manufacturer: 'ReefNet',
                 isDefault: true,
+                createdBy: undefined,
             });
             await this.SensorType.create({
                 type: SensorTypeEnum.CTDSensor,
                 properties: ctdArray,
                 manufacturer: 'CTDSensor',
                 isDefault: true,
+                createdBy: undefined,
             });
             await this.SensorType.create({
                 type: SensorTypeEnum.PluvioMeter,
                 properties: pluvioArray,
                 manufacturer: 'PluvioMeter',
                 isDefault: true,
+                createdBy: undefined,
             });
 
             console.log('Default Sensor Creation Successful');
