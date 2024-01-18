@@ -64,7 +64,7 @@ export class CaveObservationController {
     @Authenticate('jwt')
     @Post('/')
     @MulterOptions({
-        dest: './public/uploads',
+        dest: './opt/public/uploads',
         fileFilter(req: Req, file, cb) {
             const extension = path.extname(file.originalname).toLowerCase();
             const mimetype = file.mimetype;
