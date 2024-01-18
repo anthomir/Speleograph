@@ -17,7 +17,7 @@ export class SensorType {
     properties: Array<string>;
 
     @Select(true)
-    @Nullable(false)
+    @Nullable(true)
     manufacturer: string;
 
     @Select(true)
