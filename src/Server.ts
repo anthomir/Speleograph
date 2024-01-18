@@ -31,6 +31,18 @@ const rootDir = __dirname;
                 hook: '$beforeRoutesInit',
             },
         ],
+        '/profile': [
+            {
+                root: `/opt/public/profile`,
+                hook: '$beforeRoutesInit',
+            },
+        ],
+        '/uploads': [
+            {
+                root: `/opt/public/uploads`,
+                hook: '$beforeRoutesInit',
+            },
+        ],
     },
     processEntites: false,
     componentsScan: [
