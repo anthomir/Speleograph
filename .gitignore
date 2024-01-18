@@ -56,8 +56,11 @@ test/**/*.js.map
 .env.development
 .env
 
-/backup
-/public
+/backup/*
+/public/profile/*.png
+/public/profile/*.jpeg
+/public/profile/*.jpg
+/public/uploads/*.csv
 
-docker-compose.yml
-docker-compose
+/docker-compose.yml
+/docker-compose
