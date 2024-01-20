@@ -62,9 +62,15 @@ export class SensorTypeController {
 
     @Post('/')
     @Authenticate('jwt')
-    async post(@Context('user') user: User, @Res() res: Res, @BodyParams() body?: any) {
+    async post(@Context('user') user: User, @Res() res: Res, @BodyParams() body: any) {
         body.createdBy = user._id;
         try {
+            if (body.properties) {
+                if (!Array.isArray(body.properties) || !body.properties.every((item: any) => typeof item === 'string')) {
+                    return res.status(400).json({ err: 'Invalid properties type. Expecting an array of strings.' });
+                }
+            }
+
             const result = await this.sensorTypeService.post(body);
             if (result.status === 201) {
                 return res.status(201).json({ sucess: true, data: result.data });
@@ -82,6 +88,12 @@ export class SensorTypeController {
         try {
             if (id.length != 24) {
                 return res.status(400).json({ sucess: false, message: 'Bad request' });
+            }
+
+            if (body.properties) {
+                if (!Array.isArray(body.properties) || !body.properties.every((item) => typeof item === 'string')) {
+                    return res.status(400).json({ err: 'Invalid properties type. Expecting an array of strings.' });
+                }
             }
 
             const result = await this.sensorTypeService.updateSensorType(id, body);

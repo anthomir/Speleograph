@@ -1,5 +1,5 @@
 export interface UpdateSensorTypeDto {
     type?: string;
-    properties?: Array<string>;
+    properties?: string[];
     manufacturer?: string;
 }
