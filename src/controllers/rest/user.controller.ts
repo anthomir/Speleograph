@@ -67,7 +67,7 @@ export class UserController {
     @Put('/')
     @Authenticate('jwt')
     @MulterOptions({
-        dest: './opt/public/profile',
+        dest: './public/profile',
         fileFilter(req: Req, file, cb) {
             if (file) {
                 const allowedExtensions = ['.jpeg', '.jpg', '.png'];
