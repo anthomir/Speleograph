@@ -107,6 +107,7 @@ export class UserService {
             userToUpdate.firstName = body.firstName ? body.firstName : user.firstName;
             userToUpdate.lastName = body.lastName ? body.lastName : user.lastName;
             userToUpdate.address = body.address ? body.address : user.address;
+            userToUpdate.license = body.license ? body.license : user.license;
             userToUpdate.profileImage = body.profileImage ? body.profileImage : user.profileImage;
             userToUpdate.save();
 
