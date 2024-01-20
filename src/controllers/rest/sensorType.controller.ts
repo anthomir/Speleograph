@@ -110,11 +110,11 @@ export class SensorTypeController {
                 return res.status(404).json({ sucess: false, err: 'SensorType not found' });
             }
             let role = Role.Admin;
-            if (!sensor.data.createdBy) {
+            if (!sensor.data) {
                 return res.status(401).json({ sucess: false, err: 'Requirements not met' });
             }
 
-            if (user.role != role && user._id.toString() != sensor.data.createdBy.toString()) {
+            if (user.role != role && user._id.toString() != String(sensor?.data?.createdBy)) {
                 return res.status(401).json({ sucess: false, err: 'Requirements not met' });
             }
             ///
