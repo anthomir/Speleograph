@@ -9,7 +9,7 @@ import { UserCreationSchema, UserLoginSchema } from '../../schemas/UserSchema';
 import path from 'path';
 import fs from 'fs';
 import { RegistrationDto } from '../../validation/registrationDto';
-import { validate } from 'class-validator';
+import { validate, Matches } from 'class-validator';
 
 //TODO: Refactor
 @Controller('/user')
@@ -20,9 +20,9 @@ export class UserController {
     @Post('/register')
     async post(@Res() res: Res, @BodyParams() body: RegistrationDto) {
         const validationErrors = await validate(body);
-
+        //console.log()
         if (validationErrors.length > 0) {
-            return res.status(400).json({ success: false, err: validationErrors[0].constraints });
+            return res.status(400).json({ success: false, err: validationErrors[0]?.constraints?.matches });
         }
         let response = await this.usersService.findOne({
             $or: [{ email: body.email }, { license: body.license }],
