@@ -52,7 +52,7 @@ export class SensorController {
 
             const result = await this.sensorService.find(query, skip, take, sortBy);
             if (result.status === 200) {
-                return res.status(200).json({ success: false, data: result.data });
+                return res.status(200).json({ success: true, data: result.data });
             } else {
                 return res.status(result.status).json({ success: false, err: result.message });
             }
