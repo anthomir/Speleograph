@@ -1,3 +1,4 @@
+import { SensorType } from './../../models/SensorType';
 import { Inject, OnInit, OnRoutesInit, Req, Res, Service } from '@tsed/common';
 import { MongooseModel } from '@tsed/mongoose';
 import { UpdateSensorDto } from '../../dto/sensor/updateSensor';
@@ -11,6 +12,9 @@ import { User } from '../../models/User';
 export class SensorService {
     @Inject(Sensor)
     private Sensor: MongooseModel<Sensor>;
+    @Inject(SensorType)
+    private SensorType: MongooseModel<SensorType>;
+
     @Inject(Notification)
     private Notification: MongooseModel<Notification>;
     // JWT
@@ -55,12 +59,18 @@ export class SensorService {
     // JWT
     async post(body: any): Promise<{ status: number; data: Sensor | null; message: string }> {
         try {
+            const sensorType = await this.SensorType.findById(body.SensorTypeId);
+
+            if (!sensorType) {
+                return { status: 400, data: null, message: 'Sensor Type not found' };
+            }
+
             const newSensor = await this.Sensor.create({
                 name: body.name,
                 serialNo: body.serialNo,
                 sensorTypeId: body.sensorTypeId,
                 createdBy: body.createdBy,
-                observes: body.observes ? body.observes : null,
+                observes: sensorType.properties,
             });
 
             if (newSensor) {
