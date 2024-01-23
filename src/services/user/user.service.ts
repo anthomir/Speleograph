@@ -107,7 +107,14 @@ export class UserService {
             userToUpdate.firstName = body.firstName ? body.firstName : user.firstName;
             userToUpdate.lastName = body.lastName ? body.lastName : user.lastName;
             userToUpdate.address = body.address ? body.address : user.address;
-            userToUpdate.license = body.license ? body.license : user.license;
+            if (body.license) {
+                const usersLicense = this.User.findOne({ license: body.license });
+                if (!usersLicense) {
+                    userToUpdate.license = body.license;
+                } else {
+                    throw 'Unable to update license as another user has this license number';
+                }
+            }
             userToUpdate.profileImage = body.profileImage ? body.profileImage : user.profileImage;
             userToUpdate.save();
 
