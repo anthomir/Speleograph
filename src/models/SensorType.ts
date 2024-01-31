@@ -10,6 +10,7 @@ export class SensorType {
     _id: string;
 
     @Select(true)
+    @Unique(false)
     type: string;
 
     @Select(true)

@@ -69,7 +69,7 @@ export class LocationObservationController {
         fileFilter(req: Req, file, cb) {
             const extension = path.extname(file.originalname).toLowerCase();
             const mimetype = file.mimetype;
-            if (extension !== '.csv' || mimetype !== 'text/csv') {
+            if (extension !== '.csv' || (mimetype !== 'text/csv' && mimetype !== 'application/vnd.ms-excel')) {
                 cb(null, false);
             } else {
                 cb(null, true);
