@@ -37,6 +37,10 @@ export class User {
 
     @Nullable(String)
     @Select(true)
+    interest: string;
+
+    @Nullable(String)
+    @Select(true)
     profileImage: string;
 
     @Default(Date.now)
