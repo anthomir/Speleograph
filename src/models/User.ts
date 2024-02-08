@@ -37,7 +37,11 @@ export class User {
 
     @Nullable(String)
     @Select(true)
-    interest: string;
+    preferedLocation: string;
+
+    @Nullable(String)
+    @Select(true)
+    preferedLanguage: string;
 
     @Nullable(String)
     @Select(true)
