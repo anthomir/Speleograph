@@ -89,8 +89,9 @@ export class SensorController {
                 return res.status(404).json({ sucess: false, err: 'Sensor not found' });
             }
 
-            if (user.role != Role.Admin && user._id != sensor.data.createdBy) {
-                return res.status(401).json({ sucess: false, err: 'Permission not met' });
+            let role = Role.Admin;
+            if (user.role != role && user._id.toString() != sensor.data.createdBy.toString()) {
+                return res.status(401).json({ sucess: false, err: 'Requirements not met' });
             }
 
             const result = await this.sensorService.updateSensor(id, body);

@@ -59,7 +59,7 @@ export class SensorService {
     // JWT
     async post(body: any): Promise<{ status: number; data: Sensor | null; message: string }> {
         try {
-            const sensorType = await this.SensorType.findById(body.SensorTypeId);
+            const sensorType = await this.SensorType.findById(body.sensorTypeId);
 
             if (!sensorType) {
                 return { status: 400, data: null, message: 'Sensor Type not found' };

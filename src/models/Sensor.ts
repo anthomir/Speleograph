@@ -20,7 +20,7 @@ export class Sensor {
     @Select(true)
     @Required(false)
     @Nullable(true)
-    observes: string;
+    observes: string[];
 
     @Select(true)
     @Required(true)
