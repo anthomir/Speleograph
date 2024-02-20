@@ -84,7 +84,7 @@ export class SensorController {
             if (id.length != 24) {
                 return res.status(400).json({ sucess: false, err: 'Bad request' });
             }
-            const sensor = await this.sensorService.findById({ _id: id, isDeleted: false });
+            const sensor = await this.sensorService.findById({ _id: id });
             if (!sensor.data) {
                 return res.status(404).json({ sucess: false, err: 'Sensor not found' });
             }
