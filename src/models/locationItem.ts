@@ -24,7 +24,7 @@ export class LocationItem {
     @Default(Date.now)
     createdAt: Date;
 
-    @Select(false)
+    @Select(true)
     @Default(false)
     isDeleted: boolean;
 

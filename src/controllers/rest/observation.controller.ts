@@ -114,7 +114,7 @@ export class CaveObservationController {
 
             // Checking Permissions
             let role = Role.Admin;
-            const sensor = await this.caveObservationService.findById({ _id: id });
+            const sensor = await this.caveObservationService.findById({ _id: id, isDeleted: false });
             if (!sensor.data) {
                 return res.status(404).json({ sucess: false, err: 'Observation not found' });
             }

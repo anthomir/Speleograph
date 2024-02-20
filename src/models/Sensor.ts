@@ -32,7 +32,7 @@ export class Sensor {
     @Ref(() => User)
     createdBy: Ref<User>;
 
-    @Select(false)
+    @Select(true)
     @Default(false)
     isDeleted: boolean;
 

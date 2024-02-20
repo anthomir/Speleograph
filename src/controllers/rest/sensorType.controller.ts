@@ -117,7 +117,7 @@ export class SensorTypeController {
                 return res.status(400).json({ sucess: false, err: 'Bad request' });
             }
             // Checking Permissions
-            const sensor = await this.sensorTypeService.findById({ _id: id });
+            const sensor = await this.sensorTypeService.findById({ _id: id, isDeleted: false });
             if (!sensor.data) {
                 return res.status(404).json({ sucess: false, err: 'SensorType not found' });
             }
