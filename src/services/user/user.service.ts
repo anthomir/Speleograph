@@ -7,7 +7,7 @@ import { comparePassword, cryptPassword } from '../../utils/compare_password';
 import sgMail from '@sendgrid/mail';
 import otpGenerator from 'otp-generator';
 import { RegistrationDto } from '../../validation/registrationDto';
-import { Role } from 'src/models/Enum';
+import { Role } from '../../models/Enum';
 sgMail.setApiKey(String(process.env.SENDGRID_API));
 
 @Service()
