@@ -46,7 +46,7 @@ export class SensorController {
     ) {
         try {
             let query = filter ? JSON.parse(filter) : {};
-            if (user.role == Role.User) {
+            if (user.role != Role.Admin) {
                 query = { ...query, ...{ isDeleted: false } };
             }
 

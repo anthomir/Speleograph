@@ -125,7 +125,7 @@ export class SensorTypeService implements OnInit {
     //isDeleted = true
     async deleteById(id: string, deletedBy: User): Promise<{ status: number; message: string }> {
         try {
-            const sensorType = await this.SensorType.findOne({ _id: id });
+            const sensorType = await this.SensorType.findOne({ _id: id, isDeleted: false });
 
             if (!sensorType) {
                 return { status: 404, message: 'SensorType not found' };
