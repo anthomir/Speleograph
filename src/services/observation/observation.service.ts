@@ -122,7 +122,7 @@ export class CaveObservationService {
 
     async deleteById(id: string, deletedBy: User): Promise<{ status: number; message: string }> {
         try {
-            const observation = await this.CaveObservation.findOne({ _id: id, isDeleted: false });
+            const observation = await this.CaveObservation.findOne({ _id: id });
 
             if (!observation) {
                 return { status: 404, message: 'Observation not found' };

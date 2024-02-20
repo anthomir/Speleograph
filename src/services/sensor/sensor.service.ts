@@ -124,7 +124,7 @@ export class SensorService {
     //isDeleted = true
     async deleteById(id: string, deletedBy: User): Promise<{ status: number; message: string }> {
         try {
-            const sensor = await this.Sensor.findOne({ _id: id, isDeleted: false });
+            const sensor = await this.Sensor.findOne({ _id: id });
 
             if (!sensor) {
                 return { status: 404, message: 'Sensor not found' };
