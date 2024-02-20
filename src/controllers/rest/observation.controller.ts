@@ -68,10 +68,10 @@ export class CaveObservationController {
         fileFilter(req: Req, file, cb) {
             const extension = path.extname(file.originalname).toLowerCase();
             const mimetype = file.mimetype;
-            if (extension !== '.csv' || mimetype !== 'text/csv') {
-                cb(null, false);
-            } else {
+            if ((extension === '.csv' && mimetype === 'text/csv') || mimetype === 'application/vnd.ms-excel') {
                 cb(null, true);
+            } else {
+                cb(null, false);
             }
         },
     })

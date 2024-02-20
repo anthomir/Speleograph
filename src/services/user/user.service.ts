@@ -7,6 +7,7 @@ import { comparePassword, cryptPassword } from '../../utils/compare_password';
 import sgMail from '@sendgrid/mail';
 import otpGenerator from 'otp-generator';
 import { RegistrationDto } from '../../validation/registrationDto';
+import { Role } from 'src/models/Enum';
 sgMail.setApiKey(String(process.env.SENDGRID_API));
 
 @Service()
@@ -127,6 +128,25 @@ export class UserService {
     async delete(userReq: User, res: Res): Promise<User | any> {
         try {
             let user = await this.User.findById(userReq._id);
+
+            if (!user) {
+                return res.status(404).json({ success: false, err: 'Not Found' });
+            }
+
+            const response = await this.User.deleteOne({ _id: user.id });
+            return res.status(200).json({ success: true, data: response });
+        } catch (err) {
+            return res.status(500).json({ success: false, err: 'An unexpected error occured' });
+        }
+    }
+
+    async deleteById(userReq: User, id: string, res: Res): Promise<User | any> {
+        try {
+            if (userReq.role != Role.Admin) {
+                return res.status(401).json({ success: false, err: 'Unauthorized' });
+            }
+
+            let user = await this.User.findById(id);
 
             if (!user) {
                 return res.status(404).json({ success: false, err: 'Not Found' });
