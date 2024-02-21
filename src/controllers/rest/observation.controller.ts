@@ -7,6 +7,8 @@ import { CaveObservationService } from '../../services/observation/observation.s
 import path from 'path';
 import { User } from '../../models/User';
 import { Role } from '../../models/Enum';
+import { ObjectID } from '@tsed/mongoose';
+import fs from 'fs';
 
 //TODO: Refactor
 @Controller('/caveObservation')
@@ -32,6 +34,30 @@ export class CaveObservationController {
             }
         } catch (error) {
             return res.status(500).json({ success: false, err: 'Internal server error' });
+        }
+    }
+
+    @Get('/download/:id')
+    @Get('/download/:id')
+    async download(@Res() res: Res, @PathParams('id') id: string) {
+        try {
+            const filePath = path.resolve('./public/uploads', `${id}.csv`);
+            const observation = await this.caveObservationService.findById({ _id: id, isDeleted: false });
+            const desiredFilename = observation.data?.fileName;
+
+            // Ensure the file exists
+            if (!fs.existsSync(filePath)) {
+                return res.status(404).json({ success: false, error: 'File not found' });
+            }
+
+            const fileContent = fs.readFileSync(filePath, 'utf8');
+
+            res.setHeader('Content-Type', 'text/csv');
+            res.setHeader('Content-Disposition', `attachment; filename="${desiredFilename}"`);
+            res.send(fileContent);
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ success: false, error: 'Internal server error' });
         }
     }
 
@@ -78,7 +104,11 @@ export class CaveObservationController {
     async post(@Context('user') user: User, @MultipartFile('file') file: PlatformMulterFile, @Res() res: Res, @BodyParams() body: any) {
         let response = await this.caveObservationService.postFile(res, file);
 
-        body.filePath = response;
+        if (!response.err) {
+            body.filePath = response?.filePath;
+            body._id = response?._id;
+        }
+        body.fileName = file.originalname;
 
         return await this.caveObservationService.create(user, res, body);
     }

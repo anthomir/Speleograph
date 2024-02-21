@@ -1,5 +1,5 @@
 import { Inject, Req, Res, Service } from '@tsed/common';
-import { MongooseModel } from '@tsed/mongoose';
+import { MongooseModel, ObjectID } from '@tsed/mongoose';
 import axios from 'axios';
 import { CaveObservation } from '../../models/CaveObservation';
 import fs from 'fs';
@@ -7,6 +7,7 @@ import { User } from '../../models/User';
 import { ItemType, NotificationType, Role } from '../../models/Enum';
 import { FilterQuery } from 'mongoose';
 import { Notification } from '../../models/Notification';
+import { ObjectId } from 'mongodb';
 
 @Service()
 export class CaveObservationService {
@@ -73,6 +74,7 @@ export class CaveObservationService {
         try {
             caveMetadata.createdBy = user._id;
             let cave = await this.CaveObservation.create({
+                _id: caveMetadata._id,
                 caveId: caveMetadata.caveId,
                 beginDate: caveMetadata.beginDate,
                 endDate: caveMetadata.endDate,
@@ -91,15 +93,15 @@ export class CaveObservationService {
     }
 
     async postFile(res: Res, file: any) {
-        if (!file) return res.status(400).json({ success: false, err: 'File should be of type .CSV' });
+        if (!file) return { filePath: null, _id: null, err: 'File type should be .csv' };
 
         const filename = file.filename;
-        const mimetype = file.mimetype.substring(file.mimetype.indexOf('/') + 1);
+        const fileId = new ObjectId();
 
-        fs.rename(`./public/uploads/${filename}`, `./public/uploads/${filename}.${mimetype}`, function (err) {
-            if (err) return res.status(500).json({ success: false, err: '' });
+        fs.rename(`./public/uploads/${filename}`, `./public/uploads/${fileId}.csv`, function (err) {
+            if (err) return { filePath: null, _id: null, err: 'err:' + err };
         });
-        return `${process.env.PRODUCTION_URL}/uploads/${filename}.${mimetype}`;
+        return { filePath: `${process.env.PRODUCTION_URL}/api/caveObservation/download/${fileId}`, _id: fileId, err: null };
     }
 
     async update(caveId: string, fileName: any, res: Res) {
